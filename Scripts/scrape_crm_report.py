@@ -132,16 +132,14 @@ def scrape_crm_report():
         try:
             print("Step 1: Logging in to CRM...")
             page.goto(CRM_LOGIN_URL, wait_until="domcontentloaded", timeout=30000)
-            time.sleep(1)
             if "admin_login" in page.url:
                 page.locator("#user_name").fill(CRM_USERNAME)
                 page.locator("#pwd").fill(CRM_PASSWORD)
                 page.locator("#Submit").click()
-                time.sleep(3)
+                page.wait_for_url("**/scReportForms/**", timeout=15000)
                 print(f"  After login: {page.url}")
             print("Step 2: Navigating to report page...")
             page.goto(CRM_URL, wait_until="domcontentloaded", timeout=60000)
-            time.sleep(3)
             print(f"  Page: {page.url}")
 
             # Step 2: Set date to today
@@ -170,8 +168,9 @@ def scrape_crm_report():
             submit = page.query_selector('input[type="submit"][value="submit"], input[value="submit"]')
             if submit:
                 submit.click()
-                print("  Submitted. Waiting for data...")
-                time.sleep(8)
+                print("  Submitted. Waiting for data table...")
+                page.wait_for_selector("table:has-text('Total valid calls')", timeout=30000)
+                print("  Data table loaded.")
             else:
                 print("  WARNING: submit button not found")
                 time.sleep(3)
@@ -221,6 +220,16 @@ def scrape_crm_report():
             with pd.ExcelWriter(rawdata_file, engine="openpyxl", mode="a", if_sheet_exists="replace") as writer:
                 df.to_excel(writer, sheet_name="1", index=False)
             print(f"  Saved {len(df)} rows to sheet '1' in {rawdata_file}")
+
+            # Auto-refresh cookies for next run
+            try:
+                fresh = context.cookies()
+                cookie_dict = {c["name"]: c["value"] for c in fresh}
+                with open(cookie_file, "w") as cf:
+                    json.dump(cookie_dict, cf)
+                print("  Cookies refreshed.")
+            except Exception as ce:
+                print(f"  Cookie save warning: {ce}")
 
         except Exception as e:
             print(f"ERROR: {e}")

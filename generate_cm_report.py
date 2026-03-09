@@ -5,6 +5,7 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), "Scripts"))
+from html_report_generator import generate_html_team_report
 import json
 import shutil
 from datetime import datetime
@@ -205,12 +206,7 @@ def generate_screenshots(html_files, output_dir):
             
             # Navigate to the HTML file
             file_url = f'file:///{os.path.abspath(html_file).replace(chr(92), "/")}'
-            page.goto(file_url)
-            
-            # Wait a bit for any dynamic content to load
-            time.sleep(0.5)
-            
-            # Take screenshot
+            page.goto(file_url, wait_until='networkidle')
             page.screenshot(path=screenshot_file, full_page=True)
             print(f"Screenshot saved: {screenshot_file}")
         
@@ -222,12 +218,12 @@ def generate_screenshots(html_files, output_dir):
 def generate_html_individual_report(merged_df, output_file):
     """Generate HTML individual member report"""
     
-    # Sort by Avg Call Time/Min descending (best performers first)
-    sorted_df = merged_df.sort_values('Avg Call Time/Min', ascending=False)
+    # Sort by Total Duration (Min) descending (best performers first)
+    sorted_df = merged_df.sort_values('Total Duration (Min)', ascending=False)
     
     # Calculate min/max for dynamic color scaling
-    duration_min = merged_df['Duration (Min)'].min()
-    duration_max = merged_df['Duration (Min)'].max()
+    duration_min = merged_df['Total Duration (Min)'].min()
+    duration_max = merged_df['Total Duration (Min)'].max()
     avg_call_min = merged_df['Avg Call Time/Min'].min()
     avg_call_max = merged_df['Avg Call Time/Min'].max()
 
@@ -424,11 +420,13 @@ def generate_html_individual_report(merged_df, output_file):
             <thead>
                 <tr>
                     <th>Team</th>
-                    <th>CM</th>
-                    <th class="text-center">Eff. Calls</th>
-                    <th class="text-center">Duration (Min)</th>
+                    <th>Name</th>
+                    <th class="text-center">Total Calls</th>
+                    <th class="text-center">Total Eff. Calls</th>
+                    <th class="text-center">Total Duration (Min)</th>
                     <th class="text-center">Avg Call Time/Min</th>
                     <th class="text-center">Classes Completed</th>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -436,15 +434,16 @@ def generate_html_individual_report(merged_df, output_file):
     
     # Add data rows
     for idx, row in sorted_df.iterrows():
-        duration_color = get_color_class(row['Duration (Min)'], duration_min, duration_max)
+        duration_color = get_color_class(row['Total Duration (Min)'], duration_min, duration_max)
         avg_call_color = get_color_class(row['Avg Call Time/Min'], avg_call_min, avg_call_max)
         
         html += f"""
                 <tr>
                     <td>{row['Team']}</td>
-                    <td>{row['CRM']}</td>
-                    <td class="text-center">{row['Eff. Calls']}</td>
-                    <td class="text-center"><span class="badge {duration_color}">{int(round(row['Duration (Min)']))}</span></td>
+                    <td>{row['Name']}</td>
+                    <td class="text-center">{row['Total Calls']}</td>
+                    <td class="text-center">{row['Total Eff. Calls']}</td>
+                    <td class="text-center"><span class="badge {duration_color}">{int(round(row['Total Duration (Min)']))}</span></td>
                     <td class="text-center"><span class="badge {avg_call_color}">{int(round(row['Avg Call Time/Min']))}</span></td>
                     <td class="text-center">{row['Classes Completed']}</td>
                 </tr>
@@ -467,7 +466,7 @@ def generate_html_individual_report(merged_df, output_file):
 
 
 def generate_html_separate_teams_report(merged_df, output_file):
-    sorted_df = merged_df.sort_values(['Team', 'Avg Call Time/Min'], ascending=[True, False])
+    sorted_df = merged_df.sort_values(['Team', 'Total Duration (Min)'], ascending=[True, False])
     
     def get_color_class_relative(value, values_in_team, col_name):
         """Excel-style color scaling within each team"""
@@ -534,37 +533,40 @@ def generate_html_separate_teams_report(merged_df, output_file):
         team_data = sorted_df[sorted_df['Team'] == team]
         
         # Get all values for this team for relative comparison
-        duration_values = team_data['Duration (Min)'].tolist()
+        duration_values = team_data['Total Duration (Min)'].tolist()
         avg_call_values = team_data['Avg Call Time/Min'].tolist()
         
-        html += f'<div class="team-section"><div class="team-header">{team} ({len(team_data)} members)</div><table><thead><tr><th>CM</th><th class="text-center">Eff. Calls</th><th class="text-center">Duration (Min)</th><th class="text-center">Avg Call Time/Min</th><th class="text-center">Classes Completed</th></tr></thead><tbody>'
+        html += f'<div class="team-section"><div class="team-header">{team} ({len(team_data)} members)</div><table><thead><tr><th>Name</th><th class="text-center">Total Calls</th><th class="text-center">Total Eff. Calls</th><th class="text-center">Total Duration (Min)</th><th class="text-center">Avg Call Time/Min</th><th class="text-center">Classes Completed</th></tr></thead><tbody>'
         
         for _, row in team_data.iterrows():
-            dc = get_color_class_relative(row['Duration (Min)'], duration_values, 'Duration (Min)')
+            dc = get_color_class_relative(row['Total Duration (Min)'], duration_values, 'Total Duration (Min)')
             ac = get_color_class_relative(row['Avg Call Time/Min'], avg_call_values, 'Avg Call Time/Min')
-            dval = int(round(row['Duration (Min)'])) if row['Duration (Min)'] > 0 else 0
+            dval = int(round(row['Total Duration (Min)'])) if row['Total Duration (Min)'] > 0 else 0
             aval = int(round(row['Avg Call Time/Min'])) if row['Avg Call Time/Min'] > 0 else 0
-            html += f'<tr><td>{row["CRM"]}</td><td class="text-center">{row["Eff. Calls"]}</td><td class="text-center"><span class="badge {dc}">{dval}</span></td><td class="text-center"><span class="badge {ac}">{aval}</span></td><td class="text-center">{row["Classes Completed"]}</td></tr>'
+            html += f'<tr><td>{row["Name"]}</td><td class="text-center">{row["Total Calls"]}</td><td class="text-center">{row["Total Eff. Calls"]}</td><td class="text-center"><span class="badge {dc}">{dval}</span></td><td class="text-center"><span class="badge {ac}">{aval}</span></td><td class="text-center">{row["Classes Completed"]}</td></tr>'
         
         # Calculate totals and averages for summary rows
-        total_eff_calls = int(team_data['Eff. Calls'].sum())
-        total_duration = int(round(team_data['Duration (Min)'].sum()))
+        total_calls = int(team_data['Total Calls'].sum())
+        total_eff_calls = int(team_data['Total Eff. Calls'].sum())
+        total_duration = int(round(team_data['Total Duration (Min)'].sum()))
         total_classes = int(team_data['Classes Completed'].sum())
         
         total_members = len(team_data)
+        avg_calls = round(total_calls / total_members, 1) if total_members > 0 else 0
         avg_eff_calls = round(total_eff_calls / total_members, 1) if total_members > 0 else 0
-        avg_duration = int(round(team_data['Duration (Min)'].mean()))
+        avg_duration = int(round(team_data['Total Duration (Min)'].mean()))
+        # AVERAGE Avg Call Time/Min = mean of individual values
         avg_call_time = int(round(team_data['Avg Call Time/Min'].apply(lambda x: int(round(x)) if x > 0 else 0).mean()))
         avg_classes = int(round(team_data['Classes Completed'].mean()))
         
-        # TOTAL row: sum of displayed (rounded) Avg Call Time/Min values
-        team_avg_call_time = int(team_data['Avg Call Time/Min'].apply(lambda x: int(round(x)) if x > 0 else 0).sum())
+        # TOTAL row: Avg Call Time/Min = Total Duration / member count
+        team_avg_call_time = int(round(total_duration / total_members)) if total_members > 0 else 0
         
         # Add TOTAL row
-        html += f'<tr class="total-row"><td><strong>TOTAL</strong></td><td class="text-center"><strong>{total_eff_calls}</strong></td><td class="text-center"><strong>{total_duration}</strong></td><td class="text-center"><strong>{team_avg_call_time}</strong></td><td class="text-center"><strong>{total_classes}</strong></td></tr>'
+        html += f'<tr class="total-row"><td><strong>TOTAL</strong></td><td class="text-center"><strong>{total_calls}</strong></td><td class="text-center"><strong>{total_eff_calls}</strong></td><td class="text-center"><strong>{total_duration}</strong></td><td class="text-center"><strong>{team_avg_call_time}</strong></td><td class="text-center"><strong>{total_classes}</strong></td></tr>'
         
         # Add AVERAGE row
-        html += f'<tr class="average-row"><td><strong>AVERAGE</strong></td><td class="text-center">{avg_eff_calls}</td><td class="text-center">{avg_duration}</td><td class="text-center">{avg_call_time}</td><td class="text-center">{avg_classes}</td></tr>'
+        html += f'<tr class="average-row"><td><strong>AVERAGE</strong></td><td class="text-center">{avg_calls}</td><td class="text-center">{avg_eff_calls}</td><td class="text-center">{avg_duration}</td><td class="text-center">{avg_call_time}</td><td class="text-center">{avg_classes}</td></tr>'
         
         html += '</tbody></table></div>'
     
@@ -576,11 +578,11 @@ def generate_html_separate_teams_report(merged_df, output_file):
     print(f"HTML separate teams report saved to: {output_file}")
 
 def generate_html_bottom20_report(merged_df, output_file):
-    bottom20_df = merged_df.sort_values('Avg Call Time/Min', ascending=True).head(20)
+    bottom20_df = merged_df.sort_values('Total Duration (Min)', ascending=True).head(20)
     
     # Calculate min/max for dynamic color scaling  
-    duration_min = bottom20_df['Duration (Min)'].min()
-    duration_max = bottom20_df['Duration (Min)'].max()
+    duration_min = bottom20_df['Total Duration (Min)'].min()
+    duration_max = bottom20_df['Total Duration (Min)'].max()
     avg_call_min = bottom20_df['Avg Call Time/Min'].min()
     avg_call_max = bottom20_df['Avg Call Time/Min'].max()
     
@@ -614,13 +616,13 @@ def generate_html_bottom20_report(merged_df, output_file):
                 return 'bg-medium-high'  # Medium green
             else:
                 return 'bg-high'  # Dark green
-    html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bottom 20</title><style>* { margin: 0; padding: 0; } body { font-family: sans-serif; background: #f5f7fa; padding: 30px; } .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 12px; padding: 30px; } h1 { font-size: 24px; margin-bottom: 5px; } .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 30px; } table { width: 100%; } thead th { background: #f5f7fa; padding: 14px; border-bottom: 2px solid #e5e7eb; } tbody td { padding: 12px; border-bottom: 1px solid #f3f4f6; } .rank { font-weight: 600; color: #991b1b; } .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 500; min-width: 60px; text-align: center; } .bg-high { background: #63BE7B; color: #000; } .bg-medium-high { background: #9FD899; color: #000; } .bg-medium { background: #C6E5B5; color: #000; } .bg-medium-low { background: #FFEB84; color: #000; } .bg-low { background: #FCAA75; color: #000; } .bg-very-low { background: #F8696B; color: #000; } .summary-row { background: #f9fafb; font-weight: 600; border-top: 2px solid #e5e7eb !important; } .summary-row td { padding: 14px 12px !important; } .text-center { text-align: center; }</style></head><body><div class="container"><h1>Bottom 20 CM Performance Report</h1><div class="subtitle">Ranked by Average Call Time/Min (Lowest to Highest)</div><table><thead><tr><th class="text-center">Rank</th><th>Team</th><th>CM</th><th class="text-center">Eff. Calls</th><th class="text-center">Duration (Min)</th><th class="text-center">Avg Call Time/Min</th><th class="text-center">Classes Completed</th></tr></thead><tbody>'
+    html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bottom 20</title><style>* { margin: 0; padding: 0; } body { font-family: sans-serif; background: #f5f7fa; padding: 30px; } .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 12px; padding: 30px; } h1 { font-size: 24px; margin-bottom: 5px; } .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 30px; } table { width: 100%; } thead th { background: #f5f7fa; padding: 14px; border-bottom: 2px solid #e5e7eb; } tbody td { padding: 12px; border-bottom: 1px solid #f3f4f6; } .rank { font-weight: 600; color: #991b1b; } .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 500; min-width: 60px; text-align: center; } .bg-high { background: #63BE7B; color: #000; } .bg-medium-high { background: #9FD899; color: #000; } .bg-medium { background: #C6E5B5; color: #000; } .bg-medium-low { background: #FFEB84; color: #000; } .bg-low { background: #FCAA75; color: #000; } .bg-very-low { background: #F8696B; color: #000; } .summary-row { background: #f9fafb; font-weight: 600; border-top: 2px solid #e5e7eb !important; } .summary-row td { padding: 14px 12px !important; } .text-center { text-align: center; }</style></head><body><div class="container"><h1>Bottom 20 CM Performance Report</h1><div class="subtitle">Ranked by Total Duration (Min) (Lowest to Highest)</div><table><thead><tr><th class="text-center">Rank</th><th>Team</th><th>Name</th><th class="text-center">Total Calls</th><th class="text-center">Total Eff. Calls</th><th class="text-center">Total Duration (Min)</th><th class="text-center">Avg Call Time/Min</th><th class="text-center">Classes Completed</th></tr></thead><tbody>'
     for rank, (_, row) in enumerate(bottom20_df.iterrows(), 1):
-        dc = get_color_class(row['Duration (Min)'], duration_min, duration_max)
+        dc = get_color_class(row['Total Duration (Min)'], duration_min, duration_max)
         ac = get_color_class(row['Avg Call Time/Min'], avg_call_min, avg_call_max)
-        dval = int(round(row['Duration (Min)'])) if row['Duration (Min)'] > 0 else 0
+        dval = int(round(row['Total Duration (Min)'])) if row['Total Duration (Min)'] > 0 else 0
         aval = int(round(row['Avg Call Time/Min'])) if row['Avg Call Time/Min'] > 0 else 0
-        html += f'<tr><td class="text-center rank">{rank}</td><td>{row["Team"]}</td><td>{row["CRM"]}</td><td class="text-center">{row["Eff. Calls"]}</td><td class="text-center"><span class="badge {dc}">{dval}</span></td><td class="text-center"><span class="badge {ac}">{aval}</span></td><td class="text-center">{row["Classes Completed"]}</td></tr>'
+        html += f'<tr><td class="text-center rank">{rank}</td><td>{row["Team"]}</td><td>{row["Name"]}</td><td class="text-center">{row["Total Calls"]}</td><td class="text-center">{row["Total Eff. Calls"]}</td><td class="text-center"><span class="badge {dc}">{dval}</span></td><td class="text-center"><span class="badge {ac}">{aval}</span></td><td class="text-center">{row["Classes Completed"]}</td></tr>'
     html += '</tbody></table></div></body></html>'
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write(html)
@@ -653,6 +655,8 @@ def read_duration_data(file_path):
 def read_iur_data(file_path):
     """Read IUR classes data from Tab 2"""
     df = pd.read_excel(file_path, sheet_name='2')
+    # Filter out subtotal rows (useraccount1 == '小计') and grand total row (NaN)
+    df = df[df['useraccount1'].notna() & (df['useraccount1'] != '小计') & (df['useraccount1'].str.lower() != 'total')].copy()
     # Keep only relevant columns
     df = df[['useraccount1', 'Class completed']].copy()
     df.columns = ['CRM', 'Classes Completed']
@@ -680,39 +684,54 @@ def normalize_name(name):
 def merge_all_data(duration_df, iur_df, cm_structure_df):
     """Merge all data sources"""
     
-    # Prepare duration data - use 'SC' column as the CRM name
-    duration_df['CRM_normalized'] = duration_df['SC'].apply(normalize_name)
+    # Prepare duration data - exact case-insensitive matching on SC column
+    duration_df = duration_df.copy()
+    duration_df['CRM_key'] = duration_df['SC'].str.strip().str.lower()
     
     # Prepare IUR data
-    iur_df['CRM_normalized'] = iur_df['CRM'].apply(normalize_name)
+    iur_df = iur_df.copy()
+    iur_df['CRM_key'] = iur_df['CRM'].str.strip().str.lower()
     
     # Prepare CM structure
-    cm_structure_df['CRM_normalized'] = cm_structure_df['CRM'].apply(normalize_name)
+    cm_structure_df = cm_structure_df.copy()
+    cm_structure_df['CRM_key'] = cm_structure_df['CRM'].str.strip().str.lower()
+    
+    # Ensure Total number of calls column exists
+    if 'Total number of calls' not in duration_df.columns:
+        duration_df['Total number of calls'] = 0
+    
+    dur_cols = ['CRM_key', 'Total number of calls', 'Total valid calls', 'Total effective call time/Minute', 'Average call time/Minute']
     
     # Merge duration with CM structure
     merged = cm_structure_df.merge(
-        duration_df[['CRM_normalized', 'Total valid calls', 'Total effective call time/Minute', 'Average call time/Minute']],
-        on='CRM_normalized',
+        duration_df[dur_cols],
+        on='CRM_key',
         how='left'
     )
     
     # Merge with IUR data
     merged = merged.merge(
-        iur_df[['CRM_normalized', 'Classes Completed']],
-        on='CRM_normalized',
+        iur_df[['CRM_key', 'Classes Completed']],
+        on='CRM_key',
         how='left'
     )
     
     # Fill NaN values
+    merged['Total number of calls'] = merged['Total number of calls'].fillna(0).astype(int)
     merged['Total valid calls'] = merged['Total valid calls'].fillna(0).astype(int)
     merged['Total effective call time/Minute'] = merged['Total effective call time/Minute'].fillna(0)
     merged['Average call time/Minute'] = merged['Average call time/Minute'].fillna(0)
     merged['Classes Completed'] = merged['Classes Completed'].fillna(0).astype(int)
-    
     # Rename columns for clarity
-    merged.columns = ['Team', 'CRM', 'CRM_normalized', 'Eff. Calls', 'Duration (Min)', 'Avg Call Time/Min', 'Classes Completed']
+    merged = merged.rename(columns={
+        'CRM': 'Name',
+        'Total number of calls': 'Total Calls',
+        'Total valid calls': 'Total Eff. Calls',
+        'Total effective call time/Minute': 'Total Duration (Min)',
+        'Average call time/Minute': 'Avg Call Time/Min',
+    })
     
-    return merged[['Team', 'CRM', 'Eff. Calls', 'Duration (Min)', 'Avg Call Time/Min', 'Classes Completed']]
+    return merged[['Team', 'Name', 'Total Calls', 'Total Eff. Calls', 'Total Duration (Min)', 'Avg Call Time/Min', 'Classes Completed']]
 
 def get_color_for_value(value, thresholds):
     """Get color based on value and thresholds"""
@@ -734,7 +753,7 @@ def create_individual_report(merged_df, output_file):
     ws.title = "Individual Report"
     
     # Headers
-    headers = ['Team', 'CM', 'Eff. Calls', 'Duration (Min)', 'Avg Call Time/Min', 'Classes Completed']
+    headers = ['Team', 'Name', 'Total Calls', 'Total Eff. Calls', 'Total Duration (Min)', 'Avg Call Time/Min', 'Classes Completed']
     ws.append(headers)
     
     # Style header row
@@ -756,24 +775,25 @@ def create_individual_report(merged_df, output_file):
     for idx, row in merged_df.iterrows():
         ws.append([
             row['Team'],
-            row['CRM'],
-            row['Eff. Calls'],
-            row['Duration (Min)'],
+            row['Name'],
+            row['Total Calls'],
+            row['Total Eff. Calls'],
+            row['Total Duration (Min)'],
             row['Avg Call Time/Min'],
-            row['Classes Completed']
+            row['Classes Completed'],
         ])
         
         current_row = ws.max_row
         
-        # Apply color coding to Duration column (column 4)
-        duration_cell = ws.cell(row=current_row, column=4)
-        duration_value = row['Duration (Min)']
+        # Apply color coding to Total Duration column (column 5)
+        duration_cell = ws.cell(row=current_row, column=5)
+        duration_value = row['Total Duration (Min)']
         duration_color = get_color_for_value(duration_value, duration_thresholds)
         duration_cell.fill = PatternFill(start_color=duration_color, end_color=duration_color, fill_type='solid')
         duration_cell.alignment = Alignment(horizontal='center', vertical='center')
         
-        # Apply color coding to Avg Call Time column (column 5)
-        avg_call_cell = ws.cell(row=current_row, column=5)
+        # Apply color coding to Avg Call Time column (column 6)
+        avg_call_cell = ws.cell(row=current_row, column=6)
         avg_call_value = row['Avg Call Time/Min']
         avg_call_color = get_color_for_value(avg_call_value, avg_call_thresholds)
         avg_call_cell.fill = PatternFill(start_color=avg_call_color, end_color=avg_call_color, fill_type='solid')
@@ -784,7 +804,7 @@ def create_individual_report(merged_df, output_file):
             ws.cell(row=current_row, column=col).alignment = Alignment(horizontal='center', vertical='center')
     
     # Adjust column widths
-    column_widths = [15, 25, 12, 16, 18, 18]
+    column_widths = [15, 25, 12, 14, 20, 18, 18]
     for i, width in enumerate(column_widths, 1):
         ws.column_dimensions[openpyxl.utils.get_column_letter(i)].width = width
     
@@ -808,20 +828,20 @@ def create_team_summary(merged_df, output_file):
     
     # Group by team and calculate aggregates
     team_summary = merged_df.groupby('Team').agg({
-        'CRM': 'count',
-        'Eff. Calls': 'sum',
-        'Duration (Min)': 'sum',
-        'Classes Completed': 'sum'
+        'Name': 'count',
+        'Total Eff. Calls': 'sum',
+        'Total Duration (Min)': 'sum',
+        'Classes Completed': 'sum',
     }).reset_index()
     
     # Calculate average effective calls per team member
-    team_summary['Avg Eff. Calls'] = (team_summary['Eff. Calls'] / team_summary['CRM']).round(0).astype(int)
+    team_summary['Avg Eff. Calls'] = (team_summary['Total Eff. Calls'] / team_summary['Name']).round(1)
     
-    # Calculate Avg Call Time/Min as Total Duration / Members (not by Eff. Calls)
-    team_summary['Avg Call Time/Min'] = (team_summary['Duration (Min)'] / team_summary['CRM']).fillna(0).round(0).astype(int)
+    # Calculate Avg Call Time/Min as Total Duration / Members
+    team_summary['Avg Call Time/Min'] = (team_summary['Total Duration (Min)'] / team_summary['Name']).fillna(0).round(0).astype(int)
     
     # Rename columns
-    team_summary.columns = ['Team', 'Members', 'Total Eff. Calls', 'Total Duration (Min)', 
+    team_summary.columns = ['Team', 'Members', 'Total Eff. Calls', 'Total Duration (Min)',
                             'Classes Completed', 'Avg Eff. Calls', 'Avg Call Time/Min']
     
     # Reorder columns
@@ -841,9 +861,9 @@ def create_team_summary(merged_df, output_file):
         'Members': total_members,
         'Total Eff. Calls': total_eff_calls,
         'Total Duration (Min)': total_duration,
-        'Avg Eff. Calls': int(total_eff_calls / total_members) if total_members > 0 else 0,
+        'Avg Eff. Calls': round(total_eff_calls / total_members, 1) if total_members > 0 else 0,
         'Avg Call Time/Min': int(total_duration / total_members) if total_members > 0 else 0,
-        'Classes Completed': team_summary['Classes Completed'].sum()
+        'Classes Completed': team_summary['Classes Completed'].sum(),
     }
     
     team_summary = pd.concat([team_summary, pd.DataFrame([total_row])], ignore_index=True)
@@ -880,7 +900,7 @@ def create_team_summary(merged_df, output_file):
             row['Total Duration (Min)'],
             row['Avg Eff. Calls'],
             row['Avg Call Time/Min'],
-            row['Classes Completed']
+            row['Classes Completed'],
         ])
         
         current_row = ws.max_row
@@ -1006,8 +1026,8 @@ def main():
     
     print("\nTeam summary preview:")
     team_preview = merged_df.groupby('Team').agg({
-        'CRM': 'count',
-        'Duration (Min)': 'sum',
+        'Name': 'count',
+        'Total Duration (Min)': 'sum',
         'Classes Completed': 'sum'
     })
     print(team_preview)

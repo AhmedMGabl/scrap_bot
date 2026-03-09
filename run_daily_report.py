@@ -8,6 +8,7 @@ import sys
 import json
 import requests
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
 
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8")
@@ -85,24 +86,18 @@ def run_cm_dashboard():
     str_df  = read_cm_structure(structure)
     merged  = merge_all_data(dur_df, iur_df, str_df)
 
-    individual_html   = os.path.join(OUTPUT_DIR, "CM_Individual_Report.html")
     team_summary_html = os.path.join(OUTPUT_DIR, "CM_Team_Summary.html")
     sep_teams_html    = os.path.join(OUTPUT_DIR, "CM_Separate_Teams.html")
-    bottom20_html     = os.path.join(OUTPUT_DIR, "CM_Bottom20.html")
 
-    generate_html_individual_report(merged, individual_html)
     generate_html_team_report(merged, team_summary_html)
     generate_html_separate_teams_report(merged, sep_teams_html)
-    generate_html_bottom20_report(merged, bottom20_html)
 
-    html_files = [individual_html, team_summary_html, sep_teams_html, bottom20_html]
+    html_files = [team_summary_html, sep_teams_html]
     generate_screenshots(html_files, OUTPUT_DIR)
 
     pngs = [
         os.path.join(OUTPUT_DIR, "CM_Team_Summary.png"),
         os.path.join(OUTPUT_DIR, "CM_Separate_Teams.png"),
-        os.path.join(OUTPUT_DIR, "CM_Individual_Report.png"),
-        os.path.join(OUTPUT_DIR, "CM_Bottom20.png"),
     ]
     print("OK CM dashboard done.")
     return merged, pngs
@@ -222,24 +217,27 @@ def run_send_cards(cm_pngs, ea_pngs):
         today = datetime.now().strftime("%Y-%m-%d")
 
         # CM card
-        cm_labels = ["Team Summary", "Teams Breakdown", "Individual Report", "Bottom 20"]
+        cm_labels = ["Team Summary", "Teams Breakdown"]
         print("  Uploading CM images...")
-        cm_keys = [lark_upload_image(token, p) for p in cm_pngs if os.path.exists(p)]
-        cm_valid_labels = [l for l, p in zip(cm_labels, cm_pngs) if os.path.exists(p)]
+        valid_pairs = [(l, p) for l, p in zip(cm_labels, cm_pngs) if os.path.exists(p)]
+        cm_valid_labels = [l for l, _ in valid_pairs]
+        valid_paths = [p for _, p in valid_pairs]
+        with ThreadPoolExecutor(max_workers=len(valid_paths) or 1) as pool:
+            cm_keys = list(pool.map(lambda p: lark_upload_image(token, p), valid_paths))
         lark_send_card(token, LARK_CHAT_ID,
                        f"CM Daily Report - {today}", "blue",
                        cm_keys, cm_valid_labels)
         print("  CM card sent")
 
-        # EA card
-        ea_labels = ["Team Summary", "Teams Breakdown", "Individual Report", "Bottom 20"]
-        print("  Uploading EA images...")
-        ea_keys = [lark_upload_image(token, p) for p in ea_pngs if os.path.exists(p)]
-        ea_valid_labels = [l for l, p in zip(ea_labels, ea_pngs) if os.path.exists(p)]
-        lark_send_card(token, LARK_CHAT_ID,
-                       f"EA Daily Report - {today}", "green",
-                       ea_keys, ea_valid_labels)
-        print("  EA card sent")
+        # EA card (commented out)
+        # ea_labels = ["Team Summary", "Teams Breakdown", "Individual Report", "Bottom 20"]
+        # print("  Uploading EA images...")
+        # ea_keys = [lark_upload_image(token, p) for p in ea_pngs if os.path.exists(p)]
+        # ea_valid_labels = [l for l, p in zip(ea_labels, ea_pngs) if os.path.exists(p)]
+        # lark_send_card(token, LARK_CHAT_ID,
+        #                f"EA Daily Report - {today}", "green",
+        #                ea_keys, ea_valid_labels)
+        # print("  EA card sent")
 
         print("OK Cards sent.")
     except Exception as e:
@@ -247,8 +245,20 @@ def run_send_cards(cm_pngs, ea_pngs):
 
 if __name__ == "__main__":
     os.makedirs(OUTPUT_DIR, exist_ok=True)
+    log_dir = os.path.join(OUTPUT_DIR, "logs")
+    os.makedirs(log_dir, exist_ok=True)
+    log_path = os.path.join(log_dir, datetime.now().strftime("%Y-%m-%d_%H-%M") + ".log")
+    log_file = open(log_path, "w", encoding="utf-8")
+    class _Tee:
+        def __init__(self, *streams): self.streams = streams
+        def write(self, data):
+            for s in self.streams: s.write(data)
+        def flush(self):
+            for s in self.streams: s.flush()
+    sys.stdout = _Tee(sys.stdout, log_file)
+    print(f"Log: {log_path}")
     run_crm_scrape()
     run_ams_scrape()
     cm_df, cm_pngs = run_cm_dashboard()
-    ea_df, ea_pngs = run_ea_dashboard()
-    run_send_cards(cm_pngs, ea_pngs)
+    run_send_cards(cm_pngs, [])
+    log_file.close()

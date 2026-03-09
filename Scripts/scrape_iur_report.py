@@ -47,7 +47,7 @@ def scrape_iur_new_report():
             print("Step 1: Logging in to AMS...")
             lp_page = context.pages[0] if context.pages else context.new_page()
             lp_page.goto(AMS_LOGIN_URL)
-            time.sleep(2)
+            lp_page.wait_for_load_state("networkidle", timeout=10000)
             if "login" in lp_page.url and "login-turn" not in lp_page.url:
                 try:
                     lp_page.wait_for_selector('input[placeholder*="手机号"]', timeout=8000)
@@ -74,7 +74,7 @@ def scrape_iur_new_report():
                     if "welcome" in cur_url or cur_url.endswith("#/"):
                         print("  LP welcome, navigating to IUR...")
                         lp_candidate.goto(LP_IUR_URL)
-                        time.sleep(5)
+                        lp_candidate.wait_for_load_state("networkidle", timeout=15000)
                     else:
                         for frm in lp_candidate.frames:
                             try:
@@ -96,7 +96,7 @@ def scrape_iur_new_report():
                         print("  >> Please click the WhatsApp option <<")
                     else:
                         print(f"  Waiting... ({cur_url[-60:]})")
-                time.sleep(5)
+                time.sleep(2)
             if not grid_found:
                 raise Exception("LP BI grid not found after 120s.")
 
@@ -106,7 +106,7 @@ def scrape_iur_new_report():
             if total_tab:
                 total_tab.click()
                 print("  Total tab clicked")
-                time.sleep(5)
+                bi_frame.wait_for_load_state("networkidle", timeout=10000)
             else:
                 print("  WARNING: Total tab not found")
 
@@ -129,7 +129,7 @@ def scrape_iur_new_report():
                 try:
                     inp = date_frame.query_selector('input[placeholder="请选择时间"]')
                     inp.click()
-                    time.sleep(2)
+                    lp_page.wait_for_selector("td[title="" + today_str + ""]", timeout=5000)
                     # Click today cell in the calendar (both start and end)
                     for attempt in range(2):
                         sel = 'td[title="' + today_str + '"] .ant-picker-cell-inner'
@@ -139,9 +139,8 @@ def scrape_iur_new_report():
                             clicked = lp_page.evaluate(js)
                         label = "Start" if attempt == 0 else "End"
                         print(f"  {label} date: {'ok' if clicked else 'not found'}")
-                        time.sleep(1)
+                        lp_page.wait_for_timeout(300)
                     lp_page.keyboard.press("Escape")
-                    time.sleep(0.5)
                 except Exception as e:
                     print(f"  WARNING: date range: {e}")
             else:
@@ -165,8 +164,8 @@ def scrape_iur_new_report():
                     pass
             if query_btn:
                 query_btn.click()
-                print("  查询 clicked, waiting 10s...")
-                time.sleep(10)
+                print("  查询 clicked, waiting for results...")
+                bi_frame.wait_for_load_state("networkidle", timeout=20000)
             else:
                 print("  WARNING: 查询 not found")
                 time.sleep(5)
@@ -182,11 +181,11 @@ def scrape_iur_new_report():
                 hover_target = bi_frame.query_selector('.dashboard-chart, .bi-design-render-table, .table-widget-component, .root-container')
                 if hover_target:
                     hover_target.hover()
-                    time.sleep(1.5)
+                    lp_page.wait_for_timeout(500)
                 else:
                     # hover at center of frame
                     bi_frame.evaluate("() => { document.body.dispatchEvent(new MouseEvent('mouseover',{bubbles:true})); }")
-                    time.sleep(1.5)
+                    lp_page.wait_for_timeout(500)
             except Exception as e:
                 print(f"  Hover warning: {e}")
 
@@ -204,7 +203,10 @@ def scrape_iur_new_report():
                 "}"
             )
             print(f"  Grid/expand li: {clicked_grid}")
-            time.sleep(2)
+            try:
+                bi_frame.wait_for_selector("svg.common-download-outlined-svg", timeout=3000)
+            except Exception:
+                lp_page.wait_for_timeout(1000)
             lp_page.screenshot(path=os.path.join(parent_dir, "Output", "iur_after_grid.png"))
 
             # 5b: Click the download icon (common-download-outlined-svg)
@@ -220,7 +222,10 @@ def scrape_iur_new_report():
             if clicked_dl == 'not found':
                 clicked_dl = lp_page.evaluate(JS_DL_ICON)
             print(f"  Download icon: {clicked_dl}")
-            time.sleep(2)
+            try:
+                lp_page.wait_for_selector("button:has-text('确定')", timeout=3000)
+            except Exception:
+                lp_page.wait_for_timeout(800)
             lp_page.screenshot(path=os.path.join(parent_dir, "Output", "iur_after_export_menu.png"))
 
             # 5c: Click confirm (确 定) and capture download
@@ -277,7 +282,6 @@ def scrape_iur_new_report():
             else:
                 print("  ERROR: No downloaded file. Check screenshots in Output/")
 
-            time.sleep(3)
 
         except Exception as e:
             print("ERROR: " + str(e))
