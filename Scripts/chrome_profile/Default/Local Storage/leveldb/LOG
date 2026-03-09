@@ -1,5 +1,6 @@
-2026/03/09-09:46:24.888 141ac Reusing MANIFEST D:\Daily reports\Daily Duration Report\Scripts\chrome_profile\Default\Local Storage\leveldb/MANIFEST-000001
-2026/03/09-09:46:24.892 141ac Recovering log #26
-2026/03/09-09:46:24.893 141ac Reusing old log D:\Daily reports\Daily Duration Report\Scripts\chrome_profile\Default\Local Storage\leveldb/000026.log 
-2026/03/09-09:47:44.459 141ac Level-0 table #31: started
-2026/03/09-09:47:44.481 141ac Level-0 table #31: 17770 bytes OK
+2026/03/09-21:20:30.032 16214 Reusing MANIFEST C:\Users\high tech\Documents\GitHub\scrap_bot\Scripts\chrome_profile\Default\Local Storage\leveldb/MANIFEST-000001
+2026/03/09-21:20:30.036 16214 Recovering log #43
+2026/03/09-21:20:30.038 16214 Reusing old log C:\Users\high tech\Documents\GitHub\scrap_bot\Scripts\chrome_profile\Default\Local Storage\leveldb/000043.log 
+2026/03/09-21:20:59.954 1f310 Level-0 table #46: started
+2026/03/09-21:20:59.958 1f310 Level-0 table #46: 18881 bytes OK
+2026/03/09-21:20:59.959 1f310 Delete type=0 #43

@@ -1,0 +1,64 @@
+Log: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\logs\2026-03-09_15-57.log
+============================================================
+PHASE 1: Scraping CRM (crm.51talk.com)
+============================================================
+============================================================
+CRM Call Report Scraper
+============================================================
+Target date: 2026-03-09
+Step 1: Trying requests with saved cookies...
+  bs4 not available, falling back to browser...
+Step 1: Logging in to CRM...
+ERROR: Timeout 15000ms exceeded.
+=========================== logs ===========================
+waiting for navigation to "**/scReportForms/**" until 'load'
+  navigated to "https://crm.51talk.com/admin/main.php"
+============================================================
+DONE
+OK CRM scraping done.
+============================================================
+PHASE 2: Scraping AMS (ams.51talkjr.com)
+============================================================
+============================================================
+IUR New Report Scraper
+============================================================
+Step 1: Logging in to AMS...
+  Auto-login failed (Timeout 15000ms exceeded.
+=========================== logs ===========================
+waiting for navigation to "**/login-turn**" until 'load'
+  navigated to "https://ams.51talkjr.com/#/login"
+  navigated to "https://lp.51talkjr.com/#/welcome"
+  navigated to "https://lp.51talkjr.com/#/welcome"
+  navigated to "https://lp.51talkjr.com/#/welcome"
+  navigated to "https://lp.51talkjr.com/#/welcome"
+============================================================), log in manually
+Step 2: Waiting up to 120s for LP BI frame...
+  LP welcome, navigating to IUR...
+  LP at s://lp.51talkjr.com/#/data-center/business/iur_new, 2 frames...
+  LP at s://lp.51talkjr.com/#/data-center/business/iur_new, 2 frames...
+  BI frame found! tabs=['Total', 'Details']
+Step 3: Clicking Total tab...
+  Total tab clicked
+ERROR: Timeout 10000ms exceeded.
+Screenshot: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\error_iur_20260309_155830.png
+DONE
+OK AMS scraping done.
+============================================================
+PHASE 3: Generating CM Dashboard
+============================================================
+Columns found: ['Serial', 'SC', 'First call', 'Last call', 'Total number of calls']...
+HTML report saved to: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\CM_Team_Summary.html
+HTML separate teams report saved to: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\CM_Separate_Teams.html
+
+Generating screenshots...
+Screenshot saved: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\CM_Team_Summary.png
+Screenshot saved: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\CM_Separate_Teams.png
+All screenshots generated successfully!
+OK CM dashboard done.
+============================================================
+PHASE 5: Sending cards to Lark group
+============================================================
+  Token obtained
+  Uploading CM images...
+  CM card sent
+OK Cards sent.

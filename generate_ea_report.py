@@ -32,26 +32,21 @@ def generate_excel_reports(merged_df, output_dir):
     from openpyxl.styles import PatternFill, Font, Alignment
     
     # Individual Report
-    sorted_df = merged_df.sort_values('Avg Call Time/Min', ascending=False)
+    sorted_df = merged_df.sort_values('Total Duration (Min)', ascending=False)
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = 'EA Individual'
-    ws.append(['Team', 'EA', 'Eff. Calls', 'Duration (Min)', 'Avg Call Time/Min'])
+    ws.append(['Team', 'EA', 'Total Calls', 'Total Eff. Calls', 'Total Duration (Min)', 'Avg Call Time/Min'])
     for i, r in sorted_df.iterrows():
-        ws.append([r['Team'], r['CRM'], int(r['Eff. Calls']), int(round(r['Duration (Min)'])), round(r['Avg Call Time/Min'], 2)])
+        ws.append([r['Team'], r['CRM'], int(r['Total Calls']), int(r['Total Eff. Calls']), int(round(r['Total Duration (Min)'])), round(r['Avg Call Time/Min'], 2)])
     wb.save(output_dir + '/EA_Individual_Report.xlsx')
     print(f'Excel individual report saved')
     
     # Team Summary
-    ts = merged_df.groupby('Team').agg({'CRM': 'count', 'Eff. Calls': 'sum', 'Duration (Min)': 'sum'}).reset_index()
-    ts['Avg Eff. Calls'] = (ts['Eff. Calls'] / ts['CRM']).round(1)
-    # Avg Call Time/Min per team = sum of individual rounded values (matches HTML report)
-    def team_avg_ct(group):
-        return int(group['Avg Call Time/Min'].apply(lambda x: int(round(x)) if x > 0 else 0).sum())
-    ts_avg_ct = merged_df.groupby('Team').apply(team_avg_ct).reset_index()
-    ts_avg_ct.columns = ['Team', 'Avg Call Time/Min']
-    ts = ts.merge(ts_avg_ct, on='Team', how='left')
-    ts['Avg Call Time/Min'] = ts['Avg Call Time/Min'].fillna(0).astype(int)
+    ts = merged_df.groupby('Team').agg({'CRM': 'count', 'Total Eff. Calls': 'sum', 'Total Duration (Min)': 'sum'}).reset_index()
+    ts['Avg Eff. Calls'] = (ts['Total Eff. Calls'] / ts['CRM']).round(1)
+    # Avg Call Time/Min per team = Total Duration / Members
+    ts['Avg Call Time/Min'] = (ts['Total Duration (Min)'] / ts['CRM']).fillna(0).round(0).astype(int)
     ts.columns = ['Team', 'Members', 'Total Eff. Calls', 'Total Duration (Min)', 'Avg Eff. Calls', 'Avg Call Time/Min']
     ts = ts[['Team', 'Members', 'Total Eff. Calls', 'Total Duration (Min)', 'Avg Eff. Calls', 'Avg Call Time/Min']]
     wb2 = openpyxl.Workbook()
@@ -67,27 +62,28 @@ def generate_excel_reports(merged_df, output_dir):
     wb3 = openpyxl.Workbook()
     wb3.remove(wb3.active)
     for team in sorted(merged_df['Team'].unique()):
-        td = merged_df[merged_df['Team'] == team].sort_values('Avg Call Time/Min', ascending=False)
+        td = merged_df[merged_df['Team'] == team].sort_values('Total Duration (Min)', ascending=False)
         ws3 = wb3.create_sheet(title=str(team)[:31])
-        ws3.append(['EA', 'Eff. Calls', 'Duration (Min)', 'Avg Call Time/Min'])
+        ws3.append(['EA', 'Total Calls', 'Total Eff. Calls', 'Total Duration (Min)', 'Avg Call Time/Min'])
         for i, r in td.iterrows():
-            ws3.append([r['CRM'], int(r['Eff. Calls']), int(round(r['Duration (Min)'])), round(r['Avg Call Time/Min'], 2)])
+            ws3.append([r['CRM'], int(r['Total Calls']), int(r['Total Eff. Calls']), int(round(r['Total Duration (Min)'])), round(r['Avg Call Time/Min'], 2)])
         ws3.append([])
-        total_calls = int(td['Eff. Calls'].sum()); total_dur = int(round(td['Duration (Min)'].sum()))
-        avg_ct = int(round(total_dur / total_calls)) if total_calls > 0 else 0
-        ws3.append(['TOTAL', total_calls, total_dur, avg_ct])
-        ws3.append(['AVERAGE', int(round(td['Eff. Calls'].mean())), int(round(td['Duration (Min)'].mean())), round(td['Avg Call Time/Min'].mean(), 2)])
+        total_members = len(td)
+        total_tc = int(td['Total Calls'].sum()); total_tec = int(td['Total Eff. Calls'].sum()); total_dur = int(round(td['Total Duration (Min)'].sum()))
+        team_avg_ct = int(round(total_dur / total_members)) if total_members > 0 else 0
+        ws3.append(['TOTAL', total_tc, total_tec, total_dur, team_avg_ct])
+        ws3.append(['AVERAGE', round(td['Total Calls'].mean(), 1), round(td['Total Eff. Calls'].mean(), 1), int(round(td['Total Duration (Min)'].mean())), round(td['Avg Call Time/Min'].mean(), 2)])
     wb3.save(output_dir + '/EA_Separate_Teams.xlsx')
     print(f'Excel separate teams report saved')
     
     # Bottom 20
-    b20 = merged_df.sort_values('Avg Call Time/Min', ascending=True).head(20)
+    b20 = merged_df.sort_values('Total Duration (Min)', ascending=True).head(20)
     wb4 = openpyxl.Workbook()
     ws4 = wb4.active
     ws4.title = 'Bottom 20'
-    ws4.append(['Rank', 'Team', 'EA', 'Eff. Calls', 'Duration (Min)', 'Avg Call Time/Min'])
+    ws4.append(['Rank', 'Team', 'EA', 'Total Calls', 'Total Eff. Calls', 'Total Duration (Min)', 'Avg Call Time/Min'])
     for rank, (i, r) in enumerate(b20.iterrows(), 1):
-        ws4.append([rank, r['Team'], r['CRM'], int(r['Eff. Calls']), int(round(r['Duration (Min)'])), round(r['Avg Call Time/Min'], 2)])
+        ws4.append([rank, r['Team'], r['CRM'], int(r['Total Calls']), int(r['Total Eff. Calls']), int(round(r['Total Duration (Min)'])), round(r['Avg Call Time/Min'], 2)])
     wb4.save(output_dir + '/EA_Bottom20.xlsx')
     print(f'Excel bottom 20 report saved')
 
@@ -111,6 +107,8 @@ def read_duration_data_from_file(file_path, sheet_name='Sheet1'):
     for i, header in enumerate(headers):
         if header == 'SC':  # EA uses 'SC' instead of 'CRM'
             col_indices['crm'] = i
+        elif header == 'Total number of calls':
+            col_indices['total_calls'] = i
         elif header == 'Total valid calls':  # EA uses this instead of 'Effective Calls'
             col_indices['eff_calls'] = i
         elif header == 'Total effective call time/Minute':  # EA column name
@@ -129,10 +127,14 @@ def read_duration_data_from_file(file_path, sheet_name='Sheet1'):
                 if crm_value in ['Total', 'In total', 'SC'] or '小组' in crm_value or '组' in crm_value:
                     continue
             
+            total_calls_val = 0
+            if col_indices.get('total_calls') is not None and row[col_indices['total_calls']]:
+                total_calls_val = float(row[col_indices['total_calls']])
             data.append({
                 'CRM': str(crm_value),  # Convert to string for consistency
-                'Eff. Calls': float(row[col_indices['eff_calls']]) if row[col_indices['eff_calls']] else 0,
-                'Duration (Min)': float(row[col_indices['duration']]) if row[col_indices['duration']] else 0,
+                'Total Calls': total_calls_val,
+                'Total Eff. Calls': float(row[col_indices['eff_calls']]) if row[col_indices['eff_calls']] else 0,
+                'Total Duration (Min)': float(row[col_indices['duration']]) if row[col_indices['duration']] else 0,
                 'Avg Call Time/Min': float(row[col_indices['avg_call']]) if row[col_indices['avg_call']] else 0,
             })
     
@@ -170,8 +172,9 @@ def aggregate_monthly_data(monthly_files):
     
     # Aggregate by CRM - sum calls/duration, use MEAN for avg (NO RECALCULATION!)
     aggregated_df = combined_df.groupby('CRM').agg({
-        'Eff. Calls': 'sum',
-        'Duration (Min)': 'sum',
+        'Total Calls': 'sum',
+        'Total Eff. Calls': 'sum',
+        'Total Duration (Min)': 'sum',
         'Avg Call Time/Min': 'mean'
     }).reset_index()
     
@@ -199,8 +202,9 @@ def merge_ea_data(duration_df, ea_structure_df):
     merged_df = pd.merge(ea_structure_df, duration_df, on='CRM', how='left')
     
     # Fill NaN values with 0 for employees with no activity
-    merged_df['Eff. Calls'] = merged_df['Eff. Calls'].fillna(0).astype(int)
-    merged_df['Duration (Min)'] = merged_df['Duration (Min)'].fillna(0)
+    merged_df['Total Calls'] = merged_df['Total Calls'].fillna(0).astype(int)
+    merged_df['Total Eff. Calls'] = merged_df['Total Eff. Calls'].fillna(0).astype(int)
+    merged_df['Total Duration (Min)'] = merged_df['Total Duration (Min)'].fillna(0)
     merged_df['Avg Call Time/Min'] = merged_df['Avg Call Time/Min'].fillna(0)
     merged_df['Classes Completed'] = 0  # EA doesn't track classes
     
@@ -284,12 +288,12 @@ def main():
     print(f"\nTotal EA Members: {len(merged_df)}")
     print(f"Total Teams: {merged_df['Team'].nunique()}")
     print(f"\nOverall Metrics (Nov-Jan Combined):")
-    print(f"  Total Eff. Calls: {merged_df['Eff. Calls'].sum():,.0f}")
-    print(f"  Total Duration: {merged_df['Duration (Min)'].sum():,.0f} minutes")
+    print(f"  Total Eff. Calls: {merged_df['Total Eff. Calls'].sum():,.0f}")
+    print(f"  Total Duration: {merged_df['Total Duration (Min)'].sum():,.0f} minutes")
     print(f"  Average Call Time/Min: {merged_df['Avg Call Time/Min'].mean():.2f}")
     
     print("\nTop 5 Teams by Total Duration:")
-    top_teams = merged_df.groupby('Team')['Duration (Min)'].sum().sort_values(ascending=False).head()
+    top_teams = merged_df.groupby('Team')['Total Duration (Min)'].sum().sort_values(ascending=False).head()
     for team, duration in top_teams.items():
         print(f"  {team}: {duration:,.0f} min")
 

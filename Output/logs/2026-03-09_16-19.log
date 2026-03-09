@@ -1,0 +1,63 @@
+Log: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\logs\2026-03-09_16-19.log
+============================================================
+PHASE 1: Scraping CRM (crm.51talk.com)
+============================================================
+============================================================
+CRM Call Report Scraper
+============================================================
+Target date: 2026-03-09
+Step 1: Trying requests with saved cookies...
+  HTTP 200, falling back to browser...
+Step 1: Logging in to CRM...
+  After login: https://crm.51talk.com/admin/main.php
+Step 2: Navigating to report page...
+  Page: https://crm.51talk.com/scReportForms/sc_call_info_new?userType=sc_group
+Step 2: Setting date to 2026-03-09...
+Step 3: Submitting query...
+  Submitted. Waiting for data table...
+  Data table loaded.
+Step 4: Extracting table data...
+  Headers: ['Serial number', 'SC', 'First call', 'Last call', 'Total number of calls', 'Total valid calls', '<1Number of minute(s)', '<1Number of minute(s)/Number of effective call times%', '1-3Number of minute(s)', '1-3Number of minute(s)/Number of effective call times%', '>3Number of minute(s)', '>3Number of minute(s)/Number of effective call times%', 'Rate of effective calls', 'Total effective call time/Minute', 'Average call time/Minute']
+  Data rows: 645
+  Shape: (645, 15)
+                     SC  Total valid calls  Total effective call time/Minute  Average call time/Minute
+0                51Hany                0.0                               0.0                       0.0
+1               stcc001                0.0                               0.0                       0.0
+2  51abdulrahma-testref                0.0                               0.0                       0.0
+3     51abualhaija-test                0.0                               0.0                       0.0
+4    51albisani-testref                0.0                               0.0                       0.0
+Step 5: Saving to rawdata.xlsx sheet '1'...
+  Saved 645 rows to sheet '1' in C:\Users\high tech\Documents\GitHub\scrap_bot\Input\rawdata.xlsx
+  Cookies refreshed.
+DONE
+OK CRM scraping done.
+============================================================
+PHASE 2: Scraping AMS (ams.51talkjr.com)
+============================================================
+============================================================
+IUR New Report Scraper
+============================================================
+Step 1: Logging in to AMS...
+ERROR: Timeout 10000ms exceeded.
+Screenshot: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\error_iur_20260309_161946.png
+DONE
+OK AMS scraping done.
+============================================================
+PHASE 3: Generating CM Dashboard
+============================================================
+Columns found: ['Serial', 'SC', 'First call', 'Last call', 'Total number of calls']...
+HTML report saved to: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\CM_Team_Summary.html
+HTML separate teams report saved to: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\CM_Separate_Teams.html
+
+Generating screenshots...
+Screenshot saved: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\CM_Team_Summary.png
+Screenshot saved: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\CM_Separate_Teams.png
+All screenshots generated successfully!
+OK CM dashboard done.
+============================================================
+PHASE 5: Sending cards to Lark group
+============================================================
+  Token obtained
+  Uploading CM images...
+  CM card sent
+OK Cards sent.
