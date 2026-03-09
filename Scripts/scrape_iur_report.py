@@ -135,7 +135,7 @@ def scrape_iur_new_report():
                 try:
                     inp = date_frame.query_selector('input[placeholder="请选择时间"]')
                     inp.click()
-                    lp_page.wait_for_selector("td[title='" + today_str + "']", timeout=5000)
+                    date_frame.wait_for_selector("td[title='" + today_str + "']", timeout=8000)
                     # Click today cell in the calendar (both start and end)
                     for attempt in range(2):
                         sel = 'td[title="' + today_str + '"] .ant-picker-cell-inner'
