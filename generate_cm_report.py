@@ -526,7 +526,7 @@ def generate_html_separate_teams_report(merged_df, output_file):
                 return 'bg-very-low'
         return 'bg-very-low'
     
-    html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Separate Teams</title><style>* { margin: 0; padding: 0; } body { font-family: sans-serif; background: #f5f7fa; padding: 30px; } .container { max-width: 1400px; margin: 0 auto; } .header { background: white; border-radius: 12px; padding: 30px; margin-bottom: 20px; } h1 { font-size: 24px; } .team-section { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; } .team-header { font-size: 18px; font-weight: 600; margin-bottom: 15px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; } table { width: 100%; } thead th { background: #f5f7fa; padding: 12px; border-bottom: 2px solid #e5e7eb; } tbody td { padding: 12px; border-bottom: 1px solid #f3f4f6; } .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 500; min-width: 60px; text-align: center; } .bg-high { background: #63BE7B; color: #000; } .bg-medium-high { background: #9FD899; color: #000; } .bg-medium { background: #C6E5B5; color: #000; } .bg-medium-low { background: #FFEB84; color: #000; } .bg-low { background: #FCAA75; color: #000; } .bg-very-low { background: #F8696B; color: #000; } .total-row { background: #dbeafe; font-weight: 700; border-top: 2px solid #3b82f6 !important; } .total-row td { padding: 14px 12px !important; color: #1e3a5f; } .average-row { background: #f3e8ff; font-weight: 600; border-top: 1px solid #a855f7 !important; } .average-row td { padding: 14px 12px !important; color: #4a1d7a; } .text-center { text-align: center; }</style></head><body><div class="container"><div class="header"><h1>CM Report by Separate Teams (Relative Performance)</h1></div>'
+    html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Separate Teams</title><style>* { margin: 0; padding: 0; box-sizing: border-box; } body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f7fa; padding: 30px; } .container { max-width: 1400px; margin: 0 auto; } .page-header { background: white; border-radius: 12px; padding: 20px 30px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,.08); } .page-header h1 { font-size: 20px; font-weight: 700; color: #1a1a2e; } .team-section { background: white; border-radius: 12px; margin-bottom: 20px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08); } .team-header { background: #1a1a2e; color: white; padding: 12px 20px; font-size: 16px; font-weight: 700; } .team-stats { display: flex; gap: 24px; align-items: center; padding: 12px 20px; background: #f8fafc; border-bottom: 1px solid #e5e7eb; } .stat-item { display: flex; flex-direction: column; align-items: center; gap: 2px; } .stat-label { font-size: 11px; color: #6b7280; text-transform: uppercase; font-weight: 600; } .stat-value { font-size: 15px; font-weight: 700; color: #1f2937; } table { width: 100%; border-collapse: separate; border-spacing: 0; } thead th { background: #f5f7fa; color: #6b7280; font-weight: 600; font-size: 13px; padding: 12px 16px; border-bottom: 2px solid #e5e7eb; text-align: left; } tbody td { padding: 12px 16px; border-bottom: 1px solid #f3f4f6; font-size: 14px; color: #1f2937; } .badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-weight: 600; min-width: 55px; text-align: center; font-size: 13px; } .bg-high { background: #63BE7B; color: #000; } .bg-medium-high { background: #9FD899; color: #000; } .bg-medium { background: #C6E5B5; color: #000; } .bg-medium-low { background: #FFEB84; color: #000; } .bg-low { background: #FCAA75; color: #000; } .bg-very-low { background: #F8696B; color: #000; } .total-row { background: #dbeafe; font-weight: 700; } .total-row td { padding: 12px 16px; color: #1e3a5f; border-top: 2px solid #3b82f6; } .average-row { background: #f3e8ff; font-weight: 600; } .average-row td { padding: 12px 16px; color: #4a1d7a; border-top: 1px solid #a855f7; } .text-center { text-align: center; }</style></head><body><div class="container"><div class="page-header"><h1>CM Report by Separate Teams (Relative Performance)</h1></div>'
     
     teams = sorted_df['Team'].unique()
     for team in teams:
@@ -536,7 +536,48 @@ def generate_html_separate_teams_report(merged_df, output_file):
         duration_values = team_data['Total Duration (Min)'].tolist()
         avg_call_values = team_data['Avg Call Time/Min'].tolist()
         
-        html += f'<div class="team-section"><div class="team-header">{team} ({len(team_data)} members)</div><table><thead><tr><th>Name</th><th class="text-center">Total Calls</th><th class="text-center">Total Eff. Calls</th><th class="text-center">Total Duration (Min)</th><th class="text-center">Avg Call Time/Min</th><th class="text-center">Classes Completed</th></tr></thead><tbody>'
+        # Compute team totals for stats header
+        t_dur = int(round(team_data["Total Duration (Min)"].sum()))
+        t_eff = int(team_data["Total Eff. Calls"].sum())
+        t_mem = len(team_data)
+        t_avg = int(round(t_dur / t_eff)) if t_eff > 0 else 0
+        all_t = sorted_df["Team"].unique()
+        all_durs = [int(round(sorted_df[sorted_df["Team"]==tm]["Total Duration (Min)"].sum())) for tm in all_t]
+        all_avgs = []
+        for tm in all_t:
+            td2 = sorted_df[sorted_df["Team"]==tm]
+            td2_eff = int(td2["Total Eff. Calls"].sum())
+            td2_dur = int(round(td2["Total Duration (Min)"].sum()))
+            all_avgs.append(int(round(td2_dur/td2_eff)) if td2_eff > 0 else 0)
+        def _hc(v, vals):
+            mn, mx = min(vals), max(vals)
+            if mx == mn: return "bg-medium"
+            n = (v-mn)/(mx-mn)
+            if n < 0.17: return "bg-very-low"
+            elif n < 0.33: return "bg-low"
+            elif n < 0.50: return "bg-medium-low"
+            elif n < 0.67: return "bg-medium"
+            elif n < 0.83: return "bg-medium-high"
+            else: return "bg-high"
+        dc_h = _hc(t_dur, all_durs)
+        ac_h = _hc(t_avg, all_avgs)
+        html += (
+            f'<div class="team-section">'
+            f'<div class="team-header">{team} ({t_mem} members)</div>'
+            f'<div class="team-stats">'
+            f'<div class="stat-item"><span class="stat-label">Members</span><span class="stat-value">{t_mem}</span></div>'
+            f'<div class="stat-item"><span class="stat-label">Eff. Calls</span><span class="stat-value">{t_eff}</span></div>'
+            f'<div class="stat-item"><span class="stat-label">Duration</span><span class="badge {dc_h}">{t_dur}</span></div>'
+            f'<div class="stat-item"><span class="stat-label">Avg Time</span><span class="badge {ac_h}">{t_avg}</span></div>'
+            f'</div>'
+            f'<table><thead><tr>'
+            f'<th>Name</th><th class="text-center">Total Calls</th>'
+            f'<th class="text-center">Total Eff. Calls</th>'
+            f'<th class="text-center">Total Duration (Min)</th>'
+            f'<th class="text-center">Avg Call Time/Min</th>'
+            f'<th class="text-center">Classes Completed</th>'
+            f'</tr></thead><tbody>'
+        )
         
         for _, row in team_data.iterrows():
             dc = get_color_class_relative(row['Total Duration (Min)'], duration_values, 'Total Duration (Min)')
@@ -559,8 +600,8 @@ def generate_html_separate_teams_report(merged_df, output_file):
         avg_call_time = int(round(team_data['Avg Call Time/Min'].apply(lambda x: int(round(x)) if x > 0 else 0).mean()))
         avg_classes = int(round(team_data['Classes Completed'].mean()))
         
-        # TOTAL row: Avg Call Time/Min = Total Duration / Members
-        team_avg_call_time = int(round(total_duration / total_members)) if total_members > 0 else 0
+        # TOTAL row: Avg Call Time/Min = Total Duration / Total Eff. Calls
+        team_avg_call_time = int(round(total_duration / total_eff_calls)) if total_eff_calls > 0 else 0
         
         # Add TOTAL row
         html += f'<tr class="total-row"><td><strong>TOTAL</strong></td><td class="text-center"><strong>{total_calls}</strong></td><td class="text-center"><strong>{total_eff_calls}</strong></td><td class="text-center"><strong>{total_duration}</strong></td><td class="text-center"><strong>{team_avg_call_time}</strong></td><td class="text-center"><strong>{total_classes}</strong></td></tr>'
