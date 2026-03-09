@@ -1,0 +1,333 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report by Teams Totals</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            padding: 30px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .download-btn {
+            background: #f5f7fa;
+            border: 1px solid #e1e4e8;
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: #586069;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .download-btn:hover {
+            background: #e9ecef;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        thead th {
+            background: #f5f7fa;
+            color: #6b7280;
+            font-weight: 600;
+            font-size: 13px;
+            text-align: left;
+            padding: 14px 16px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        tbody td {
+            padding: 16px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 14px;
+            color: #1f2937;
+        }
+        
+        tbody tr:hover {
+            background: #fafbfc;
+        }
+        
+        tbody tr:last-child {
+            font-weight: 700;
+            background: #dbeafe;
+            color: #1e3a5f;
+        }
+        
+        tbody tr:last-child td {
+            border-bottom: none;
+            border-top: 2px solid #3b82f6;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 13px;
+            text-align: center;
+            min-width: 60px;
+        }
+        
+        .bg-high {
+            background: #63BE7B;
+            color: #000;
+        }
+        
+        .bg-medium-high {
+            background: #9FD899;
+            color: #000;
+        }
+        
+        .bg-medium {
+            background: #C6E5B5;
+            color: #000;
+        }
+        
+        .bg-medium-low {
+            background: #FFEB84;
+            color: #000;
+        }
+        
+        .bg-low {
+            background: #FCAA75;
+            color: #000;
+        }
+        
+        .bg-very-low {
+            background: #F8696B;
+            color: #000;
+        }
+        
+        .text-center {
+            text-align: center !important;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+            
+            .download-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Report by Teams Totals</h1>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th class="text-center">Members</th>
+                    <th class="text-center">Total Eff. Calls</th>
+                    <th class="text-center">Total Duration (Min)</th>
+                    <th class="text-center">Avg Eff. Calls</th>
+                    <th class="text-center">Avg Call Time/Min</th>
+                    <th class="text-center">Classes Completed</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td><strong>EGLP13小</strong></td>
+                    <td class="text-center">12</td>
+                    <td class="text-center">21</td>
+                    <td class="text-center"><span class="badge bg-medium-high">104</span></td>
+                    <td class="text-center">1.8</td>
+                    <td class="text-center"><span class="badge bg-high">46</span></td>
+                    <td class="text-center">3</td>
+                </tr>
+
+                <tr>
+                    <td><strong>EGLP03小</strong></td>
+                    <td class="text-center">9</td>
+                    <td class="text-center">26</td>
+                    <td class="text-center"><span class="badge bg-medium-high">111</span></td>
+                    <td class="text-center">2.9</td>
+                    <td class="text-center"><span class="badge bg-high">45</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td><strong>EGLP9小</strong></td>
+                    <td class="text-center">11</td>
+                    <td class="text-center">22</td>
+                    <td class="text-center"><span class="badge bg-high">115</span></td>
+                    <td class="text-center">2.0</td>
+                    <td class="text-center"><span class="badge bg-high">42</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td><strong>EGLP06小</strong></td>
+                    <td class="text-center">10</td>
+                    <td class="text-center">18</td>
+                    <td class="text-center"><span class="badge bg-medium-high">102</span></td>
+                    <td class="text-center">1.8</td>
+                    <td class="text-center"><span class="badge bg-medium-high">37</span></td>
+                    <td class="text-center">1</td>
+                </tr>
+
+                <tr>
+                    <td><strong>EGLP-GCC01</strong></td>
+                    <td class="text-center">23</td>
+                    <td class="text-center">9</td>
+                    <td class="text-center"><span class="badge bg-very-low">54</span></td>
+                    <td class="text-center">0.4</td>
+                    <td class="text-center"><span class="badge bg-medium-high">36</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td><strong>EGLP04小</strong></td>
+                    <td class="text-center">11</td>
+                    <td class="text-center">19</td>
+                    <td class="text-center"><span class="badge bg-medium-low">80</span></td>
+                    <td class="text-center">1.7</td>
+                    <td class="text-center"><span class="badge bg-medium">33</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td><strong>EGLP10小</strong></td>
+                    <td class="text-center">10</td>
+                    <td class="text-center">23</td>
+                    <td class="text-center"><span class="badge bg-medium-low">77</span></td>
+                    <td class="text-center">2.3</td>
+                    <td class="text-center"><span class="badge bg-medium">33</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td><strong>EGLP07小</strong></td>
+                    <td class="text-center">10</td>
+                    <td class="text-center">29</td>
+                    <td class="text-center"><span class="badge bg-high">123</span></td>
+                    <td class="text-center">2.9</td>
+                    <td class="text-center"><span class="badge bg-medium">31</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td><strong>EGLP01小</strong></td>
+                    <td class="text-center">11</td>
+                    <td class="text-center">19</td>
+                    <td class="text-center"><span class="badge bg-medium-high">102</span></td>
+                    <td class="text-center">1.7</td>
+                    <td class="text-center"><span class="badge bg-medium">30</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td><strong>EGLP05小</strong></td>
+                    <td class="text-center">9</td>
+                    <td class="text-center">23</td>
+                    <td class="text-center"><span class="badge bg-medium">91</span></td>
+                    <td class="text-center">2.6</td>
+                    <td class="text-center"><span class="badge bg-medium">30</span></td>
+                    <td class="text-center">1</td>
+                </tr>
+
+                <tr>
+                    <td><strong>EGLP11小</strong></td>
+                    <td class="text-center">10</td>
+                    <td class="text-center">36</td>
+                    <td class="text-center"><span class="badge bg-high">124</span></td>
+                    <td class="text-center">3.6</td>
+                    <td class="text-center"><span class="badge bg-medium-low">27</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td><strong>EGLP08小</strong></td>
+                    <td class="text-center">10</td>
+                    <td class="text-center">14</td>
+                    <td class="text-center"><span class="badge bg-very-low">48</span></td>
+                    <td class="text-center">1.4</td>
+                    <td class="text-center"><span class="badge bg-medium-low">27</span></td>
+                    <td class="text-center">3</td>
+                </tr>
+
+                <tr>
+                    <td><strong>EGLP12小</strong></td>
+                    <td class="text-center">11</td>
+                    <td class="text-center">28</td>
+                    <td class="text-center"><span class="badge bg-medium-high">99</span></td>
+                    <td class="text-center">2.5</td>
+                    <td class="text-center"><span class="badge bg-medium-low">24</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td><strong>EGLP02小</strong></td>
+                    <td class="text-center">10</td>
+                    <td class="text-center">14</td>
+                    <td class="text-center"><span class="badge bg-very-low">55</span></td>
+                    <td class="text-center">1.4</td>
+                    <td class="text-center"><span class="badge bg-very-low">12</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td><strong>TOTAL</strong></td>
+                    <td class="text-center">157</td>
+                    <td class="text-center">301</td>
+                    <td class="text-center"><span class="badge ">1285</span></td>
+                    <td class="text-center">1.9</td>
+                    <td class="text-center"><span class="badge ">453</span></td>
+                    <td class="text-center">8</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

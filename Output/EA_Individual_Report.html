@@ -1,0 +1,2410 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Individual CM Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            padding: 30px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .download-btn {
+            background: #f5f7fa;
+            border: 1px solid #e1e4e8;
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: #586069;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .download-btn:hover {
+            background: #e9ecef;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        thead th {
+            background: #f5f7fa;
+            color: #6b7280;
+            font-weight: 600;
+            font-size: 13px;
+            text-align: left;
+            padding: 14px 16px;
+            border-bottom: 2px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+        }
+        
+        tbody td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 14px;
+            color: #1f2937;
+        }
+        
+        tbody tr:hover {
+            background: #fafbfc;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 13px;
+            text-align: center;
+            min-width: 60px;
+        }
+        
+        .bg-high {
+            background: #63BE7B;
+            color: #000;
+        }
+        
+        .bg-medium-high {
+            background: #9FD899;
+            color: #000;
+        }
+        
+        .bg-medium {
+            background: #C6E5B5;
+            color: #000;
+        }
+        
+        .bg-medium-low {
+            background: #FFEB84;
+            color: #000;
+        }
+        
+        .bg-low {
+            background: #FCAA75;
+            color: #000;
+        }
+        
+        .bg-very-low {
+            background: #F8696B;
+            color: #000;
+        }
+        
+        .text-center {
+            text-align: center !important;
+        }
+        
+        .team-row {
+            background: #f9fafb;
+            font-weight: 600;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+            
+            .download-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Individual CM Performance Report</h1>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>CM</th>
+                    <th class="text-center">Eff. Calls</th>
+                    <th class="text-center">Duration (Min)</th>
+                    <th class="text-center">Avg Call Time/Min</th>
+                    <th class="text-center">Classes Completed</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td>ME-GCC-EGSS02小组</td>
+                    <td>EGSS-fawziamoh</td>
+                    <td class="text-center">700</td>
+                    <td class="text-center"><span class="badge bg-medium-high">10909</span></td>
+                    <td class="text-center"><span class="badge bg-high">16</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS03小组</td>
+                    <td>EGSS-hatemm</td>
+                    <td class="text-center">1072</td>
+                    <td class="text-center"><span class="badge bg-high">13018</span></td>
+                    <td class="text-center"><span class="badge bg-medium-high">12</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS04小组</td>
+                    <td>EGSS-momohamed</td>
+                    <td class="text-center">914</td>
+                    <td class="text-center"><span class="badge bg-medium-high">10924</span></td>
+                    <td class="text-center"><span class="badge bg-medium-high">12</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS01小组</td>
+                    <td>EGSS-ashraqatal</td>
+                    <td class="text-center">1068</td>
+                    <td class="text-center"><span class="badge bg-high">11907</span></td>
+                    <td class="text-center"><span class="badge bg-medium-high">11</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS07小组</td>
+                    <td>EGSS-mohamedsafwat</td>
+                    <td class="text-center">1077</td>
+                    <td class="text-center"><span class="badge bg-medium-high">10628</span></td>
+                    <td class="text-center"><span class="badge bg-medium">10</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS01小组</td>
+                    <td>EGSS-hossam02</td>
+                    <td class="text-center">570</td>
+                    <td class="text-center"><span class="badge bg-medium-low">5962</span></td>
+                    <td class="text-center"><span class="badge bg-medium">10</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS07小组</td>
+                    <td>EGSS-abdelrahmanma</td>
+                    <td class="text-center">1392</td>
+                    <td class="text-center"><span class="badge bg-high">13533</span></td>
+                    <td class="text-center"><span class="badge bg-medium">10</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS09小组</td>
+                    <td>EGSS-aibrahim</td>
+                    <td class="text-center">258</td>
+                    <td class="text-center"><span class="badge bg-low">2488</span></td>
+                    <td class="text-center"><span class="badge bg-medium">10</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS03小组</td>
+                    <td>EGSS-moatazb</td>
+                    <td class="text-center">1128</td>
+                    <td class="text-center"><span class="badge bg-medium-high">10665</span></td>
+                    <td class="text-center"><span class="badge bg-medium">9</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS02小组</td>
+                    <td>EGSS-omarsh</td>
+                    <td class="text-center">1017</td>
+                    <td class="text-center"><span class="badge bg-medium-high">9260</span></td>
+                    <td class="text-center"><span class="badge bg-medium">9</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS10小组</td>
+                    <td>EGSS-rokayar</td>
+                    <td class="text-center">744</td>
+                    <td class="text-center"><span class="badge bg-medium-low">6520</span></td>
+                    <td class="text-center"><span class="badge bg-medium">9</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS01小组</td>
+                    <td>EGSS-mohamedemad</td>
+                    <td class="text-center">1514</td>
+                    <td class="text-center"><span class="badge bg-high">13069</span></td>
+                    <td class="text-center"><span class="badge bg-medium">9</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS03小组</td>
+                    <td>EGSS-mahmoudmohamedm</td>
+                    <td class="text-center">1449</td>
+                    <td class="text-center"><span class="badge bg-high">12127</span></td>
+                    <td class="text-center"><span class="badge bg-medium">8</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS01小组</td>
+                    <td>EGSS-omarsameh</td>
+                    <td class="text-center">520</td>
+                    <td class="text-center"><span class="badge bg-low">4311</span></td>
+                    <td class="text-center"><span class="badge bg-medium">8</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS02小组</td>
+                    <td>EGSS-alyaaa</td>
+                    <td class="text-center">1085</td>
+                    <td class="text-center"><span class="badge bg-medium">8958</span></td>
+                    <td class="text-center"><span class="badge bg-medium">8</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS06小组</td>
+                    <td>EGSS-islamhassan</td>
+                    <td class="text-center">1462</td>
+                    <td class="text-center"><span class="badge bg-high">11963</span></td>
+                    <td class="text-center"><span class="badge bg-medium">8</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam1</td>
+                    <td>EGSS-hagarmo</td>
+                    <td class="text-center">1364</td>
+                    <td class="text-center"><span class="badge bg-medium-high">10236</span></td>
+                    <td class="text-center"><span class="badge bg-medium">8</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS08小组</td>
+                    <td>EGSS-manarmohamed</td>
+                    <td class="text-center">1249</td>
+                    <td class="text-center"><span class="badge bg-medium-high">9870</span></td>
+                    <td class="text-center"><span class="badge bg-medium">8</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS06小组</td>
+                    <td>EGSS-islam01</td>
+                    <td class="text-center">888</td>
+                    <td class="text-center"><span class="badge bg-medium-low">6733</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">8</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>MEAdult-EGSS01小组</td>
+                    <td>EGSS-ibrahimyahya</td>
+                    <td class="text-center">1179</td>
+                    <td class="text-center"><span class="badge bg-medium-high">9175</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">8</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam3</td>
+                    <td>EGSS-aelhagagy</td>
+                    <td class="text-center">1647</td>
+                    <td class="text-center"><span class="badge bg-high">12578</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">8</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS04小组</td>
+                    <td>EGSS-nmahgoub</td>
+                    <td class="text-center">1118</td>
+                    <td class="text-center"><span class="badge bg-medium">8480</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">8</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS09小组</td>
+                    <td>EGSS-marthasa</td>
+                    <td class="text-center">1170</td>
+                    <td class="text-center"><span class="badge bg-medium">8872</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">8</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS06小组</td>
+                    <td>EGSS-ahmedbahaa</td>
+                    <td class="text-center">1185</td>
+                    <td class="text-center"><span class="badge bg-medium">8891</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">8</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS05小组</td>
+                    <td>EGSS-mohyeldinm</td>
+                    <td class="text-center">1147</td>
+                    <td class="text-center"><span class="badge bg-medium">8654</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS08小组</td>
+                    <td>EGSS-mohamedsae</td>
+                    <td class="text-center">912</td>
+                    <td class="text-center"><span class="badge bg-medium-low">6685</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS13小组</td>
+                    <td>EGSS-samira01</td>
+                    <td class="text-center">1031</td>
+                    <td class="text-center"><span class="badge bg-medium">7020</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS02小组</td>
+                    <td>EGSS-nadermohamed</td>
+                    <td class="text-center">1373</td>
+                    <td class="text-center"><span class="badge bg-medium-high">10031</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS12小组</td>
+                    <td>EGSS-sherifah</td>
+                    <td class="text-center">1373</td>
+                    <td class="text-center"><span class="badge bg-medium-high">9983</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS09小组</td>
+                    <td>EGSS-mohamedyehia</td>
+                    <td class="text-center">1206</td>
+                    <td class="text-center"><span class="badge bg-medium">8737</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam1</td>
+                    <td>EGSS-dinahos</td>
+                    <td class="text-center">1704</td>
+                    <td class="text-center"><span class="badge bg-high">12185</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS04小组</td>
+                    <td>EGSS-aliahmed</td>
+                    <td class="text-center">1288</td>
+                    <td class="text-center"><span class="badge bg-medium-high">9240</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>MEAdult-EGSS01小组</td>
+                    <td>EGSS-moumohamed</td>
+                    <td class="text-center">1052</td>
+                    <td class="text-center"><span class="badge bg-medium">7470</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS01小组</td>
+                    <td>EGSS-mohamedha</td>
+                    <td class="text-center">1162</td>
+                    <td class="text-center"><span class="badge bg-medium">8174</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS02小组</td>
+                    <td>EGSS-marwanmohamed</td>
+                    <td class="text-center">1382</td>
+                    <td class="text-center"><span class="badge bg-medium-high">9408</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS04小组</td>
+                    <td>EGSS-amrmohamed</td>
+                    <td class="text-center">1958</td>
+                    <td class="text-center"><span class="badge bg-high">13062</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS07小组</td>
+                    <td>EGSS-omarah</td>
+                    <td class="text-center">942</td>
+                    <td class="text-center"><span class="badge bg-medium-low">6165</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS04小组</td>
+                    <td>EGSS-aya01</td>
+                    <td class="text-center">1618</td>
+                    <td class="text-center"><span class="badge bg-medium-high">10526</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS02小组</td>
+                    <td>EGSS-ahmedmos</td>
+                    <td class="text-center">885</td>
+                    <td class="text-center"><span class="badge bg-medium-low">5822</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS07小组</td>
+                    <td>EGSS-ahmedamr</td>
+                    <td class="text-center">1369</td>
+                    <td class="text-center"><span class="badge bg-medium">8746</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS09小组</td>
+                    <td>EGSS-ahmedmohamed02</td>
+                    <td class="text-center">1813</td>
+                    <td class="text-center"><span class="badge bg-high">11505</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS09小组</td>
+                    <td>EGSS-ahmedhassan</td>
+                    <td class="text-center">1492</td>
+                    <td class="text-center"><span class="badge bg-medium-high">9406</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS03小组</td>
+                    <td>EGSS-doaam</td>
+                    <td class="text-center">1463</td>
+                    <td class="text-center"><span class="badge bg-medium-high">9277</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS09小组</td>
+                    <td>EGSS-mostafahamza</td>
+                    <td class="text-center">1478</td>
+                    <td class="text-center"><span class="badge bg-medium">8526</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS05小组</td>
+                    <td>EGSS-esraaabu</td>
+                    <td class="text-center">1530</td>
+                    <td class="text-center"><span class="badge bg-medium">8250</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS01小组</td>
+                    <td>EGSS-habibaza</td>
+                    <td class="text-center">1471</td>
+                    <td class="text-center"><span class="badge bg-medium">7619</span></td>
+                    <td class="text-center"><span class="badge bg-low">5</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS07小组</td>
+                    <td>EGSS-nmahmoud</td>
+                    <td class="text-center">1702</td>
+                    <td class="text-center"><span class="badge bg-medium">8799</span></td>
+                    <td class="text-center"><span class="badge bg-low">5</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS02小组</td>
+                    <td>EGSS-mohamedabdallah</td>
+                    <td class="text-center">390</td>
+                    <td class="text-center"><span class="badge bg-low">3099</span></td>
+                    <td class="text-center"><span class="badge bg-low">5</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS07小组</td>
+                    <td>EGSS-samaha</td>
+                    <td class="text-center">1804</td>
+                    <td class="text-center"><span class="badge bg-medium">8996</span></td>
+                    <td class="text-center"><span class="badge bg-low">5</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam3</td>
+                    <td>EGSS-saharmo</td>
+                    <td class="text-center">1496</td>
+                    <td class="text-center"><span class="badge bg-medium">7406</span></td>
+                    <td class="text-center"><span class="badge bg-low">5</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam2</td>
+                    <td>EGSS-marwa</td>
+                    <td class="text-center">1521</td>
+                    <td class="text-center"><span class="badge bg-medium-low">6355</span></td>
+                    <td class="text-center"><span class="badge bg-low">5</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS01小组</td>
+                    <td>EGSS-ahmedk</td>
+                    <td class="text-center">1309</td>
+                    <td class="text-center"><span class="badge bg-medium-low">5953</span></td>
+                    <td class="text-center"><span class="badge bg-low">5</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam2</td>
+                    <td>EGSS-ahmedr</td>
+                    <td class="text-center">2348</td>
+                    <td class="text-center"><span class="badge bg-medium-high">10757</span></td>
+                    <td class="text-center"><span class="badge bg-low">5</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS12小组</td>
+                    <td>EGSS-mohamedhassan</td>
+                    <td class="text-center">1204</td>
+                    <td class="text-center"><span class="badge bg-medium-low">5092</span></td>
+                    <td class="text-center"><span class="badge bg-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>MEAdult-EGSS01小组</td>
+                    <td>EGSS-Fatma</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>MEAdult-EGSS01小组</td>
+                    <td>EGSS-MaiMohamed</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS06小组</td>
+                    <td>EGSS-Mohamedmustafa01</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS06小组</td>
+                    <td>EGSS-Abdullah02</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS05小组</td>
+                    <td>EGSS-MohamedFarouk</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS05小组</td>
+                    <td>EGSS-Sohiladiab</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS05小组</td>
+                    <td>EGSS-Mostafaahmed</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS04小组</td>
+                    <td>EGSS-AhmedFahim</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS05小组</td>
+                    <td>EGSS-OmarSamir</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS05小组</td>
+                    <td>EGSS-AhmedElalasassal</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS04小组</td>
+                    <td>EGSS-TokaHassan</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS04小组</td>
+                    <td>EGSS-MohamedShawky</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS05小组</td>
+                    <td>EGSS-Ayamo</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS02小组</td>
+                    <td>EGSS-RokayaAli</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS03小组</td>
+                    <td>EGSS-Sherinahmed</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS04小组</td>
+                    <td>EGSS-Eman</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS03小组</td>
+                    <td>EGSS-MahmoudAbuel-Dahab</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS04小组</td>
+                    <td>EGSS-NadaMOH</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS03小组</td>
+                    <td>EGSS-MahmoudElshamy</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS02小组</td>
+                    <td>EGSS-IslamOrabi</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS08小组</td>
+                    <td>EGSS-MariamBadawy</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS08小组</td>
+                    <td>EGSS-Aligamal</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS07小组</td>
+                    <td>EGSS-ShriefAbdelazim</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS08小组</td>
+                    <td>EGSS-MuhaamedHussien</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS07小组</td>
+                    <td>EGSS-MohamedGhazy</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS08小组</td>
+                    <td>EGSS-FadiRezk</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS09小组</td>
+                    <td>EGSS-MohamedSEIF</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS09小组</td>
+                    <td>EGSS-OmniaMohamed</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS10小组</td>
+                    <td>EGSS-Nourhanhammad</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS10小组</td>
+                    <td>EGSS-Islamgamal</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS10小组</td>
+                    <td>EGSS-Mahmoud04</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS06小组</td>
+                    <td>EGSS-AnasAbdelazeem</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS06小组</td>
+                    <td>EGSS-MoamenAbdelrahman</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS06小组</td>
+                    <td>EGSS-ManarHsanein</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS10小组</td>
+                    <td>EGSS-KhaledGonam</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS10小组</td>
+                    <td>EGSS-AbdelrahmanAbdelaaa</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS10小组</td>
+                    <td>EGSS-Saraahmed</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS11小组</td>
+                    <td>EGSS-OmarShaaban</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS11小组</td>
+                    <td>EGSS-HalaMohamed01</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS11小组</td>
+                    <td>EGSS-SaharSoliman</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS12小组</td>
+                    <td>EGSS-Abdelrahmansabry</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS10小组</td>
+                    <td>EGSS-MahetabGad</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS12小组</td>
+                    <td>EGSS-Ahmedsamy</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS12小组</td>
+                    <td>EGSS-Ahmedrawash</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS12小组</td>
+                    <td>EGSS-AhmedNasr</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS12小组</td>
+                    <td>EGSS-AliAbdalqawi</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS12小组</td>
+                    <td>EGSS-MernaLabib</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS12小组</td>
+                    <td>EGSS-OmarAlmoursi</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS13小组</td>
+                    <td>EGSS-AhmedShoukry</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS11小组</td>
+                    <td>EGSS-Mostafa02</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS02小组</td>
+                    <td>EGSS-Youssefgomaa</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS02小组</td>
+                    <td>EGSS-Amrsayed</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS02小组</td>
+                    <td>EGSS-Mohamedmagdy</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS01小组</td>
+                    <td>EGSS-Amrsafwat</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS01小组</td>
+                    <td>EGSS-OmarMoneb</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS01小组</td>
+                    <td>EGSS-NadaAbdo</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS01小组</td>
+                    <td>EGSS-AhmedAbdulhamid</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS01小组</td>
+                    <td>EGSS-Mahmoudkhamis</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>MEAdult-EGSS01小组</td>
+                    <td>EGSS-WalaaHussein</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>MEAdult-EGSS01小组</td>
+                    <td>EGSS-Salma02</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>MEAdult-EGSS01小组</td>
+                    <td>EGSS-OmarOthman</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>MEAdult-EGSS01小组</td>
+                    <td>EGSS-MohamedMekki</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>MEAdult-EGSS01小组</td>
+                    <td>EGSS-MahmoudASaid</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>MEAdult-EGSS01小组</td>
+                    <td>EGSS-EmanAbdelbaset</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>MEAdult-EGSS01小组</td>
+                    <td>EGSS-MohamedWalid</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>MEAdult-EGSS01小组</td>
+                    <td>EGSS-Esraaosama</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam1</td>
+                    <td>EGSS-MohamedSA</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam1</td>
+                    <td>EGSS-MinaRA</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS14小组</td>
+                    <td>EGSS-MohammedMohyelden</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS14小组</td>
+                    <td>EGSS-MohamedIsmail</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS14小组</td>
+                    <td>EGSS-EmanFOUAD</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS14小组</td>
+                    <td>EGSS-MohamedELKENAWY</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS14小组</td>
+                    <td>EGSS-MohamedMustafa</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS14小组</td>
+                    <td>EGSS-Poula</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS14小组</td>
+                    <td>EGSS-Alymagdy</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS13小组</td>
+                    <td>EGSS-IbrahimTaha</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS13小组</td>
+                    <td>EGSS-AdhmGadAllah</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS13小组</td>
+                    <td>EGSS-AliAbdelaziz</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS13小组</td>
+                    <td>EGSS-AbdelrahmanNASEF</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS13小组</td>
+                    <td>EGSS-MahmoudMohamed02</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS13小组</td>
+                    <td>EGSS-Ibrahimismaiel</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-EGSS13小组</td>
+                    <td>EGSS-AhmedHesham</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam2</td>
+                    <td>EGSS-Esraa02</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam2</td>
+                    <td>EGSS-AyaFadl</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam2</td>
+                    <td>EGSS-Sarahosama</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam2</td>
+                    <td>EGSS-Abdallahm</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam2</td>
+                    <td>EGSS-Abdulrhman</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam2</td>
+                    <td>EGSS-AbdelrahmanMoussa</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam3</td>
+                    <td>EGSS-MohamedFathi</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam2</td>
+                    <td>EGSS-Amr_Abdelhamid</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam3</td>
+                    <td>EGSS-Ahmedhamdi</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam1</td>
+                    <td>EGSS-MohamedAbdelrahman</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam2</td>
+                    <td>EGSS-NourTA</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam1</td>
+                    <td>EGSS-NaderFahmy</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam1</td>
+                    <td>EGSS-Ahmed05</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam1</td>
+                    <td>EGSS-Abdelazeam</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam1</td>
+                    <td>EGSS-Ahmedbakr</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam1</td>
+                    <td>EGSS-Eslamahmed</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS01小组</td>
+                    <td>EGSS-Israa</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam3</td>
+                    <td>EGSS-AhmedSaad</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam3</td>
+                    <td>EGSS-BaraaElshekh</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS01小组</td>
+                    <td>EGSS-Alizain</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam3</td>
+                    <td>EGSS-MohamedAbdelazim</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam3</td>
+                    <td>EGSS-NourIraqy</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-Expired-EGSSTeam3</td>
+                    <td>EGSS-Khaled05</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS01小组</td>
+                    <td>EGSS-BerbaraGeorg</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS02小组</td>
+                    <td>EGSS-Badr</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS01小组</td>
+                    <td>EGSS-KarimIbrahim</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS01小组</td>
+                    <td>EGSS-Pansee</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS02小组</td>
+                    <td>EGSS-Mohamedsalama</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS02小组</td>
+                    <td>EGSS-SamirAttiya</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS02小组</td>
+                    <td>EGSS-Mohamedshreai</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS02小组</td>
+                    <td>EGSS-DawoodAbdelazeem</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS01小组</td>
+                    <td>EGSS-Mohamedhanafy</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS03小组</td>
+                    <td>EGSS-YoussefAbdallah</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS03小组</td>
+                    <td>EGSS-MohamedHammad</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS03小组</td>
+                    <td>EGSS-AmrHassan01</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS03小组</td>
+                    <td>EGSS-AdhamHussain</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-GCC-EGSS03小组</td>
+                    <td>EGSS-MariamMoawaad</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS01小组</td>
+                    <td>JOSS-AIhusna</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS09小组</td>
+                    <td>JOSS-RaneemAjyan</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS10小组</td>
+                    <td>JOSS-alabdallatBashar</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS10小组</td>
+                    <td>51aljazi</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS06小组</td>
+                    <td>JOSS-Maryam</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS10小组</td>
+                    <td>51abdulrahman</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS11小组</td>
+                    <td>JOSS-danayousef</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS11小组</td>
+                    <td>JOSS-AlSheyabAmmar</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS11小组</td>
+                    <td>JOSS-Alotaibi</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS11小组</td>
+                    <td>JOSS-ahmadjafar</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS11小组</td>
+                    <td>JOSS-khayzaran</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS04小组</td>
+                    <td>JOSS-abuabah</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS04小组</td>
+                    <td>JOSS-tasnneemhamo</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS04小组</td>
+                    <td>JOSS-aseeldabash</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS04小组</td>
+                    <td>JOSS-Heba</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS04小组</td>
+                    <td>JOSS-Halaobeidat</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS03小组</td>
+                    <td>51hamdan</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS04小组</td>
+                    <td>JOSS-amanimoqbel</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS07小组</td>
+                    <td>51otoum</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS07小组</td>
+                    <td>JOSS-KhaledFaraj</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS07小组</td>
+                    <td>JOSS-basharfanatseh</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS07小组</td>
+                    <td>JOSS-Abdelhakimasad</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS05小组</td>
+                    <td>JOSS-Zaidalrawahneh</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS05小组</td>
+                    <td>JOSS-oqlehAhmad</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS05小组</td>
+                    <td>51aloweiwi</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS05小组</td>
+                    <td>JOSS-OmarAlhnaiti</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS05小组</td>
+                    <td>JOSS-Mai</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS05小组</td>
+                    <td>JOSS-alshormanabdallah</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS05小组</td>
+                    <td>JOSS-mohdfaraj</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS06小组</td>
+                    <td>JOSS-muntaserrahhal</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS06小组</td>
+                    <td>joss-moathswelem</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS06小组</td>
+                    <td>JOSS-hamad</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS06小组</td>
+                    <td>JOSS-abushaerahOmar</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS06小组</td>
+                    <td>Joss-Wejdan</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS04小组</td>
+                    <td>JOSS-Tabib</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS04小组</td>
+                    <td>51hadeel</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS04小组</td>
+                    <td>JOSS-YazanAlMaaitah</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS07小组</td>
+                    <td>JOSS-Mohdhijjawi</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS01小组</td>
+                    <td>JOSS-Saleh</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS11小组</td>
+                    <td>JOSS-OkourMohammad</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS03小组</td>
+                    <td>JOSS-khaledalqaisi</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS03小组</td>
+                    <td>JOSS-abdullahmashqbeh </td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS09小组</td>
+                    <td>51atout</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS10小组</td>
+                    <td>JOSS-aladwanmonthr</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS09小组</td>
+                    <td>JOSS-Raneenalsayed</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS10小组</td>
+                    <td>JOSS-abudameswael</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS11小组</td>
+                    <td>JOSS-Weam</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS03小组</td>
+                    <td>51smadi01</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS03小组</td>
+                    <td>JOSS-wardehNoureddin</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS09小组</td>
+                    <td>51almuhaissen</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS01小组</td>
+                    <td>JOSS-mousareem</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS01小组</td>
+                    <td>JOSS-deyajardat</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS06小组</td>
+                    <td>JOSS-almothakerobada</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS10小组</td>
+                    <td>JOSS-mohammadmoeen</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS11小组</td>
+                    <td>51tamimi</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS11小组</td>
+                    <td>JOSS-abukarshmalk</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS09小组</td>
+                    <td>JOSS-Hamzaofaishat</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS01小组</td>
+                    <td>JOSS-NAFFARABI</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS03小组</td>
+                    <td>JOSS-OBEIDATIQBAL</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS03小组</td>
+                    <td>JOSS-ALKHAWALDEHMOHAMMAD</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS06小组</td>
+                    <td>JOSS-ALMAHARMAHTALAL</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS06小组</td>
+                    <td>JOSS-ALRABIESUHIB</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS06小组</td>
+                    <td>JOSS-BAWANEHALMOTHANA</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS07小组</td>
+                    <td>JOSS-ISLAMSULIMAN</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS09小组</td>
+                    <td>JOSS-ABUKWIAKROAA</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS09小组</td>
+                    <td>JOSS-AHMADARWA</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS09小组</td>
+                    <td>JOSS-ALQADISANAD</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS10小组</td>
+                    <td>JOSS-ABUHAYANEHHAFIZEH</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS10小组</td>
+                    <td>JOSS-ammouri</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS09小组</td>
+                    <td>51albisani</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS07小组</td>
+                    <td>51alhasasnh </td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS01小组</td>
+                    <td>51abualhaija</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS03小组</td>
+                    <td>JOSS-salmamasri</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS06小组</td>
+                    <td>JOSS-jamalabualbasal</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>ME-JOSS11小组</td>
+                    <td>JOSS-AbdelmajeedAlsadeq</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

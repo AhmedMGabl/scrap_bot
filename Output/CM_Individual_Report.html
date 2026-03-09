@@ -1,0 +1,1591 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Individual CM Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            padding: 30px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .download-btn {
+            background: #f5f7fa;
+            border: 1px solid #e1e4e8;
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: #586069;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .download-btn:hover {
+            background: #e9ecef;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        thead th {
+            background: #f5f7fa;
+            color: #6b7280;
+            font-weight: 600;
+            font-size: 13px;
+            text-align: left;
+            padding: 14px 16px;
+            border-bottom: 2px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+        }
+        
+        tbody td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 14px;
+            color: #1f2937;
+        }
+        
+        tbody tr:hover {
+            background: #fafbfc;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 13px;
+            text-align: center;
+            min-width: 60px;
+        }
+        
+        .bg-high {
+            background: #63BE7B;
+            color: #000;
+        }
+        
+        .bg-medium-high {
+            background: #9FD899;
+            color: #000;
+        }
+        
+        .bg-medium {
+            background: #C6E5B5;
+            color: #000;
+        }
+        
+        .bg-medium-low {
+            background: #FFEB84;
+            color: #000;
+        }
+        
+        .bg-low {
+            background: #FCAA75;
+            color: #000;
+        }
+        
+        .bg-very-low {
+            background: #F8696B;
+            color: #000;
+        }
+        
+        .text-center {
+            text-align: center !important;
+        }
+        
+        .team-row {
+            background: #f9fafb;
+            font-weight: 600;
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+            
+            .download-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Individual CM Performance Report</h1>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>CM</th>
+                    <th class="text-center">Eff. Calls</th>
+                    <th class="text-center">Duration (Min)</th>
+                    <th class="text-center">Avg Call Time/Min</th>
+                    <th class="text-center">Classes Completed</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGSS-abdallah01</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-medium-high">29</span></td>
+                    <td class="text-center"><span class="badge bg-high">29</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP13小</td>
+                    <td>EGLP-suhailaabuelmagd</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-medium-low">19</span></td>
+                    <td class="text-center"><span class="badge bg-medium">19</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP9小</td>
+                    <td>EGSS-Yasmin</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-high">38</span></td>
+                    <td class="text-center"><span class="badge bg-medium">19</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP10小</td>
+                    <td>EGLP-enasa</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-medium-low">18</span></td>
+                    <td class="text-center"><span class="badge bg-medium">18</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP06小</td>
+                    <td>EGLP-imansayed</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-medium">24</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">12</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP04小</td>
+                    <td>EGSS-hatem</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-low">11</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">11</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP01小</td>
+                    <td>EGLP-amira</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-medium-high">29</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">10</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP03小</td>
+                    <td>EGLP-MahmoudIsmail</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-low">10</span></td>
+                    <td class="text-center"><span class="badge bg-medium-low">10</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP01小</td>
+                    <td>EGLP-hossam01</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-medium-low">18</span></td>
+                    <td class="text-center"><span class="badge bg-low">9</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP03小</td>
+                    <td>EGLP-AyaAM</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-low">8</span></td>
+                    <td class="text-center"><span class="badge bg-low">8</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP07小</td>
+                    <td>EGLP-dohakhater</td>
+                    <td class="text-center">5</td>
+                    <td class="text-center"><span class="badge bg-high">38</span></td>
+                    <td class="text-center"><span class="badge bg-low">8</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP06小</td>
+                    <td>EGLP-MahmoudMo</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-medium">22</span></td>
+                    <td class="text-center"><span class="badge bg-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP03小</td>
+                    <td>EGLP-nadaelneklawy</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-medium-low">14</span></td>
+                    <td class="text-center"><span class="badge bg-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP07小</td>
+                    <td>51ahmed03</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-medium-low">14</span></td>
+                    <td class="text-center"><span class="badge bg-low">7</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP9小</td>
+                    <td>EGLP-passantahmed</td>
+                    <td class="text-center">5</td>
+                    <td class="text-center"><span class="badge bg-medium-high">31</span></td>
+                    <td class="text-center"><span class="badge bg-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP05小</td>
+                    <td>EGLP-shrouqhaddad</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-low">13</span></td>
+                    <td class="text-center"><span class="badge bg-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP06小</td>
+                    <td>EGLP-HAbdelal</td>
+                    <td class="text-center">4</td>
+                    <td class="text-center"><span class="badge bg-medium">24</span></td>
+                    <td class="text-center"><span class="badge bg-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP13小</td>
+                    <td>EGLP-amiraabd</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-medium-low">18</span></td>
+                    <td class="text-center"><span class="badge bg-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP11小</td>
+                    <td>EGLP-MaiElsayed</td>
+                    <td class="text-center">7</td>
+                    <td class="text-center"><span class="badge bg-high">41</span></td>
+                    <td class="text-center"><span class="badge bg-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP04小</td>
+                    <td>EGLP-basmamohamed</td>
+                    <td class="text-center">6</td>
+                    <td class="text-center"><span class="badge bg-high">35</span></td>
+                    <td class="text-center"><span class="badge bg-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP05小</td>
+                    <td>EGLP-mohamed06</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-very-low">6</span></td>
+                    <td class="text-center"><span class="badge bg-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP12小</td>
+                    <td>EGSS-hager</td>
+                    <td class="text-center">4</td>
+                    <td class="text-center"><span class="badge bg-medium">23</span></td>
+                    <td class="text-center"><span class="badge bg-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP03小</td>
+                    <td>EGLP-AmrOM</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-low">11</span></td>
+                    <td class="text-center"><span class="badge bg-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP04小</td>
+                    <td>EGSS-sameh</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-low">11</span></td>
+                    <td class="text-center"><span class="badge bg-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP07小</td>
+                    <td>EGLP-maryamemmam</td>
+                    <td class="text-center">4</td>
+                    <td class="text-center"><span class="badge bg-medium">22</span></td>
+                    <td class="text-center"><span class="badge bg-low">6</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP01小</td>
+                    <td>51samy</td>
+                    <td class="text-center">6</td>
+                    <td class="text-center"><span class="badge bg-medium-high">33</span></td>
+                    <td class="text-center"><span class="badge bg-low">5</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP13小</td>
+                    <td>EGLP-YehiaAD</td>
+                    <td class="text-center">4</td>
+                    <td class="text-center"><span class="badge bg-medium">21</span></td>
+                    <td class="text-center"><span class="badge bg-low">5</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP11小</td>
+                    <td>EGLP-fatimamohammed</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-low">11</span></td>
+                    <td class="text-center"><span class="badge bg-low">5</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP10小</td>
+                    <td>EGLP-mohamedabdelaleem</td>
+                    <td class="text-center">4</td>
+                    <td class="text-center"><span class="badge bg-medium">21</span></td>
+                    <td class="text-center"><span class="badge bg-low">5</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP12小</td>
+                    <td>51elsayed</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-low">10</span></td>
+                    <td class="text-center"><span class="badge bg-low">5</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP08小</td>
+                    <td>EGLP-abdelaziznaser</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-low">10</span></td>
+                    <td class="text-center"><span class="badge bg-low">5</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP08小</td>
+                    <td>EGLP-NouranSameh</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-very-low">5</span></td>
+                    <td class="text-center"><span class="badge bg-low">5</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP06小</td>
+                    <td>EGLP-MoimenAhmed</td>
+                    <td class="text-center">4</td>
+                    <td class="text-center"><span class="badge bg-medium-low">18</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP11小</td>
+                    <td>EGSS-mai01</td>
+                    <td class="text-center">4</td>
+                    <td class="text-center"><span class="badge bg-medium-low">18</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP12小</td>
+                    <td>EGLP-yossefs</td>
+                    <td class="text-center">5</td>
+                    <td class="text-center"><span class="badge bg-medium">22</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP13小</td>
+                    <td>EGLP-mohammednajdy</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-low">13</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP02小</td>
+                    <td>EGLP-noraabdelkhalek</td>
+                    <td class="text-center">8</td>
+                    <td class="text-center"><span class="badge bg-high">35</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP06小</td>
+                    <td>EGLP-nawaraa</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-low">8</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP02小</td>
+                    <td>EGLP-assemm</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-low">8</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP13小</td>
+                    <td>EGLP-azzasoliman</td>
+                    <td class="text-center">4</td>
+                    <td class="text-center"><span class="badge bg-medium-low">16</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP02小</td>
+                    <td>EGLP-aliam</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-low">12</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP05小</td>
+                    <td>EGLP-ShahdMahmoud</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-low">12</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP05小</td>
+                    <td>EGLP-ahmedt</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-low">12</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP03小</td>
+                    <td>EGLP-mohamed05</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-low">8</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP04小</td>
+                    <td>EGSS-K. Ashraf</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-low">8</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP9小</td>
+                    <td>EGLP-kerolosrezk</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-low">12</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP05小</td>
+                    <td>EGLP-DianaM</td>
+                    <td class="text-center">8</td>
+                    <td class="text-center"><span class="badge bg-medium-high">31</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP08小</td>
+                    <td>51khaled03</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-low">8</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP03小</td>
+                    <td>EGLP-PassantGA</td>
+                    <td class="text-center">7</td>
+                    <td class="text-center"><span class="badge bg-medium">26</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP08小</td>
+                    <td>EGLP-habdelaziz</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">1</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-lubnamohamed</td>
+                    <td class="text-center">6</td>
+                    <td class="text-center"><span class="badge bg-medium">22</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP07小</td>
+                    <td>EGLP-MohamedAhmed</td>
+                    <td class="text-center">7</td>
+                    <td class="text-center"><span class="badge bg-medium">24</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP11小</td>
+                    <td>EGLP-Zeyad</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-low">10</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP03小</td>
+                    <td>EGLP-gehanibrahim</td>
+                    <td class="text-center">5</td>
+                    <td class="text-center"><span class="badge bg-medium-low">17</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP9小</td>
+                    <td>EGLP-hussienabdelhamid</td>
+                    <td class="text-center">5</td>
+                    <td class="text-center"><span class="badge bg-medium-low">16</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP13小</td>
+                    <td>EGLP-eslammohamed</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-low">10</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP01小</td>
+                    <td>EGLP-emanabdellatif</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-low">9</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP11小</td>
+                    <td>EGLP-rehababdelreheem</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-very-low">6</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP04小</td>
+                    <td>EGLP-amalYossef</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-very-low">6</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP12小</td>
+                    <td>EGLP-HadeerHA</td>
+                    <td class="text-center">8</td>
+                    <td class="text-center"><span class="badge bg-medium">25</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP05小</td>
+                    <td>EGLP-ahmedot</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-low">9</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">1</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP10小</td>
+                    <td>EGLP-HendMOH</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-low">9</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP08小</td>
+                    <td>EGLP-ahmedal</td>
+                    <td class="text-center">5</td>
+                    <td class="text-center"><span class="badge bg-medium-low">15</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP9小</td>
+                    <td>EGSS-rana01</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-low">9</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP03小</td>
+                    <td>EGLP-AbdelrhmanBaher</td>
+                    <td class="text-center">6</td>
+                    <td class="text-center"><span class="badge bg-medium-low">17</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP9小</td>
+                    <td>EGLP-nourhanahm</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP07小</td>
+                    <td>EGLP-AhmedMOHS</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-very-low">6</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP05小</td>
+                    <td>EGLP-yasmin01</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-low">8</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP01小</td>
+                    <td>51mostafa</td>
+                    <td class="text-center">5</td>
+                    <td class="text-center"><span class="badge bg-low">13</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP13小</td>
+                    <td>EGLP-IbrahimMAg</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-very-low">5</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP10小</td>
+                    <td>EGLP-mahmoudsamy</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-low">8</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP11小</td>
+                    <td>EGLP-hananhamdy</td>
+                    <td class="text-center">4</td>
+                    <td class="text-center"><span class="badge bg-low">10</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP07小</td>
+                    <td>EGSS-Shimaa</td>
+                    <td class="text-center">5</td>
+                    <td class="text-center"><span class="badge bg-low">12</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP06小</td>
+                    <td>EGSS-yousef</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP12小</td>
+                    <td>EGLP-adhammahmoud</td>
+                    <td class="text-center">6</td>
+                    <td class="text-center"><span class="badge bg-medium-low">14</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP08小</td>
+                    <td>EGLP-NourhanAH</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">2</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP08小</td>
+                    <td>EGLP-ahmedmuhammed</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP9小</td>
+                    <td>EGSS-adham</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP11小</td>
+                    <td>EGLP-hassanh</td>
+                    <td class="text-center">9</td>
+                    <td class="text-center"><span class="badge bg-medium-low">19</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP06小</td>
+                    <td>EGLP-habibamourad</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP10小</td>
+                    <td>EGLP-ibrahemharidy</td>
+                    <td class="text-center">8</td>
+                    <td class="text-center"><span class="badge bg-medium-low">16</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-farghaly</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP9小</td>
+                    <td>EGLP-MAbdelallah</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP12小</td>
+                    <td>EGLP-esraamahmoud</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP11小</td>
+                    <td>EGLP-BegadA</td>
+                    <td class="text-center">5</td>
+                    <td class="text-center"><span class="badge bg-low">9</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP07小</td>
+                    <td>EGLP-mohamedabdelazize</td>
+                    <td class="text-center">4</td>
+                    <td class="text-center"><span class="badge bg-low">7</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP08小</td>
+                    <td>EGLP-daliaismail</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP12小</td>
+                    <td>EGLP-amrhassan</td>
+                    <td class="text-center">2</td>
+                    <td class="text-center"><span class="badge bg-very-low">3</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP04小</td>
+                    <td>51mohamed01</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-very-low">5</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP13小</td>
+                    <td>EGLP-saharsaleh</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">2</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP10小</td>
+                    <td>EGLP-EsraaBA</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">1</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP04小</td>
+                    <td>EGLP-AminAbdelsatar</td>
+                    <td class="text-center">3</td>
+                    <td class="text-center"><span class="badge bg-very-low">4</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">1</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP10小</td>
+                    <td>EGLP-AhmedYO</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-very-low">1</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">1</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-amalmahmoud</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-very-low">1</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">1</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP02小</td>
+                    <td>EGLP-Sandra</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP03小</td>
+                    <td>EGSS-shams</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP02小</td>
+                    <td>EGLP-fathyabdelati</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP02小</td>
+                    <td>EGLP-ahmedsalah</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP02小</td>
+                    <td>EGSS-wafaa</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP02小</td>
+                    <td>EGSS-nada01</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP02小</td>
+                    <td>EGSS-sarraa</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP01小</td>
+                    <td>EGLP-KKhalil</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP01小</td>
+                    <td>EGSS-Lobna</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP01小</td>
+                    <td>51abdelfattah01</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP01小</td>
+                    <td>EGLP-maisarahfarrag</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP01小</td>
+                    <td>EGSS-yara</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP01小</td>
+                    <td>EGSS-aaya</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP02小</td>
+                    <td>EGLP-Hamedem</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP9小</td>
+                    <td>EGLP-shady</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP05小</td>
+                    <td>EGLP-aminkhames</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP04小</td>
+                    <td>EGLP-noha</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP04小</td>
+                    <td>EGLP-ahmedn</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP9小</td>
+                    <td>EGSS-mokhtar</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP9小</td>
+                    <td>EGLP-islammohamed</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP07小</td>
+                    <td>EGLP-Ibrahimalbaghdadi</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP08小</td>
+                    <td>EGLP-walaamo</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP08小</td>
+                    <td>EGLP-AhmedMOHA</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP07小</td>
+                    <td>EGLP-Nermeen</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP04小</td>
+                    <td>51abdellatif01</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP04小</td>
+                    <td>51ahmed</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP05小</td>
+                    <td>EGLP-saraht</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP06小</td>
+                    <td>EGLP-sherifa</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP06小</td>
+                    <td>EGLP-MahmoudRagab</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP06小</td>
+                    <td>EGLP-youssefyasser</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">1</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP07小</td>
+                    <td>EGLP-AhmedAD</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP10小</td>
+                    <td>EGSS-radwa</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP10小</td>
+                    <td>EGLP-abdullahessam</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP12小</td>
+                    <td>EGLP-SeifEldeen</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP12小</td>
+                    <td>EGSS-ABDULRAHMAN</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP11小</td>
+                    <td>EGLP-ahmedelshereif</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP12小</td>
+                    <td>EGSS-ABDULRAHMAN</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP10小</td>
+                    <td>EGLP-osamasalah</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP11小</td>
+                    <td>EGLP-bassem</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP13小</td>
+                    <td>EGLP-Hassan01</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">1</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP12小</td>
+                    <td>EGLP-abdelrahmanmansour</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP13小</td>
+                    <td>EGLP-emanelgamal</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">2</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP13小</td>
+                    <td>EGLP-AmrWael</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGSS-hady</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-OmarM</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>51abdelrahman</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP13小</td>
+                    <td>EGLP-ahmedmohammed</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-MMahmoud</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-FAbdelaziz</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-SSabry</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-gannam</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-AhmedNabil</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-AhmedMOHAM</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-imang</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-MennaALLA</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-mohamedibrahim</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-halla</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-fatimagouda</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-habibamahmoud</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-moustafaa</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-eslammasoud</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-esraaahmed</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+                <tr>
+                    <td>EGLP-GCC01</td>
+                    <td>EGLP-ahmedalfy</td>
+                    <td class="text-center">0</td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center"><span class="badge bg-very-low">0</span></td>
+                    <td class="text-center">0</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
