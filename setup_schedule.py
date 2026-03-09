@@ -22,13 +22,15 @@ TASKS = [
 ]
 
 def create_task(name, time_str, schedule, day):
-    cmd = (
-        f"schtasks /Create /F /TN "{FOLDER}\{name}" "
-        f"/TR "\"{PYTHON_EXE}\" \"{MAIN_SCRIPT}\"" "
-        f"/SC {schedule} "
-        + (f"/D {day} " if day else "")
-        + f"/ST {time_str} /RL HIGHEST"
-    )
+    # /TR must wrap both paths in escaped inner quotes to handle spaces
+    tr_inner = chr(92) + chr(34) + PYTHON_EXE + chr(92) + chr(34) + " " + chr(92) + chr(34) + MAIN_SCRIPT + chr(92) + chr(34)
+    tr = chr(34) + tr_inner + chr(34)
+    tn = chr(34) + FOLDER + chr(92) + name + chr(34)
+    parts = ["schtasks", "/Create", "/F", "/TN", tn, "/TR", tr, "/SC", schedule]
+    if day:
+        parts += ["/D", day]
+    parts += ["/ST", time_str]
+    cmd = " ".join(parts)
     r = subprocess.run(cmd, capture_output=True, text=True, shell=True)
     status = "OK" if r.returncode == 0 else r.stderr.strip()
     print(f"  {name} @ {time_str}: {status}")
