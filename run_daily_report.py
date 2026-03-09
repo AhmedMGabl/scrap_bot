@@ -261,4 +261,5 @@ if __name__ == "__main__":
     run_ams_scrape()
     cm_df, cm_pngs = run_cm_dashboard()
     run_send_cards(cm_pngs, [])
+    sys.stdout = sys.stdout.streams[0]
     log_file.close()

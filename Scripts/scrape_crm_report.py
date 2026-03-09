@@ -136,7 +136,7 @@ def scrape_crm_report():
                 page.locator("#user_name").fill(CRM_USERNAME)
                 page.locator("#pwd").fill(CRM_PASSWORD)
                 page.locator("#Submit").click()
-                page.wait_for_url("**/scReportForms/**", timeout=15000)
+                page.wait_for_load_state("networkidle", timeout=15000)
                 print(f"  After login: {page.url}")
             print("Step 2: Navigating to report page...")
             page.goto(CRM_URL, wait_until="domcontentloaded", timeout=60000)
