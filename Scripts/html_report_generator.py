@@ -11,39 +11,33 @@ def generate_html_team_report(merged_df, output_file):
         'Total Duration (Min)': 'sum',
         'Classes Completed': 'sum',
     }).reset_index()
+    team_summary.rename(columns={'Name': 'Members'}, inplace=True)
 
-    # Avg Call Time/Min per team = sum of each agent's rounded individual avg call time
-    avg_call_by_team = merged_df.groupby('Team')['Avg Call Time/Min'].apply(
-        lambda vals: sum(int(round(v)) for v in vals)
-    ).rename('Avg Call Time/Min')
-    team_summary = team_summary.merge(avg_call_by_team, on='Team')
+    # Avg Call Time/Min = Total Duration / Members (rounded to int)
+    team_summary['Avg Call Time/Min'] = (team_summary['Total Duration (Min)'] / team_summary['Members']).apply(lambda x: int(round(x)))
 
-    # Calculate averages
-    team_summary['Avg Eff. Calls'] = (team_summary['Total Eff. Calls'] / team_summary['Name']).round(1)
-    
-    # Rename columns
-    team_summary.columns = ['Team', 'Members', 'Total Eff. Calls', 'Total Duration (Min)',
-                            'Classes Completed', 'Avg Eff. Calls', 'Avg Call Time/Min']
-    
+    # Avg Eff. Calls = Total Eff. Calls / Members (rounded to int)
+    team_summary['Avg Eff. Calls'] = (team_summary['Total Eff. Calls'] / team_summary['Members']).apply(lambda x: int(round(x)))
+
     # Reorder columns
-    team_summary = team_summary[['Team', 'Members', 'Total Eff. Calls', 'Total Duration (Min)', 
+    team_summary = team_summary[['Team', 'Members', 'Total Eff. Calls', 'Total Duration (Min)',
                                  'Avg Eff. Calls', 'Avg Call Time/Min', 'Classes Completed']]
-    
+
     # Sort by Avg Call Time/Min descending (best performers first)
     team_summary = team_summary.sort_values('Avg Call Time/Min', ascending=False)
-    
+
     # Add total row
     total_eff_calls = team_summary['Total Eff. Calls'].sum()
     total_duration = team_summary['Total Duration (Min)'].sum()
     total_members = team_summary['Members'].sum()
-    
+
     total_row = pd.DataFrame([{
         'Team': 'TOTAL',
         'Members': total_members,
         'Total Eff. Calls': total_eff_calls,
         'Total Duration (Min)': total_duration,
-        'Avg Eff. Calls': round(total_eff_calls / total_members, 1) if total_members > 0 else 0,
-        'Avg Call Time/Min': int(team_summary[team_summary['Team'] != 'TOTAL']['Avg Call Time/Min'].sum()),
+        'Avg Eff. Calls': int(round(total_eff_calls / total_members)) if total_members > 0 else 0,
+        'Avg Call Time/Min': int(round(team_summary['Avg Call Time/Min'].mean())),
         'Classes Completed': team_summary['Classes Completed'].sum(),
     }])
     

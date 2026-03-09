@@ -559,8 +559,8 @@ def generate_html_separate_teams_report(merged_df, output_file):
         avg_call_time = int(round(team_data['Avg Call Time/Min'].apply(lambda x: int(round(x)) if x > 0 else 0).mean()))
         avg_classes = int(round(team_data['Classes Completed'].mean()))
         
-        # TOTAL row: Avg Call Time/Min = sum of each agent's rounded individual avg call time
-        team_avg_call_time = sum(int(round(r['Avg Call Time/Min'])) for _, r in team_data.iterrows())
+        # TOTAL row: Avg Call Time/Min = Total Duration / Members
+        team_avg_call_time = int(round(total_duration / total_members)) if total_members > 0 else 0
         
         # Add TOTAL row
         html += f'<tr class="total-row"><td><strong>TOTAL</strong></td><td class="text-center"><strong>{total_calls}</strong></td><td class="text-center"><strong>{total_eff_calls}</strong></td><td class="text-center"><strong>{total_duration}</strong></td><td class="text-center"><strong>{team_avg_call_time}</strong></td><td class="text-center"><strong>{total_classes}</strong></td></tr>'
