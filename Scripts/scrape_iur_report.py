@@ -106,7 +106,7 @@ def scrape_iur_new_report():
             if total_tab:
                 total_tab.click()
                 print("  Total tab clicked")
-                lp_page.wait_for_load_state("networkidle", timeout=10000)
+                time.sleep(3)
             else:
                 print("  WARNING: Total tab not found")
 
