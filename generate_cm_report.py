@@ -65,7 +65,7 @@ def scrape_crm_data(config):
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=config['headless'])
-        page = browser.new_page(viewport={'width': 1400, 'height': 900})
+        page = browser.new_page(viewport={'width': 1200, 'height': 900})
         page.set_default_timeout(config['timeout'] * 1000)
         page.on('dialog', lambda dialog: dialog.accept())
 
@@ -197,7 +197,7 @@ def generate_screenshots(html_files, output_dir):
     with sync_playwright() as p:
         # Launch browser
         browser = p.chromium.launch()
-        page = browser.new_page(viewport={'width': 1400, 'height': 900})
+        page = browser.new_page(viewport={'width': 1200, 'height': 900})
         
         for html_file in html_files:
             # Get the base name without extension
@@ -466,7 +466,7 @@ def generate_html_individual_report(merged_df, output_file):
 
 
 def generate_html_separate_teams_report(merged_df, output_file):
-    sorted_df = merged_df.sort_values(['Team', 'Total Duration (Min)'], ascending=[True, False])
+    sorted_df = merged_df.sort_values(['Team', 'Avg Call Time/Min'], ascending=[True, False])
     
     def get_color_class_relative(value, values_in_team, col_name):
         """Excel-style color scaling within each team"""
@@ -526,17 +526,49 @@ def generate_html_separate_teams_report(merged_df, output_file):
                 return 'bg-very-low'
         return 'bg-very-low'
     
-    html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Separate Teams</title><style>* { margin: 0; padding: 0; } body { font-family: sans-serif; background: #f5f7fa; padding: 30px; } .container { max-width: 1400px; margin: 0 auto; } .header { background: white; border-radius: 12px; padding: 30px; margin-bottom: 20px; } h1 { font-size: 24px; } .team-section { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; } .team-header { font-size: 18px; font-weight: 600; margin-bottom: 15px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; } table { width: 100%; } thead th { background: #f5f7fa; padding: 12px; border-bottom: 2px solid #e5e7eb; } tbody td { padding: 12px; border-bottom: 1px solid #f3f4f6; } .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 500; min-width: 60px; text-align: center; } .bg-high { background: #63BE7B; color: #000; } .bg-medium-high { background: #9FD899; color: #000; } .bg-medium { background: #C6E5B5; color: #000; } .bg-medium-low { background: #FFEB84; color: #000; } .bg-low { background: #FCAA75; color: #000; } .bg-very-low { background: #F8696B; color: #000; } .total-row { background: #dbeafe; font-weight: 700; border-top: 2px solid #3b82f6 !important; } .total-row td { padding: 14px 12px !important; color: #1e3a5f; } .average-row { background: #f3e8ff; font-weight: 600; border-top: 1px solid #a855f7 !important; } .average-row td { padding: 14px 12px !important; color: #4a1d7a; } .text-center { text-align: center; }</style></head><body><div class="container"><div class="header"><h1>CM Report by Separate Teams (Relative Performance)</h1></div>'
-    
+    html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Separate Teams</title><style>* { margin: 0; padding: 0; } body { font-family: sans-serif; background: #f5f7fa; padding: 30px; } .container { max-width: 1400px; margin: 0 auto; } .header { background: white; border-radius: 12px; padding: 30px; margin-bottom: 20px; } h1 { font-size: 24px; } .team-section { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; } .team-header { font-size: 18px; font-weight: 600; margin-bottom: 10px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; } .stats-cards { display: flex; gap: 12px; margin-bottom: 16px; } .stat-card { background: #f5f7fa; border-radius: 8px; padding: 12px 20px; min-width: 90px; } .stat-card-label { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; } .stat-card-value { font-size: 22px; font-weight: 700; color: #1f2937; } table { width: 100%; } thead th { background: #f5f7fa; padding: 12px; border-bottom: 2px solid #e5e7eb; } tbody td { padding: 12px; border-bottom: 1px solid #f3f4f6; } .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 500; min-width: 60px; text-align: center; } .bg-high { background: #63BE7B; color: #000; } .bg-medium-high { background: #9FD899; color: #000; } .bg-medium { background: #C6E5B5; color: #000; } .bg-medium-low { background: #FFEB84; color: #000; } .bg-low { background: #FCAA75; color: #000; } .bg-very-low { background: #F8696B; color: #000; } .total-row { background: #dbeafe; font-weight: 700; border-top: 2px solid #3b82f6 !important; } .total-row td { padding: 14px 12px !important; color: #1e3a5f; } .average-row { background: #f3e8ff; font-weight: 600; border-top: 1px solid #a855f7 !important; } .average-row td { padding: 14px 12px !important; color: #4a1d7a; } .text-center { text-align: center; }</style></head><body><div class="container"><div class="header"><h1>CM Report by Separate Teams (Relative Performance)</h1></div>'
+
     teams = sorted_df['Team'].unique()
+
+    # Pre-calculate cross-team stats for stats row color scaling
+    team_stats = {}
+    for t in teams:
+        td = sorted_df[sorted_df['Team'] == t]
+        t_dur = int(round(td['Total Duration (Min)'].sum()))
+        t_mem = len(td)
+        t_avg = int(round(t_dur / t_mem)) if t_mem > 0 else 0
+        t_eff = int(round(td['Total Eff. Calls'].sum()))
+        t_avg_eff = round(t_eff / t_mem, 1) if t_mem > 0 else 0
+        team_stats[t] = {'duration': t_dur, 'members': t_mem, 'avg_call': t_avg, 'avg_eff': t_avg_eff}
+
+    all_durations = [v['duration'] for v in team_stats.values()]
+    all_avg_calls = [v['avg_call'] for v in team_stats.values()]
+    ct_dur_min, ct_dur_max = min(all_durations), max(all_durations)
+    ct_avg_min, ct_avg_max = min(all_avg_calls), max(all_avg_calls)
+
+    def get_cross_team_color(value, min_val, max_val):
+        if max_val == min_val:
+            return 'bg-medium'
+        normalized = (value - min_val) / (max_val - min_val)
+        if normalized < 0.17: return 'bg-very-low'
+        elif normalized < 0.33: return 'bg-low'
+        elif normalized < 0.50: return 'bg-medium-low'
+        elif normalized < 0.67: return 'bg-medium'
+        elif normalized < 0.83: return 'bg-medium-high'
+        else: return 'bg-high'
+
     for team in teams:
         team_data = sorted_df[sorted_df['Team'] == team]
-        
+
         # Get all values for this team for relative comparison
         duration_values = team_data['Total Duration (Min)'].tolist()
         avg_call_values = team_data['Avg Call Time/Min'].tolist()
-        
-        html += f'<div class="team-section"><div class="team-header">{team} ({len(team_data)} members)</div><table><thead><tr><th>Name</th><th class="text-center">Total Calls</th><th class="text-center">Total Eff. Calls</th><th class="text-center">Total Duration (Min)</th><th class="text-center">Avg Call Time/Min</th><th class="text-center">Classes Completed</th></tr></thead><tbody>'
+
+        ts = team_stats[team]
+        dur_color = get_cross_team_color(ts['duration'], ct_dur_min, ct_dur_max)
+        avg_color = get_cross_team_color(ts['avg_call'], ct_avg_min, ct_avg_max)
+
+        html += f'<div class="team-section"><div class="team-header">{team}</div><div class="stats-cards"><div class="stat-card"><div class="stat-card-label">Members</div><div class="stat-card-value">{ts["members"]}</div></div><div class="stat-card"><div class="stat-card-label">Avg Eff. Calls</div><div class="stat-card-value">{ts["avg_eff"]}</div></div><div class="stat-card"><div class="stat-card-label">Avg Duration</div><div class="stat-card-value">{ts["avg_call"]}</div></div></div><table><thead><tr><th>Name</th><th class="text-center">Total Calls</th><th class="text-center">Total Eff. Calls</th><th class="text-center">Total Duration (Min)</th><th class="text-center">Avg Call Time/Min</th><th class="text-center">Classes Completed</th></tr></thead><tbody>'
         
         for _, row in team_data.iterrows():
             dc = get_color_class_relative(row['Total Duration (Min)'], duration_values, 'Total Duration (Min)')
@@ -552,12 +584,6 @@ def generate_html_separate_teams_report(merged_df, output_file):
         total_classes = int(team_data['Classes Completed'].sum())
         
         total_members = len(team_data)
-        avg_calls = round(total_calls / total_members, 1) if total_members > 0 else 0
-        avg_eff_calls = round(total_eff_calls / total_members, 1) if total_members > 0 else 0
-        avg_duration = int(round(team_data['Total Duration (Min)'].mean()))
-        # AVERAGE Avg Call Time/Min = mean of individual values
-        avg_call_time = int(round(team_data['Avg Call Time/Min'].apply(lambda x: int(round(x)) if x > 0 else 0).mean()))
-        avg_classes = int(round(team_data['Classes Completed'].mean()))
         
         # TOTAL row: Avg Call Time/Min = Total Duration / Total Eff. Calls
         team_avg_call_time = int(round(total_duration / total_eff_calls)) if total_eff_calls > 0 else 0
@@ -565,8 +591,6 @@ def generate_html_separate_teams_report(merged_df, output_file):
         # Add TOTAL row
         html += f'<tr class="total-row"><td><strong>TOTAL</strong></td><td class="text-center"><strong>{total_calls}</strong></td><td class="text-center"><strong>{total_eff_calls}</strong></td><td class="text-center"><strong>{total_duration}</strong></td><td class="text-center"><strong>{team_avg_call_time}</strong></td><td class="text-center"><strong>{total_classes}</strong></td></tr>'
         
-        # Add AVERAGE row
-        html += f'<tr class="average-row"><td><strong>AVERAGE</strong></td><td class="text-center">{avg_calls}</td><td class="text-center">{avg_eff_calls}</td><td class="text-center">{avg_duration}</td><td class="text-center">{avg_call_time}</td><td class="text-center">{avg_classes}</td></tr>'
         
         html += '</tbody></table></div>'
     

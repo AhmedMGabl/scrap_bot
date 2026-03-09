@@ -125,7 +125,6 @@ def generate_html_team_report(merged_df, output_file):
             color: #1a1a1a;
         }
         
-        .download-btn {
             background: #f5f7fa;
             border: 1px solid #e1e4e8;
             padding: 8px 16px;
@@ -138,7 +137,6 @@ def generate_html_team_report(merged_df, output_file):
             gap: 8px;
         }
         
-        .download-btn:hover {
             background: #e9ecef;
         }
         
@@ -235,7 +233,6 @@ def generate_html_team_report(merged_df, output_file):
                 padding: 20px;
             }
             
-            .download-btn {
                 display: none;
             }
         }
@@ -246,7 +243,6 @@ def generate_html_team_report(merged_df, output_file):
         <div class="header">
             <h1>Report by Teams Totals</h1>
         </div>
-        
         <table>
             <thead>
                 <tr>
@@ -271,12 +267,15 @@ def generate_html_team_report(merged_df, output_file):
         duration_color = '' if is_total else get_color_class(row['Total Duration (Min)'], duration_min, duration_max)
         avg_call_color = '' if is_total else get_color_class(row['Avg Call Time/Min'], avg_call_min, avg_call_max)
         
+        eff_calls_display = f"{row['Total Eff. Calls']:,}" if is_total else str(int(row['Total Eff. Calls']))
+        duration_display = f"{row['Total Duration (Min)']:,}" if is_total else str(int(row['Total Duration (Min)']))
+        
         html += f"""
                 <tr>
                     <td><strong>{team_name}</strong></td>
                     <td class="text-center">{row['Members']}</td>
-                    <td class="text-center">{row['Total Eff. Calls']}</td>
-                    <td class="text-center"><span class="badge {duration_color}">{row['Total Duration (Min)']}</span></td>
+                    <td class="text-center">{eff_calls_display}</td>
+                    <td class="text-center"><span class="badge {duration_color}">{duration_display}</span></td>
                     <td class="text-center">{row['Avg Eff. Calls']}</td>
                     <td class="text-center"><span class="badge {avg_call_color}">{row['Avg Call Time/Min']}</span></td>
                     <td class="text-center">{row['Classes Completed']}</td>
