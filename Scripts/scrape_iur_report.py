@@ -47,7 +47,10 @@ def scrape_iur_new_report():
             print("Step 1: Logging in to AMS...")
             lp_page = context.pages[0] if context.pages else context.new_page()
             lp_page.goto(AMS_LOGIN_URL)
-            lp_page.wait_for_load_state("networkidle", timeout=10000)
+            try:
+                lp_page.wait_for_load_state("networkidle", timeout=10000)
+            except Exception:
+                lp_page.wait_for_timeout(2000)
             if "login" in lp_page.url and "login-turn" not in lp_page.url:
                 try:
                     lp_page.wait_for_selector('input[placeholder*="手机号"]', timeout=8000)
@@ -74,7 +77,10 @@ def scrape_iur_new_report():
                     if "welcome" in cur_url or cur_url.endswith("#/"):
                         print("  LP welcome, navigating to IUR...")
                         lp_candidate.goto(LP_IUR_URL)
-                        lp_candidate.wait_for_load_state("networkidle", timeout=15000)
+                        try:
+                            lp_candidate.wait_for_load_state("networkidle", timeout=15000)
+                        except Exception:
+                            lp_candidate.wait_for_timeout(3000)
                     else:
                         for frm in lp_candidate.frames:
                             try:
@@ -129,7 +135,7 @@ def scrape_iur_new_report():
                 try:
                     inp = date_frame.query_selector('input[placeholder="请选择时间"]')
                     inp.click()
-                    lp_page.wait_for_selector("td[title="" + today_str + ""]", timeout=5000)
+                    lp_page.wait_for_selector("td[title='" + today_str + "']", timeout=5000)
                     # Click today cell in the calendar (both start and end)
                     for attempt in range(2):
                         sel = 'td[title="' + today_str + '"] .ant-picker-cell-inner'
@@ -165,7 +171,10 @@ def scrape_iur_new_report():
             if query_btn:
                 query_btn.click()
                 print("  查询 clicked, waiting for results...")
-                bi_frame.wait_for_load_state("networkidle", timeout=20000)
+                try:
+                    lp_page.wait_for_load_state("networkidle", timeout=15000)
+                except Exception:
+                    lp_page.wait_for_timeout(3000)
             else:
                 print("  WARNING: 查询 not found")
                 time.sleep(5)
