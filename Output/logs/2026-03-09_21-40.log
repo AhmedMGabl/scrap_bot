@@ -1,0 +1,94 @@
+Log: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\logs\2026-03-09_21-40.log
+============================================================
+PHASE 1: Scraping CRM (crm.51talk.com)
+============================================================
+============================================================
+CRM Call Report Scraper
+============================================================
+Target date: 2026-03-09
+Step 1: Trying requests with saved cookies...
+  HTTP 200, falling back to browser...
+Step 1: Logging in to CRM...
+  After login: https://crm.51talk.com/admin/main.php
+Step 2: Navigating to report page...
+  Page: https://crm.51talk.com/scReportForms/sc_call_info_new?userType=sc_group
+Step 2: Setting date to 2026-03-09...
+Step 3: Submitting query...
+  Submitted. Waiting for data table...
+  Data table loaded.
+Step 4: Extracting table data...
+  Headers: ['Serial number', 'SC', 'First call', 'Last call', 'Total number of calls', 'Total valid calls', '<1Number of minute(s)', '<1Number of minute(s)/Number of effective call times%', '1-3Number of minute(s)', '1-3Number of minute(s)/Number of effective call times%', '>3Number of minute(s)', '>3Number of minute(s)/Number of effective call times%', 'Rate of effective calls', 'Total effective call time/Minute', 'Average call time/Minute']
+  Data rows: 645
+  Shape: (645, 15)
+                     SC  Total valid calls  Total effective call time/Minute  Average call time/Minute
+0                51Hany                  0                                 0                       0.0
+1               stcc001                  0                                 0                       0.0
+2  51abdulrahma-testref                  0                                 0                       0.0
+3     51abualhaija-test                  0                                 0                       0.0
+4    51albisani-testref                  0                                 0                       0.0
+Step 5: Saving to rawdata.xlsx sheet '1'...
+  Saved 645 rows to sheet '1' in C:\Users\high tech\Documents\GitHub\scrap_bot\Input\rawdata.xlsx
+  Cookies refreshed.
+DONE
+OK CRM scraping done.
+============================================================
+PHASE 2: Scraping AMS (ams.51talkjr.com)
+============================================================
+============================================================
+IUR New Report Scraper
+============================================================
+Step 1: Logging in to AMS...
+  Auto-login failed (Timeout 15000ms exceeded.
+=========================== logs ===========================
+waiting for navigation to "**/login-turn**" until 'load'
+  navigated to "https://ams.51talkjr.com/#/login"
+  navigated to "https://lp.51talkjr.com/#/welcome"
+  navigated to "https://lp.51talkjr.com/#/welcome"
+  navigated to "https://lp.51talkjr.com/#/welcome"
+  navigated to "https://lp.51talkjr.com/#/welcome"
+============================================================), log in manually
+Step 2: Waiting up to 120s for LP BI frame...
+  LP welcome, navigating to IUR...
+  LP at s://lp.51talkjr.com/#/data-center/business/iur_new, 2 frames...
+  LP at s://lp.51talkjr.com/#/data-center/business/iur_new, 2 frames...
+  BI frame found! tabs=['Total', 'Details']
+Step 3: Clicking Total tab...
+  Total tab clicked
+Step 4: Setting date to today and querying...
+  Start date: ok
+  End date: ok
+  查询 clicked, waiting for results...
+Step 5: Exporting report...
+  Grid/expand li: clicked
+  Download icon: clicked
+  Confirm: clicked:BUTTON:确 定
+  Downloaded: C:\Users\high tech\Documents\GitHub\scrap_bot\Scripts\downloads\海外IUR_NEW_DATA_20260309_2141.xlsx
+Step 6: Saving to rawdata.xlsx sheet 2...
+  Shape: 220 rows x 17 cols
+  Columns: ['org_name1', 'useraccount1', 'Class opened', 'Class completed', 'Total students', 'Booked students', 'Booked rate', 'Attended students', 'Attended rate', 'Coverage rate', 'Total classes', 'Booked classes', 'Class Booked rate', 'Attended classes', 'Class Attended rate', 'Absent classes', 'Class Coverage rate']
+         org_name1    useraccount1  Class opened  Class completed  Total students  Booked students  Booked rate  Attended students  Attended rate  Coverage rate  Total classes  Booked classes  Class Booked rate  Attended classes  Class Attended rate  Absent classes  Class Coverage rate
+0  ME-EGLP-GCC01小组   51abdelrahman             0                0               4                0     0.000000                  0            NaN       0.000000              4               0           0.000000                 0                  NaN               0             0.000000
+1  ME-EGLP-GCC01小组      EGLP-OmarM             5                5              57               33     0.578947                 23       0.696970       0.403509             85              34           0.400000                23             0.676471               9             0.270588
+2  ME-EGLP-GCC01小组  EGLP-ahmedalfy             0                0              38               31     0.815789                 13       0.419355       0.342105             51              32           0.627451                13             0.406250               7             0.254902
+  Saved to sheet 2 in C:\Users\high tech\Documents\GitHub\scrap_bot\Input\rawdata.xlsx
+DONE
+OK AMS scraping done.
+============================================================
+PHASE 3: Generating CM Dashboard
+============================================================
+Columns found: ['Serial', 'SC', 'First call', 'Last call', 'Total number of calls']...
+HTML report saved to: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\CM_Team_Summary.html
+HTML separate teams report saved to: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\CM_Separate_Teams.html
+
+Generating screenshots...
+Screenshot saved: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\CM_Team_Summary.png
+Screenshot saved: C:\Users\high tech\Documents\GitHub\scrap_bot\Output\CM_Separate_Teams.png
+All screenshots generated successfully!
+OK CM dashboard done.
+============================================================
+PHASE 5: Sending cards to Lark group
+============================================================
+  Token obtained
+  Uploading CM images...
+  CM card sent
+OK Cards sent.
