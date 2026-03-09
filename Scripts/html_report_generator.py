@@ -6,23 +6,23 @@ def generate_html_team_report(merged_df, output_file):
     
     # Group by team and calculate aggregates
     team_summary = merged_df.groupby('Team').agg({
-        'CRM': 'count',
-        'Eff. Calls': 'sum',
-        'Duration (Min)': 'sum',
-        'Classes Completed': 'sum'
+        'Name': 'count',
+        'Total Eff. Calls': 'sum',
+        'Total Duration (Min)': 'sum',
+        'Classes Completed': 'sum',
     }).reset_index()
-    
+
+    # Avg Call Time/Min per team = sum of each agent's rounded individual avg call time
+    avg_call_by_team = merged_df.groupby('Team')['Avg Call Time/Min'].apply(
+        lambda vals: sum(int(round(v)) for v in vals)
+    ).rename('Avg Call Time/Min')
+    team_summary = team_summary.merge(avg_call_by_team, on='Team')
+
     # Calculate averages
-    team_summary['Avg Eff. Calls'] = (team_summary['Eff. Calls'] / team_summary['CRM']).round(1)
-    # Avg Call Time/Min = sum of individual rounded values per team (matches team breakdown TOTAL)
-    avg_ct = merged_df.groupby('Team')['Avg Call Time/Min'].apply(
-        lambda x: int(x.apply(lambda v: int(round(v)) if v > 0 else 0).sum())
-    ).rename('Avg Call Time/Min').reset_index()
-    team_summary = team_summary.merge(avg_ct, on='Team', how='left')
-    team_summary['Avg Call Time/Min'] = team_summary['Avg Call Time/Min'].fillna(0).astype(int)
+    team_summary['Avg Eff. Calls'] = (team_summary['Total Eff. Calls'] / team_summary['Name']).round(1)
     
     # Rename columns
-    team_summary.columns = ['Team', 'Members', 'Total Eff. Calls', 'Total Duration (Min)', 
+    team_summary.columns = ['Team', 'Members', 'Total Eff. Calls', 'Total Duration (Min)',
                             'Classes Completed', 'Avg Eff. Calls', 'Avg Call Time/Min']
     
     # Reorder columns
@@ -43,8 +43,8 @@ def generate_html_team_report(merged_df, output_file):
         'Total Eff. Calls': total_eff_calls,
         'Total Duration (Min)': total_duration,
         'Avg Eff. Calls': round(total_eff_calls / total_members, 1) if total_members > 0 else 0,
-        'Avg Call Time/Min': int(team_summary['Avg Call Time/Min'].sum()),
-        'Classes Completed': team_summary['Classes Completed'].sum()
+        'Avg Call Time/Min': int(team_summary[team_summary['Team'] != 'TOTAL']['Avg Call Time/Min'].sum()),
+        'Classes Completed': team_summary['Classes Completed'].sum(),
     }])
     
     team_summary = pd.concat([team_summary, total_row], ignore_index=True)
@@ -263,6 +263,7 @@ def generate_html_team_report(merged_df, output_file):
                     <th class="text-center">Avg Eff. Calls</th>
                     <th class="text-center">Avg Call Time/Min</th>
                     <th class="text-center">Classes Completed</th>
+                    
                 </tr>
             </thead>
             <tbody>
