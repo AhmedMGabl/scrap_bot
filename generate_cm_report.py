@@ -263,7 +263,7 @@ def generate_html_individual_report(merged_df, output_file):
     def get_color_class(value, min_val, max_val):
         """Excel-style color scaling: min=red, mid=yellow, max=green"""
         if max_val == min_val:
-            return 'bg-medium'
+            return 'scale-medium'
         
         # Normalize value to 0-1 range
         normalized = (value - min_val) / (max_val - min_val)
@@ -273,19 +273,19 @@ def generate_html_individual_report(merged_df, output_file):
         if normalized < 0.5:
             # Lower half: red to yellow
             if normalized < 0.17:
-                return 'bg-very-low'
+                return 'scale-very-low'
             elif normalized < 0.33:
-                return 'bg-low'
+                return 'scale-low'
             else:
-                return 'bg-medium-low'
+                return 'scale-medium-low'
         else:
             # Upper half: yellow to green
             if normalized < 0.67:
-                return 'bg-medium'
+                return 'scale-medium'
             elif normalized < 0.83:
-                return 'bg-medium-high'
+                return 'scale-medium-high'
             else:
-                return 'bg-high'
+                return 'scale-high'
 
     
     # Generate HTML
@@ -387,32 +387,32 @@ def generate_html_individual_report(merged_df, output_file):
             min-width: 60px;
         }
         
-        .bg-high {
+        .scale-high {
             background: #63BE7B;
             color: #000;
         }
         
-        .bg-medium-high {
+        .scale-medium-high {
             background: #9FD899;
             color: #000;
         }
         
-        .bg-medium {
+        .scale-medium {
             background: #C6E5B5;
             color: #000;
         }
         
-        .bg-medium-low {
+        .scale-medium-low {
             background: #FFEB84;
             color: #000;
         }
         
-        .bg-low {
+        .scale-low {
             background: #FCAA75;
             color: #000;
         }
         
-        .bg-very-low {
+        .scale-very-low {
             background: #F8696B;
             color: #000;
         }
@@ -502,42 +502,36 @@ def generate_html_separate_teams_report(merged_df, output_file):
     sorted_df = merged_df.sort_values(['Team', 'Total Duration (Min)'], ascending=[True, False])
     
     def get_color_class_relative(value, values_in_team, col_name):
-        """Excel-style color scaling within each team"""
+        """Color scaling anchored at 0: normalized = value / max"""
         if len(values_in_team) == 0 or value == 0:
-            return 'bg-very-low'
+            return 'scale-very-low'
         
-        valid_values = [v for v in values_in_team if v > 0]
-        if len(valid_values) == 0:
-            return 'bg-very-low'
+        max_val = max(values_in_team)
+        if max_val == 0:
+            return 'scale-very-low'
         
-        min_val = min(valid_values)
-        max_val = max(valid_values)
-        
-        if max_val == min_val:
-            return 'bg-medium'
-        
-        # Normalize value to 0-1 range
-        normalized = (value - min_val) / (max_val - min_val)
+        # Normalize value to 0-1 range anchored at 0
+        normalized = value / max_val
         
         # Excel 3-color scale
         if normalized < 0.5:
             if normalized < 0.17:
-                return 'bg-very-low'
+                return 'scale-very-low'
             elif normalized < 0.33:
-                return 'bg-low'
+                return 'scale-low'
             else:
-                return 'bg-medium-low'
+                return 'scale-medium-low'
         else:
             if normalized < 0.67:
-                return 'bg-medium'
+                return 'scale-medium'
             elif normalized < 0.83:
-                return 'bg-medium-high'
+                return 'scale-medium-high'
             else:
-                return 'bg-high'
+                return 'scale-high'
         
         sorted_values = sorted([v for v in values_in_team if v > 0], reverse=True)
         if len(sorted_values) == 0:
-            return 'bg-very-low'
+            return 'scale-very-low'
         
         # Find percentile
         if value in sorted_values:
@@ -546,20 +540,20 @@ def generate_html_separate_teams_report(merged_df, output_file):
             
             # 6-level gradient for better visualization
             if percentile >= 0.83:
-                return 'bg-high'
+                return 'scale-high'
             elif percentile >= 0.67:
-                return 'bg-medium-high'
+                return 'scale-medium-high'
             elif percentile >= 0.50:
-                return 'bg-medium'
+                return 'scale-medium'
             elif percentile >= 0.33:
-                return 'bg-medium-low'
+                return 'scale-medium-low'
             elif percentile >= 0.17:
-                return 'bg-low'
+                return 'scale-low'
             else:
-                return 'bg-very-low'
-        return 'bg-very-low'
+                return 'scale-very-low'
+        return 'scale-very-low'
     
-    html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Separate Teams</title><style>* { margin: 0; padding: 0; } body { font-family: sans-serif; background: #f5f7fa; padding: 30px; } .container { max-width: 1400px; margin: 0 auto; } .header { background: white; border-radius: 12px; padding: 30px; margin-bottom: 20px; } h1 { font-size: 24px; } .team-section { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 20px; } .team-header { font-size: 18px; font-weight: 600; margin-bottom: 10px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; } .stats-cards { display: flex; gap: 12px; margin-bottom: 16px; } .stat-card { background: #f5f7fa; border-radius: 8px; padding: 12px 20px; min-width: 90px; } .stat-card-label { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; } .stat-card-value { font-size: 24px; font-weight: 700; color: #1a365d; } table { width: 100%; } thead th { background: #f4f6f8; padding: 12px 16px; font-weight: 500; font-size: 15px; color: #64748b; border-bottom: 1px solid #e2e8f0; } tbody td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 16px; color: #1a365d; } tr:hover { background: #f4f6f8; } .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 500; min-width: 60px; text-align: center; } .bg-high { background: #63BE7B; color: #000; } .bg-medium-high { background: #9FD899; color: #000; } .bg-medium { background: #C6E5B5; color: #000; } .bg-medium-low { background: #FFEB84; color: #000; } .bg-low { background: #FCAA75; color: #000; } .bg-very-low { background: #F8696B; color: #000; } .total-row { background: #f4f6f8; font-weight: 600; } .total-row td { padding: 14px 12px !important; color: #1a365d; } .text-center { text-align: center; }</style></head><body><div class="container" id="teamDetailsContainer"><div class="header"><h1>CM Report by Separate Teams (Relative Performance)</h1></div>'
+    html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Separate Teams</title><style>* { margin: 0; padding: 0; } body { font-family: sans-serif; background: #f5f7fa; padding: 30px; } .container { max-width: 1400px; margin: 0 auto; } .header { background: white; border-radius: 12px; padding: 30px; margin-bottom: 20px; } h1 { font-size: 24px; } .team-section { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 20px; } .team-header { font-size: 18px; font-weight: 600; margin-bottom: 10px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; } .stats-cards { display: flex; gap: 12px; margin-bottom: 16px; } .stat-card { background: #f5f7fa; border-radius: 8px; padding: 12px 20px; min-width: 90px; } .stat-card-label { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; } .stat-card-value { font-size: 24px; font-weight: 700; color: #1a365d; } table { width: 100%; } thead th { background: #f4f6f8; padding: 12px 16px; font-weight: 500; font-size: 15px; color: #64748b; border-bottom: 1px solid #e2e8f0; } tbody td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 16px; color: #1a365d; } tr:hover { background: #f4f6f8; } .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 500; min-width: 60px; text-align: center; } .scale-high { background: #63BE7B; color: #000; } .scale-medium-high { background: #9FD899; color: #000; } .scale-medium { background: #C6E5B5; color: #000; } .scale-medium-low { background: #FFEB84; color: #000; } .scale-low { background: #FCAA75; color: #000; } .scale-very-low { background: #F8696B; color: #000; } .total-row { background: #f4f6f8; font-weight: 600; } .total-row td { padding: 14px 12px !important; color: #1a365d; } .text-center { text-align: center; }</style></head><body><div class="container" id="teamDetailsContainer"><div class="header"><h1>CM Report by Separate Teams (Relative Performance)</h1></div>'
 
     teams = sorted_df['Team'].unique()
 
@@ -583,15 +577,15 @@ def generate_html_separate_teams_report(merged_df, output_file):
     ct_avg_min, ct_avg_max = min(all_avg_calls), max(all_avg_calls)
 
     def get_cross_team_color(value, min_val, max_val):
-        if max_val == min_val:
-            return 'bg-medium'
-        normalized = (value - min_val) / (max_val - min_val)
-        if normalized < 0.17: return 'bg-very-low'
-        elif normalized < 0.33: return 'bg-low'
-        elif normalized < 0.50: return 'bg-medium-low'
-        elif normalized < 0.67: return 'bg-medium'
-        elif normalized < 0.83: return 'bg-medium-high'
-        else: return 'bg-high'
+        if max_val == 0:
+            return 'scale-very-low'
+        normalized = value / max_val
+        if normalized < 0.17: return 'scale-very-low'
+        elif normalized < 0.33: return 'scale-low'
+        elif normalized < 0.50: return 'scale-medium-low'
+        elif normalized < 0.67: return 'scale-medium'
+        elif normalized < 0.83: return 'scale-medium-high'
+        else: return 'scale-high'
 
     for team in teams:
         team_data = sorted_df[sorted_df['Team'] == team]
@@ -651,7 +645,7 @@ def generate_html_bottom20_report(merged_df, output_file):
     def get_color_class(value, min_val, max_val):
         """Excel-style color scaling: min=red, mid=yellow, max=green"""
         if max_val == min_val:
-            return 'bg-medium'
+            return 'scale-medium'
     
         # Normalize value to 0-1 range
         normalized = (value - min_val) / (max_val - min_val)
@@ -664,21 +658,21 @@ def generate_html_bottom20_report(merged_df, output_file):
             # Lower half: red to yellow gradient
             # Map 0-0.5 to our 3 red/orange/yellow levels
             if normalized < 0.17:
-                return 'bg-very-low'  # Pure red
+                return 'scale-very-low'  # Pure red
             elif normalized < 0.33:
-                return 'bg-low'  # Orange
+                return 'scale-low'  # Orange
             else:
-                return 'bg-medium-low'  # Yellow
+                return 'scale-medium-low'  # Yellow
         else:
             # Upper half: yellow to green gradient
             # Map 0.5-1.0 to our 3 yellow/light green/dark green levels
             if normalized < 0.67:
-                return 'bg-medium'  # Light green
+                return 'scale-medium'  # Light green
             elif normalized < 0.83:
-                return 'bg-medium-high'  # Medium green
+                return 'scale-medium-high'  # Medium green
             else:
-                return 'bg-high'  # Dark green
-    html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bottom 20</title><style>* { margin: 0; padding: 0; } body { font-family: sans-serif; background: #f5f7fa; padding: 30px; } .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 12px; padding: 30px; } h1 { font-size: 24px; margin-bottom: 5px; } .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 30px; } table { width: 100%; } thead th { background: #f5f7fa; padding: 14px; border-bottom: 2px solid #e5e7eb; } tbody td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 16px; color: #1a365d; } tr:hover { background: #f4f6f8; } .rank { font-weight: 600; color: #991b1b; } .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 500; min-width: 60px; text-align: center; } .bg-high { background: #63BE7B; color: #000; } .bg-medium-high { background: #9FD899; color: #000; } .bg-medium { background: #C6E5B5; color: #000; } .bg-medium-low { background: #FFEB84; color: #000; } .bg-low { background: #FCAA75; color: #000; } .bg-very-low { background: #F8696B; color: #000; } .summary-row { background: #f9fafb; font-weight: 600; border-top: 2px solid #e5e7eb !important; } .summary-row td { padding: 14px 12px !important; } .text-center { text-align: center; }</style></head><body><div class="container" id="bottom20Table"><h1>Bottom 20 CM Performance Report</h1><div class="subtitle">Ranked by Total Duration (Min) (Lowest to Highest)</div><table><thead><tr><th class="text-center">Rank</th><th>Team</th><th>Name</th><th class="text-center">Total Calls</th><th class="text-center">Total Eff. Calls</th><th class="text-center">Total Duration (Min)</th><th class="text-center">Avg Call Time/Min</th><th class="text-center">Classes Completed</th></tr></thead><tbody>'
+                return 'scale-high'  # Dark green
+    html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bottom 20</title><style>* { margin: 0; padding: 0; } body { font-family: sans-serif; background: #f5f7fa; padding: 30px; } .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 12px; padding: 30px; } h1 { font-size: 24px; margin-bottom: 5px; } .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 30px; } table { width: 100%; } thead th { background: #f5f7fa; padding: 14px; border-bottom: 2px solid #e5e7eb; } tbody td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 16px; color: #1a365d; } tr:hover { background: #f4f6f8; } .rank { font-weight: 600; color: #991b1b; } .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 500; min-width: 60px; text-align: center; } .scale-high { background: #63BE7B; color: #000; } .scale-medium-high { background: #9FD899; color: #000; } .scale-medium { background: #C6E5B5; color: #000; } .scale-medium-low { background: #FFEB84; color: #000; } .scale-low { background: #FCAA75; color: #000; } .scale-very-low { background: #F8696B; color: #000; } .summary-row { background: #f9fafb; font-weight: 600; border-top: 2px solid #e5e7eb !important; } .summary-row td { padding: 14px 12px !important; } .text-center { text-align: center; }</style></head><body><div class="container" id="bottom20Table"><h1>Bottom 20 CM Performance Report</h1><div class="subtitle">Ranked by Total Duration (Min) (Lowest to Highest)</div><table><thead><tr><th class="text-center">Rank</th><th>Team</th><th>Name</th><th class="text-center">Total Calls</th><th class="text-center">Total Eff. Calls</th><th class="text-center">Total Duration (Min)</th><th class="text-center">Avg Call Time/Min</th><th class="text-center">Classes Completed</th></tr></thead><tbody>'
     for rank, (_, row) in enumerate(bottom20_df.iterrows(), 1):
         dc = get_color_class(row['Total Duration (Min)'], duration_min, duration_max)
         ac = get_color_class(row['Avg Call Time/Min'], avg_call_min, avg_call_max)

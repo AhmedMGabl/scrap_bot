@@ -49,18 +49,18 @@ def generate_html_team_report(merged_df, output_file):
 
     def get_color_class(value, min_val, max_val):
         if value == 0:
-            return "bg-very-low"
-        if max_val == min_val:
-            return "bg-medium"
-        normalized = (value - min_val) / (max_val - min_val)
-        if normalized < 0.17:   return "bg-very-low"
-        elif normalized < 0.33: return "bg-low"
-        elif normalized < 0.50: return "bg-medium-low"
-        elif normalized < 0.67: return "bg-medium"
-        elif normalized < 0.83: return "bg-medium-high"
-        else:                   return "bg-high"
+            return "scale-very-low"
+        if max_val == 0:
+            return "scale-very-low"
+        normalized = value / max_val
+        if normalized < 0.17:   return "scale-very-low"
+        elif normalized < 0.33: return "scale-low"
+        elif normalized < 0.50: return "scale-medium-low"
+        elif normalized < 0.67: return "scale-medium"
+        elif normalized < 0.83: return "scale-medium-high"
+        else:                   return "scale-high"
 
-    css = "* { margin: 0; padding: 0; box-sizing: border-box; }body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; padding: 30px; }.container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }h1 { font-size: 24px; font-weight: 600; color: #1a1a1a; }.download-btn { background: #f5f7fa; border: 1px solid #e1e4e8; padding: 8px 16px; border-radius: 6px; color: #586069; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; text-decoration: none; }.download-btn:hover { background: #e9ecef; }table { width: 100%; border-collapse: separate; border-spacing: 0; }thead th { background: #f4f6f8; color: #64748b; font-weight: 500; font-size: 15px; text-align: left; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; }tbody td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 16px; color: #1a365d; }tbody tr:hover { background: #f4f6f8; }.total-row td { font-weight: 600; background: #f4f6f8; color: #1a365d; }.badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 500; font-size: 13px; text-align: center; min-width: 60px; }.bg-high { background: #63BE7B; color: #000; }.bg-medium-high { background: #9FD899; color: #000; }.bg-medium { background: #C6E5B5; color: #000; }.bg-medium-low { background: #FFEB84; color: #000; }.bg-low { background: #FCAA75; color: #000; }.bg-very-low { background: #F8696B; color: #000; }.text-center { text-align: center !important; }"
+    css = "* { margin: 0; padding: 0; box-sizing: border-box; }body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; padding: 30px; }.container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }h1 { font-size: 24px; font-weight: 600; color: #1a1a1a; }.download-btn { background: #f5f7fa; border: 1px solid #e1e4e8; padding: 8px 16px; border-radius: 6px; color: #586069; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; text-decoration: none; }.download-btn:hover { background: #e9ecef; }table { width: 100%; border-collapse: separate; border-spacing: 0; }thead th { background: #f4f6f8; color: #64748b; font-weight: 500; font-size: 15px; text-align: left; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; }tbody td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 16px; color: #1a365d; }tbody tr:hover { background: #f4f6f8; }.total-row td { font-weight: 600; background: #f4f6f8; color: #1a365d; }.badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 500; font-size: 13px; text-align: center; min-width: 60px; }.scale-high { background: #63BE7B; color: #000; }.scale-medium-high { background: #9FD899; color: #000; }.scale-medium { background: #C6E5B5; color: #000; }.scale-medium-low { background: #FFEB84; color: #000; }.scale-low { background: #FCAA75; color: #000; }.scale-very-low { background: #F8696B; color: #000; }.text-center { text-align: center !important; }"
 
     html = (
         '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">'
