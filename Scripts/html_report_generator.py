@@ -50,9 +50,9 @@ def generate_html_team_report(merged_df, output_file):
     def get_color_class(value, min_val, max_val):
         if value == 0:
             return "scale-very-low"
-        if max_val == 0:
-            return "scale-very-low"
-        normalized = value / max_val
+        if max_val == min_val:
+            return "scale-medium"
+        normalized = (value - min_val) / (max_val - min_val)
         if normalized < 0.17:   return "scale-very-low"
         elif normalized < 0.33: return "scale-low"
         elif normalized < 0.50: return "scale-medium-low"
