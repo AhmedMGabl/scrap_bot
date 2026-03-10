@@ -4,6 +4,8 @@ from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
 from openpyxl.utils.dataframe import dataframe_to_rows
 import os
 import sys
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
 sys.path.append(os.path.join(os.path.dirname(__file__), "Scripts"))
 from html_report_generator import generate_html_team_report
 import json
@@ -188,32 +190,63 @@ def scrape_and_update_rawdata():
 
 
 def generate_screenshots(html_files, output_dir):
-    """Generate screenshots of HTML reports using Playwright"""
+    """Generate screenshots using html2canvas at scale 2 (same as duration_bot)"""
     from playwright.sync_api import sync_playwright
-    import time
-    
-    print("\nGenerating screenshots...")
-    
+    import base64
+
+    ELEMENT_IDS = {
+        'CM_Team_Summary':      'teamsTable',
+        'CM_Separate_Teams':    'teamDetailsContainer',
+        'CM_Individual_Report': 'individualTable',
+        'CM_Bottom20':          'bottom20Table',
+    }
+
+    HTML2CANVAS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
+
+    print("Generating screenshots...")
+
+
     with sync_playwright() as p:
-        # Launch browser
         browser = p.chromium.launch()
-        page = browser.new_page(viewport={'width': 1200, 'height': 900})
-        
+        context = browser.new_context(viewport={'width': 1400, 'height': 900})
+        page = context.new_page()
+
         for html_file in html_files:
-            # Get the base name without extension
             base_name = os.path.splitext(os.path.basename(html_file))[0]
             screenshot_file = os.path.join(output_dir, f'{base_name}.png')
-            
-            # Navigate to the HTML file
+            element_id = ELEMENT_IDS.get(base_name)
+
             file_url = f'file:///{os.path.abspath(html_file).replace(chr(92), "/")}'
             page.goto(file_url, wait_until='networkidle')
+
+            if element_id:
+                try:
+                    page.add_script_tag(url=HTML2CANVAS_CDN)
+                    page.wait_for_function('typeof html2canvas === "function"', timeout=15000)
+                    png_b64 = page.evaluate("""async (elementId) => {
+                        const element = document.getElementById(elementId);
+                        if (!element) return null;
+                        const canvas = await html2canvas(element, {
+                            backgroundColor: '#ffffff',
+                            scale: 2,
+                            useCORS: true
+                        });
+                        return canvas.toDataURL('image/png').split(',')[1];
+                    }""", element_id)
+                    if png_b64:
+                        with open(screenshot_file, 'wb') as f:
+                            f.write(base64.b64decode(png_b64))
+                        print(f"Screenshot saved: {screenshot_file}")
+                        continue
+                except Exception as e:
+                    print(f"  html2canvas failed ({e}), falling back to viewport screenshot")
+
             page.screenshot(path=screenshot_file, full_page=True)
             print(f"Screenshot saved: {screenshot_file}")
-        
-        browser.close()
-    
-    print("All screenshots generated successfully!")
 
+        browser.close()
+
+    print("All screenshots generated successfully!")
 
 def generate_html_individual_report(merged_df, output_file):
     """Generate HTML individual member report"""
@@ -411,7 +444,7 @@ def generate_html_individual_report(merged_df, output_file):
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="individualTable">
         <div class="header">
             <h1>Individual CM Performance Report</h1>
         </div>
@@ -466,7 +499,7 @@ def generate_html_individual_report(merged_df, output_file):
 
 
 def generate_html_separate_teams_report(merged_df, output_file):
-    sorted_df = merged_df.sort_values(['Team', 'Avg Call Time/Min'], ascending=[True, False])
+    sorted_df = merged_df.sort_values(['Team', 'Total Duration (Min)'], ascending=[True, False])
     
     def get_color_class_relative(value, values_in_team, col_name):
         """Excel-style color scaling within each team"""
@@ -526,7 +559,7 @@ def generate_html_separate_teams_report(merged_df, output_file):
                 return 'bg-very-low'
         return 'bg-very-low'
     
-    html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Separate Teams</title><style>* { margin: 0; padding: 0; } body { font-family: sans-serif; background: #f5f7fa; padding: 30px; } .container { max-width: 1400px; margin: 0 auto; } .header { background: white; border-radius: 12px; padding: 30px; margin-bottom: 20px; } h1 { font-size: 24px; } .team-section { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; } .team-header { font-size: 18px; font-weight: 600; margin-bottom: 10px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; } .stats-cards { display: flex; gap: 12px; margin-bottom: 16px; } .stat-card { background: #f5f7fa; border-radius: 8px; padding: 12px 20px; min-width: 90px; } .stat-card-label { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; } .stat-card-value { font-size: 22px; font-weight: 700; color: #1f2937; } table { width: 100%; } thead th { background: #f5f7fa; padding: 12px; border-bottom: 2px solid #e5e7eb; } tbody td { padding: 12px; border-bottom: 1px solid #f3f4f6; } .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 500; min-width: 60px; text-align: center; } .bg-high { background: #63BE7B; color: #000; } .bg-medium-high { background: #9FD899; color: #000; } .bg-medium { background: #C6E5B5; color: #000; } .bg-medium-low { background: #FFEB84; color: #000; } .bg-low { background: #FCAA75; color: #000; } .bg-very-low { background: #F8696B; color: #000; } .total-row { background: #dbeafe; font-weight: 700; border-top: 2px solid #3b82f6 !important; } .total-row td { padding: 14px 12px !important; color: #1e3a5f; } .average-row { background: #f3e8ff; font-weight: 600; border-top: 1px solid #a855f7 !important; } .average-row td { padding: 14px 12px !important; color: #4a1d7a; } .text-center { text-align: center; }</style></head><body><div class="container"><div class="header"><h1>CM Report by Separate Teams (Relative Performance)</h1></div>'
+    html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Separate Teams</title><style>* { margin: 0; padding: 0; } body { font-family: sans-serif; background: #f5f7fa; padding: 30px; } .container { max-width: 1400px; margin: 0 auto; } .header { background: white; border-radius: 12px; padding: 30px; margin-bottom: 20px; } h1 { font-size: 24px; } .team-section { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 20px; } .team-header { font-size: 18px; font-weight: 600; margin-bottom: 10px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; } .stats-cards { display: flex; gap: 12px; margin-bottom: 16px; } .stat-card { background: #f5f7fa; border-radius: 8px; padding: 12px 20px; min-width: 90px; } .stat-card-label { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; } .stat-card-value { font-size: 24px; font-weight: 700; color: #1a365d; } table { width: 100%; } thead th { background: #f4f6f8; padding: 12px 16px; font-weight: 500; font-size: 15px; color: #64748b; border-bottom: 1px solid #e2e8f0; } tbody td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 16px; color: #1a365d; } tr:hover { background: #f4f6f8; } .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 500; min-width: 60px; text-align: center; } .bg-high { background: #63BE7B; color: #000; } .bg-medium-high { background: #9FD899; color: #000; } .bg-medium { background: #C6E5B5; color: #000; } .bg-medium-low { background: #FFEB84; color: #000; } .bg-low { background: #FCAA75; color: #000; } .bg-very-low { background: #F8696B; color: #000; } .total-row { background: #f4f6f8; font-weight: 600; } .total-row td { padding: 14px 12px !important; color: #1a365d; } .text-center { text-align: center; }</style></head><body><div class="container" id="teamDetailsContainer"><div class="header"><h1>CM Report by Separate Teams (Relative Performance)</h1></div>'
 
     teams = sorted_df['Team'].unique()
 
@@ -541,8 +574,11 @@ def generate_html_separate_teams_report(merged_df, output_file):
         t_avg_eff = round(t_eff / t_mem, 1) if t_mem > 0 else 0
         team_stats[t] = {'duration': t_dur, 'members': t_mem, 'avg_call': t_avg, 'avg_eff': t_avg_eff}
 
-    all_durations = [v['duration'] for v in team_stats.values()]
-    all_avg_calls = [v['avg_call'] for v in team_stats.values()]
+    # Exclude zero-data teams from cross-team color scale
+    non_zero_stats = {t: v for t, v in team_stats.items() if v['duration'] > 0}
+    scale_stats = non_zero_stats if non_zero_stats else team_stats
+    all_durations = [v['duration'] for v in scale_stats.values()]
+    all_avg_calls = [v['avg_call'] for v in scale_stats.values()]
     ct_dur_min, ct_dur_max = min(all_durations), max(all_durations)
     ct_avg_min, ct_avg_max = min(all_avg_calls), max(all_avg_calls)
 
@@ -563,19 +599,21 @@ def generate_html_separate_teams_report(merged_df, output_file):
         # Get all values for this team for relative comparison
         duration_values = team_data['Total Duration (Min)'].tolist()
         avg_call_values = team_data['Avg Call Time/Min'].tolist()
+        eff_calls_values = team_data['Total Eff. Calls'].tolist()
 
         ts = team_stats[team]
         dur_color = get_cross_team_color(ts['duration'], ct_dur_min, ct_dur_max)
         avg_color = get_cross_team_color(ts['avg_call'], ct_avg_min, ct_avg_max)
 
-        html += f'<div class="team-section"><div class="team-header">{team}</div><div class="stats-cards"><div class="stat-card"><div class="stat-card-label">Members</div><div class="stat-card-value">{ts["members"]}</div></div><div class="stat-card"><div class="stat-card-label">Avg Eff. Calls</div><div class="stat-card-value">{ts["avg_eff"]}</div></div><div class="stat-card"><div class="stat-card-label">Avg Duration</div><div class="stat-card-value">{ts["avg_call"]}</div></div></div><table><thead><tr><th>Name</th><th class="text-center">Total Calls</th><th class="text-center">Total Eff. Calls</th><th class="text-center">Total Duration (Min)</th><th class="text-center">Avg Call Time/Min</th><th class="text-center">Classes Completed</th></tr></thead><tbody>'
+        html += f'<div class="team-section"><div class="team-header">{team}</div><div class="stats-cards"><div class="stat-card"><div class="stat-card-label">Members</div><div class="stat-card-value">{ts["members"]}</div></div><div class="stat-card"><div class="stat-card-label">Avg Eff. Calls</div><div class="stat-card-value">{ts["avg_eff"]}</div></div><div class="stat-card"><div class="stat-card-label">Avg Duration</div><div class="stat-card-value">{ts["avg_call"]}</div></div></div><table><thead><tr><th class="text-center">Rank</th><th>Name</th><th class="text-center">Total Calls</th><th class="text-center">Effective Calls</th><th class="text-center">Duration (Min)</th><th class="text-center">Classes Completed</th></tr></thead><tbody>'
         
+        rank = 1
         for _, row in team_data.iterrows():
             dc = get_color_class_relative(row['Total Duration (Min)'], duration_values, 'Total Duration (Min)')
-            ac = get_color_class_relative(row['Avg Call Time/Min'], avg_call_values, 'Avg Call Time/Min')
+            ec = get_color_class_relative(row['Total Eff. Calls'], eff_calls_values, 'Total Eff. Calls')
             dval = int(round(row['Total Duration (Min)'])) if row['Total Duration (Min)'] > 0 else 0
-            aval = int(round(row['Avg Call Time/Min'])) if row['Avg Call Time/Min'] > 0 else 0
-            html += f'<tr><td>{row["Name"]}</td><td class="text-center">{row["Total Calls"]}</td><td class="text-center">{row["Total Eff. Calls"]}</td><td class="text-center"><span class="badge {dc}">{dval}</span></td><td class="text-center"><span class="badge {ac}">{aval}</span></td><td class="text-center">{row["Classes Completed"]}</td></tr>'
+            html += f'<tr><td class="text-center">{rank}</td><td>{row["Name"]}</td><td class="text-center">{row["Total Calls"]}</td><td class="text-center"><span class="badge {ec}">{row["Total Eff. Calls"]}</span></td><td class="text-center"><span class="badge {dc}">{dval}</span></td><td class="text-center">{row["Classes Completed"]}</td></tr>'
+            rank += 1
         
         # Calculate totals and averages for summary rows
         total_calls = int(team_data['Total Calls'].sum())
@@ -585,11 +623,11 @@ def generate_html_separate_teams_report(merged_df, output_file):
         
         total_members = len(team_data)
         
-        # TOTAL row: Avg Call Time/Min = Total Duration / Total Eff. Calls
-        team_avg_call_time = int(round(total_duration / total_eff_calls)) if total_eff_calls > 0 else 0
+        # TOTAL row: Avg Call Time/Min = Total Duration / Members (same as Team Summary per-team)
+        team_avg_call_time = int(round(total_duration / total_members)) if total_members > 0 else 0
         
         # Add TOTAL row
-        html += f'<tr class="total-row"><td><strong>TOTAL</strong></td><td class="text-center"><strong>{total_calls}</strong></td><td class="text-center"><strong>{total_eff_calls}</strong></td><td class="text-center"><strong>{total_duration}</strong></td><td class="text-center"><strong>{team_avg_call_time}</strong></td><td class="text-center"><strong>{total_classes}</strong></td></tr>'
+        html += f'<tr class="total-row"><td class="text-center"></td><td><strong>Total</strong></td><td class="text-center"><strong>{total_calls}</strong></td><td class="text-center"><strong>{total_eff_calls}</strong></td><td class="text-center"><strong>{total_duration}</strong></td><td class="text-center"><strong>{total_classes}</strong></td></tr>'
         
         
         html += '</tbody></table></div>'
@@ -640,7 +678,7 @@ def generate_html_bottom20_report(merged_df, output_file):
                 return 'bg-medium-high'  # Medium green
             else:
                 return 'bg-high'  # Dark green
-    html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bottom 20</title><style>* { margin: 0; padding: 0; } body { font-family: sans-serif; background: #f5f7fa; padding: 30px; } .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 12px; padding: 30px; } h1 { font-size: 24px; margin-bottom: 5px; } .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 30px; } table { width: 100%; } thead th { background: #f5f7fa; padding: 14px; border-bottom: 2px solid #e5e7eb; } tbody td { padding: 12px; border-bottom: 1px solid #f3f4f6; } .rank { font-weight: 600; color: #991b1b; } .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 500; min-width: 60px; text-align: center; } .bg-high { background: #63BE7B; color: #000; } .bg-medium-high { background: #9FD899; color: #000; } .bg-medium { background: #C6E5B5; color: #000; } .bg-medium-low { background: #FFEB84; color: #000; } .bg-low { background: #FCAA75; color: #000; } .bg-very-low { background: #F8696B; color: #000; } .summary-row { background: #f9fafb; font-weight: 600; border-top: 2px solid #e5e7eb !important; } .summary-row td { padding: 14px 12px !important; } .text-center { text-align: center; }</style></head><body><div class="container"><h1>Bottom 20 CM Performance Report</h1><div class="subtitle">Ranked by Total Duration (Min) (Lowest to Highest)</div><table><thead><tr><th class="text-center">Rank</th><th>Team</th><th>Name</th><th class="text-center">Total Calls</th><th class="text-center">Total Eff. Calls</th><th class="text-center">Total Duration (Min)</th><th class="text-center">Avg Call Time/Min</th><th class="text-center">Classes Completed</th></tr></thead><tbody>'
+    html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bottom 20</title><style>* { margin: 0; padding: 0; } body { font-family: sans-serif; background: #f5f7fa; padding: 30px; } .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 12px; padding: 30px; } h1 { font-size: 24px; margin-bottom: 5px; } .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 30px; } table { width: 100%; } thead th { background: #f5f7fa; padding: 14px; border-bottom: 2px solid #e5e7eb; } tbody td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 16px; color: #1a365d; } tr:hover { background: #f4f6f8; } .rank { font-weight: 600; color: #991b1b; } .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 500; min-width: 60px; text-align: center; } .bg-high { background: #63BE7B; color: #000; } .bg-medium-high { background: #9FD899; color: #000; } .bg-medium { background: #C6E5B5; color: #000; } .bg-medium-low { background: #FFEB84; color: #000; } .bg-low { background: #FCAA75; color: #000; } .bg-very-low { background: #F8696B; color: #000; } .summary-row { background: #f9fafb; font-weight: 600; border-top: 2px solid #e5e7eb !important; } .summary-row td { padding: 14px 12px !important; } .text-center { text-align: center; }</style></head><body><div class="container" id="bottom20Table"><h1>Bottom 20 CM Performance Report</h1><div class="subtitle">Ranked by Total Duration (Min) (Lowest to Highest)</div><table><thead><tr><th class="text-center">Rank</th><th>Team</th><th>Name</th><th class="text-center">Total Calls</th><th class="text-center">Total Eff. Calls</th><th class="text-center">Total Duration (Min)</th><th class="text-center">Avg Call Time/Min</th><th class="text-center">Classes Completed</th></tr></thead><tbody>'
     for rank, (_, row) in enumerate(bottom20_df.iterrows(), 1):
         dc = get_color_class(row['Total Duration (Min)'], duration_min, duration_max)
         ac = get_color_class(row['Avg Call Time/Min'], avg_call_min, avg_call_max)
@@ -688,10 +726,14 @@ def read_iur_data(file_path):
 
 def read_cm_structure(file_path):
     """Read CM structure data from CM sheet"""
-    df = pd.read_excel(file_path, sheet_name='CM')
-    # Rename 'CM Team' to 'Team' for consistency
-    if 'CM Team' in df.columns:
-        df = df.rename(columns={'CM Team': 'Team'})
+    df = pd.read_excel(file_path, sheet_name='EGCM structure')
+    # Normalize column names
+    rename = {}
+    if 'CM Team' in df.columns: rename['CM Team'] = 'Team'
+    if 'TEAM' in df.columns: rename['TEAM'] = 'Team'
+    if 'PRESENT CRM' in df.columns: rename['PRESENT CRM'] = 'CRM'
+    if rename:
+        df = df.rename(columns=rename)
     return df
 
 def normalize_name(name):
