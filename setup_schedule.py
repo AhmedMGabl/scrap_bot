@@ -11,10 +11,9 @@ MAIN_SCRIPT = os.path.join(SCRIPT_DIR, "run_daily_report.py")
 FOLDER      = "scrap_bot"
 
 TASKS = [
-    ("scrap_bot_morning_1230", "12:30", "DAILY",  None),
-    ("scrap_bot_morning_1330", "13:30", "DAILY",  None),
-    ("scrap_bot_morning_1430", "14:30", "DAILY",  None),
-    ("scrap_bot_morning_1530", "15:30", "DAILY",  None),
+    ("scrap_bot_morning_1300", "13:00", "DAILY",  None),
+    ("scrap_bot_morning_1400", "14:00", "DAILY",  None),
+    ("scrap_bot_morning_1500", "15:00", "DAILY",  None),
     ("scrap_bot_night_2200",   "22:00", "DAILY",  None),
     ("scrap_bot_night_2300",   "23:00", "DAILY",  None),
     ("scrap_bot_night_0000",   "00:00", "DAILY",  None),
