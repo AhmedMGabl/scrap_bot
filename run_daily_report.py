@@ -36,7 +36,7 @@ CRM_CONFIG = {
 # -- Lark credentials -------------------------------------------------------
 LARK_APP_ID     = "cli_a9bf7d0d8438dbdc"
 LARK_APP_SECRET = "fLNIH2ElbH9mChpijh4tbeKd36dJHKtq"
-LARK_CHAT_ID    = "oc_1ab849cf11a8505ae909eff1928cd052"
+LARK_CHAT_ID    = "oc_cc12fe7005d8a9fa8b8eb51e9193eeec"
 
 # -- Import local scripts ---------------------------------------------------
 sys.path.insert(0, os.path.join(SCRIPT_DIR, "Scripts"))
@@ -225,7 +225,7 @@ def run_send_cards(cm_pngs, ea_pngs):
         with ThreadPoolExecutor(max_workers=len(valid_paths) or 1) as pool:
             cm_keys = list(pool.map(lambda p: lark_upload_image(token, p), valid_paths))
         lark_send_card(token, LARK_CHAT_ID,
-                       f"CM Daily Report - {today}", "blue",
+                       f"CM Duration Report - {today} {datetime.now().strftime('%H:%M')}", "blue",
                        cm_keys, cm_valid_labels)
         print("  CM card sent")
 
