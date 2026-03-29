@@ -898,10 +898,10 @@ def create_team_summary(merged_df, output_file):
     team_summary['Avg Eff. Calls'] = (team_summary['Total Eff. Calls'] / team_summary['Name']).round(1)
     
     # Calculate Avg Call Time/Min as Total Duration / Members
-    avg_call_by_team = merged_df.groupby('Team')['Avg Call Time/Min'].apply(
-        lambda vals: sum(int(round(v)) for v in vals)
-    ).rename('Avg Call Time/Min')
-    team_summary = team_summary.merge(avg_call_by_team, on='Team')
+    avg_call_by_team = (
+        team_summary['Total Duration (Min)'] / team_summary['Name']
+    ).apply(lambda x: int(round(x)) if x > 0 else 0)
+    team_summary['Avg Call Time/Min'] = avg_call_by_team
     
     # Rename columns
     team_summary.columns = ['Team', 'Members', 'Total Eff. Calls', 'Total Duration (Min)',

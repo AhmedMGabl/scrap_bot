@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>scrap_bot — Control Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500&family=Inconsolata:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090f;--bg2:#0d1117;--bg3:#131920;--border:#1e2a38;--border2:#243040;--amber:#f59e0b;--amber2:#fbbf24;--cyan:#22d3ee;--green:#4ade80;--red:#f87171;--yellow:#fbbf24;--muted:#4b5a6e;--text:#cbd5e1;--text2:#94a3b8;--text3:#64748b;--syne:
+'Syne',sans-serif;--dm:'DM Sans',sans-serif;--mono:'Inconsolata',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--dm);font-size:14px;}
+.shell{display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:220px;min-width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;}
+.logo{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
+.logo-txt{font-family:var(--syne);font-weight:800;font-size:17px;color:#fff;letter-spacing:.5px;}
+.logo-sub{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:2px;}
+.nav{flex:1;padding:10px 0;overflow-y:auto;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;cursor:pointer;font-size:13px;color:var(--text2);transition:all .15s;user-select:none;border-left:3px solid transparent;}
+.nav-item:hover{background:rgba(245,158,11,.06);color:var(--text);}
+.nav-item.active{background:rgba(245,158,11,.1);color:var(--amber);border-left-color:var(--amber);}
+.nav-icon{font-size:15px;width:18px;text-align:center;}
+.sidebar-footer{padding:14px 18px;border-top:1px solid var(--border);}
+.conn-pill{display:flex;align-items:center;gap:6px;font-size:11px;font-family:var(--mono);color:var(--muted);}
+.conn-dot{width:7px;height:7px;border-radius:50%;background:var(--red);transition:background .3s;}
+.conn-dot.live{background:var(--green);}
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.view{display:none;padding:28px 32px;flex:1;}
+.view.active{display:block;}
+.view-title{font-family:var(--syne);font-size:22px;font-weight:700;color:#fff;margin-bottom:4px;}
+.view-sub{font-size:13px;color:var(--text3);margin-bottom:24px;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px;}
+.card-title{font-family:var(--syne);font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.row{display:flex;gap:12px;align-items:center;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:6px;border:none;cursor:pointer;font-family:var(--dm);font-size:13px;font-weight:500;transition:all .15s;}
+.btn-primary{background:var(--amber);color:#000;}
+.btn-primary:hover{background:var(--amber2);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2);}
+.btn-ghost:hover{border-color:var(--amber);color:var(--amber);}
+.btn-danger{background:transparent;border:1px solid rgba(248,113,113,.4);color:var(--red);}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.sect-gap{margin-bottom:20px;}
+.phases-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+.pc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;transition:all .3s;position:relative;overflow:hidden;}
+.pc::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .3s;border-radius:10px;}
+.pc.running{border-color:var(--amber);box-shadow:0 0 20px rgba(245,158,11,.2);}
+.pc.running::before{background:radial-gradient(ellipse at 50% 0%,rgba(245,158,11,.08),transparent 70%);opacity:1;}
+.pc.done{border-color:rgba(74,222,128,.5);}
+.pc.failed{border-color:rgba(248,113,113,.5);}
+.pc-icon{font-size:24px;margin-bottom:8px;display:block;}
+.pc-name{font-family:var(--syne);font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.pc-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-family:var(--mono);font-weight:500;}
+.b-pending{background:rgba(100,116,139,.15);color:var(--text3);}
+.b-running{background:rgba(245,158,11,.15);color:var(--amber);animation:pulse 1.2s infinite;}
+.b-done{background:rgba(74,222,128,.12);color:var(--green);}
+.b-failed{background:rgba(248,113,113,.12);color:var(--red);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+.phase-btns{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
+.phase-btn{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 4px;font-size:11px;font-family:var(--mono);color:var(--text3);cursor:pointer;transition:all .15s;text-align:center;}
+.phase-btn:hover{border-color:var(--amber);color:var(--amber);}
+.log-wrap{background:#050810;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.log-toolbar{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--bg2);}
+.log-toolbar-left{display:flex;gap:6px;align-items:center;}
+.log-dot{width:10px;height:10px;border-radius:50%;}
+.log-body{height:340px;overflow-y:auto;padding:12px 16px;font-family:var(--mono);font-size:12.5px;line-height:1.7;position:relative;}
+.log-body::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px);pointer-events:none;}
+.log-line{white-space:pre-wrap;word-break:break-all;}
+.log-ok{color:var(--green);}.log-warn{color:var(--yellow);}.log-err{color:var(--red);}
+.log-info{color:var(--text2);}.log-dim{color:var(--muted);}.log-phase{color:var(--cyan);font-weight:700;}
+.toggle-wrap{display:flex;align-items:center;gap:10px;}
+.toggle{position:relative;width:42px;height:22px;cursor:pointer;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-track{position:absolute;inset:0;background:var(--bg3);border:1px solid var(--border2);border-radius:11px;transition:all .2s;}
+.toggle input:checked + .toggle-track{background:rgba(245,158,11,.3);border-color:var(--amber);}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--muted);transition:all .2s;}
+.toggle input:checked ~ .toggle-thumb{left:23px;background:var(--amber);}
+.ch-toggle{display:flex;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:3px;}
+.ch-btn{padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-family:var(--mono);color:var(--muted);background:transparent;transition:all .15s;}
+.ch-btn.active{background:var(--amber);color:#000;font-weight:600;}
+.grp-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.grp-btn{padding:7px 16px;border-radius:20px;border:1px solid var(--border2);background:transparent;cursor:pointer;font-size:12px;font-family:var(--mono);color:var(--text3);transition:all .15s;}
+.grp-btn:hover,.grp-btn.active{border-color:var(--cyan);color:var(--cyan);}
+.grp-btn.active{background:rgba(34,211,238,.1);}
+.phase-checklist{display:flex;flex-direction:column;gap:8px;}
+.phase-check-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer;}
+.phase-check-item input[type=checkbox]{accent-color:var(--amber);width:14px;height:14px;}
+.phase-check-item.checked{border-color:rgba(245,158,11,.3);}
+.reports-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.report-thumb{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s;}
+.report-thumb:hover{border-color:var(--amber);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.thumb-img{width:100%;height:130px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:36px;}
+.thumb-info{padding:10px 12px;}
+.thumb-name{font-size:12px;font-weight:500;color:var(--text);}
+.thumb-meta{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:100;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:12px;width:90%;max-width:1000px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.modal-title{font-family:var(--syne);font-weight:600;font-size:15px;color:#fff;}
+.modal-body iframe{width:100%;height:70vh;border:none;background:#fff;}
+.modal-close{background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer;}
+.modal-close:hover{color:#fff;}
+.sched-table{width:100%;border-collapse:collapse;}
+.sched-table th{text-align:left;padding:10px 14px;font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--border);}
+.sched-table td{padding:10px 14px;font-size:13px;border-bottom:1px solid rgba(30,42,56,.5);font-family:var(--mono);}
+.history-item{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;}
+.history-info{flex:1;}
+.history-title{font-size:13px;font-weight:500;color:var(--text);}
+.history-meta{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px;}
+.history-status{padding:3px 10px;border-radius:20px;font-size:11px;font-family:var(--mono);}
+.hs-ok{background:rgba(74,222,128,.1);color:var(--green);}
+.hs-fail{background:rgba(248,113,113,.1);color:var(--red);}
+.health-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);}
+.health-item:last-child{border-bottom:none;}
+.health-label{font-size:13px;color:var(--text2);}
+.health-val{font-family:var(--mono);font-size:13px;color:var(--text);}
+.health-ok{color:var(--green);}
+.team-table{width:100%;border-collapse:collapse;margin-bottom:12px;}
+.team-table th{text-align:left;padding:8px 12px;font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;background:var(--bg3);border-bottom:1px solid var(--border);}
+.team-table td{padding:8px 12px;border-bottom:1px solid rgba(30,42,56,.5);}
+.team-table input{background:transparent;border:none;outline:none;font-family:var(--mono);font-size:12px;color:var(--text);width:100%;}
+.team-table input:focus{border-bottom:1px solid var(--amber);}
+.del-btn{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:2px 6px;}
+.del-btn:hover{color:var(--red);}
+.inp{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:8px 12px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;width:100%;}
+.inp:focus{border-color:var(--amber);}
+.inp-label{font-size:12px;color:var(--text3);margin-bottom:5px;display:block;}
+.inp-group{margin-bottom:14px;}
+.cookie-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
+.cookie-row:last-child{border-bottom:none;}
+.cookie-status{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;}
+.upload-zone{border:2px dashed var(--border2);border-radius:8px;padding:24px;text-align:center;cursor:pointer;transition:border-color .2s;color:var(--muted);}
+.upload-zone:hover{border-color:var(--amber);color:var(--amber);}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+.stat-chip{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;}
+.stat-val{font-family:var(--syne);font-size:22px;font-weight:700;color:#fff;}
+.stat-lbl{font-size:11px;color:var(--text3);margin-top:3px;font-family:var(--mono);}
+.notif{position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px 18px;font-size:13px;z-index:200;display:none;}
+.notif.show{display:block;}
+.notif-ok{border-color:rgba(74,222,128,.4);color:var(--green);}
+.notif-err{border-color:rgba(248,113,113,.4);color:var(--red);}
+input[type=date].inp{color-scheme:dark;}
+.prog-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-top:8px;}
+.prog-fill{height:100%;background:var(--amber);border-radius:2px;transition:width .5s;}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="logo"><div class="logo-txt">scrap_bot</div><div class="logo-sub">control panel v1.0</div></div>
+  <nav class="nav">
+    <div class="nav-item active" onclick="showView('pipeline')"><span class="nav-icon">&#9889;</span>Pipeline</div>
+    <div class="nav-item" onclick="showView('config')"><span class="nav-icon">&#9881;</span>Config</div>
+    <div class="nav-item" onclick="showView('logs')"><span class="nav-icon">&#128203;</span>Live Logs</div>
+    <div class="nav-item" onclick="showView('reports')"><span class="nav-icon">&#128202;</span>Reports</div>
+    <div class="nav-item" onclick="showView('scheduler')"><span class="nav-icon">&#128336;</span>Scheduler</div>
+    <div class="nav-item" onclick="showView('history')"><span class="nav-icon">&#128232;</span>Send History</div>
+    <div class="nav-item" onclick="showView('data')"><span class="nav-icon">&#128194;</span>Data &amp; Teams</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="conn-pill"><div class="conn-dot" id="connDot"></div><span id="connLabel">disconnected</span></div>
+  </div>
+</aside>
+<main class="main">
+<!-- PIPELINE VIEW -->
+<section class="view active" id="view-pipeline">
+  <div class="view-title">Pipeline Control</div>
+  <div class="view-sub">Run all phases or individual steps. Logs stream live below.</div>
+  <div class="phases-grid">
+    <div class="pc" id="pc-crm"><span class="pc-icon">&#127760;</span><div class="pc-name">CRM Scrape</div><span class="pc-badge b-pending" id="badge-crm">pending</span><div class="prog-bar"><div class="prog-fill" id="prog-crm" style="width:0%"></div></div></div>
+    <div class="pc" id="pc-ams"><span class="pc-icon">&#128225;</span><div class="pc-name">AMS Scrape</div><span class="pc-badge b-pending" id="badge-ams">pending</span><div class="prog-bar"><div class="prog-fill" id="prog-ams" style="width:0%"></div></div></div>
+    <div class="pc" id="pc-cm"><span class="pc-icon">&#128200;</span><div class="pc-name">CM Dashboard</div><span class="pc-badge b-pending" id="badge-cm">pending</span><div class="prog-bar"><div class="prog-fill" id="prog-cm" style="width:0%"></div></div></div>
+    <div class="pc" id="pc-ea"><span class="pc-icon">&#128201;</span><div class="pc-name">EA Dashboard</div><span class="pc-badge b-pending" id="badge-ea">pending</span><div class="prog-bar"><div class="prog-fill" id="prog-ea" style="width:0%"></div></div></div>
+    <div class="pc" id="pc-send"><span class="pc-icon">&#128640;</span><div class="pc-name">Send Cards</div><span class="pc-badge b-pending" id="badge-send">pending</span><div class="prog-bar"><div class="prog-fill" id="prog-send" style="width:0%"></div></div></div>
+  </div>
+  <div class="phase-btns">
+    <button class="phase-btn" onclick="runPhase('crm')">&#9654; CRM only</button>
+    <button class="phase-btn" onclick="runPhase('ams')">&#9654; AMS only</button>
+    <button class="phase-btn" onclick="runPhase('cm')">&#9654; CM only</button>
+    <button class="phase-btn" onclick="runPhase('ea')">&#9654; EA only</button>
+    <button class="phase-btn" onclick="runPhase('send')">&#9654; Send only</button>
+  </div>
+  <div class="row sect-gap">
+    <button class="btn btn-primary" id="runAllBtn" onclick="runAll()">&#9889; Run All Phases</button>
+    <button class="btn btn-ghost" onclick="resetPhases()">&#8635; Reset</button>
+    <div style="flex:1"></div>
+    <div style="font-family:var(--mono);font-size:12px;color:var(--text3);" id="runStatus">idle</div>
+  </div>
+  <div class="log-wrap">
+    <div class="log-toolbar">
+      <div class="log-toolbar-left">
+        <div class="log-dot" style="background:#ff5f57"></div>
+        <div class="log-dot" style="background:#febc2e"></div>
+        <div class="log-dot" style="background:#28c840"></div>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:8px;">scrap_bot / pipeline.log</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="clearLog('pipelineLog')">clear</button>
+    </div>
+    <div class="log-body" id="pipelineLog"></div>
+  </div>
+</section>
+<!-- CONFIG VIEW -->
+<section class="view" id="view-config">
+  <div class="view-title">Configuration</div>
+  <div class="view-sub">Adjust runtime settings. Changes apply to the next pipeline run.</div>
+  <div class="grid-2 sect-gap">
+    <div class="card">
+      <div class="card-title">Mode &amp; Date</div>
+      <div class="inp-group" style="margin-bottom:18px;">
+        <div class="toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" id="testModeToggle" checked onchange="updateConfig()">
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </label>
+          <div>
+            <div style="font-size:13px;color:var(--text);">TEST MODE</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px;">Sends to Hany test group (TEST_MODE=True)</div>
+          </div>
+        </div>
+      </div>
+      <div class="inp-group">
+        <label class="inp-label">Date Override (leave blank = today)</label>
+        <input type="date" class="inp" id="dateOverride">
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="clearDate()">&#10005; Clear date override</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Delivery Channel</div>
+      <div style="margin-bottom:16px;">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-family:var(--mono);">CHANNEL</div>
+        <div class="ch-toggle">
+          <button class="ch-btn active" id="ch-lark" onclick="setChannel('lark')">Lark</button>
+          <button class="ch-btn" id="ch-dingtalk" onclick="setChannel('dingtalk')">DingTalk</button>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-family:var(--mono);">LARK GROUP</div>
+        <div class="grp-btns">
+          <button class="grp-btn active" onclick="setGroup(this,'maze')">Maze Runners</button>
+          <button class="grp-btn" onclick="setGroup(this,'test')">Hany TEST</button>
+          <button class="grp-btn" onclick="setGroup(this,'egea')">EGEA Miracle</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card sect-gap">
+    <div class="card-title">Select Phases to Run</div>
+    <div class="phase-checklist" id="phaseChecklist">
+      <label class="phase-check-item checked"><input type="checkbox" checked data-phase="crm"> <span style="font-family:var(--mono);font-size:13px;">Phase 1 &#8212; CRM Scrape</span></label>
+      <label class="phase-check-item checked"><input type="checkbox" checked data-phase="ams"> <span style="font-family:var(--mono);font-size:13px;">Phase 2 &#8212; AMS Scrape</span></label>
+      <label class="phase-check-item checked"><input type="checkbox" checked data-phase="cm">  <span style="font-family:var(--mono);font-size:13px;">Phase 3 &#8212; CM Dashboard</span></label>
+      <label class="phase-check-item checked"><input type="checkbox" checked data-phase="ea">  <span style="font-family:var(--mono);font-size:13px;">Phase 4 &#8212; EA Dashboard</span></label>
+      <label class="phase-check-item checked"><input type="checkbox" checked data-phase="send"><span style="font-family:var(--mono);font-size:13px;">Phase 5 &#8212; Send Cards</span></label>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Select Images to Send</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <label class="phase-check-item checked"><input type="checkbox" checked> <span style="font-family:var(--mono);font-size:13px;">CM_Individual_Report.png</span></label>
+      <label class="phase-check-item checked"><input type="checkbox" checked> <span style="font-family:var(--mono);font-size:13px;">CM_Team_Summary.png</span></label>
+      <label class="phase-check-item checked"><input type="checkbox" checked> <span style="font-family:var(--mono);font-size:13px;">CM_Separate_Teams.png</span></label>
+      <label class="phase-check-item checked"><input type="checkbox" checked> <span style="font-family:var(--mono);font-size:13px;">CM_Bottom20.png</span></label>
+    </div>
+  </div>
+</section>
+<!-- LOGS VIEW -->
+<section class="view" id="view-logs">
+  <div class="view-title">Live Logs</div>
+  <div class="view-sub">Streaming output. Color-coded: green=OK, yellow=WARN, red=ERROR.</div>
+  <div class="row sect-gap" style="gap:10px;">
+    <div class="stat-chip" style="min-width:90px;"><div class="stat-val" id="logCountOk">0</div><div class="stat-lbl">OK</div></div>
+    <div class="stat-chip" style="min-width:90px;"><div class="stat-val" id="logCountWarn">0</div><div class="stat-lbl">WARN</div></div>
+    <div class="stat-chip" style="min-width:90px;"><div class="stat-val" id="logCountErr">0</div><div class="stat-lbl">ERROR</div></div>
+    <div style="flex:1"></div>
+    <button class="btn btn-ghost btn-sm" onclick="clearLog('fullLog')">clear</button>
+    <button class="btn btn-ghost btn-sm" onclick="downloadLog()">&#8595; export</button>
+  </div>
+  <div class="log-wrap">
+    <div class="log-toolbar">
+      <div class="log-toolbar-left">
+        <div class="log-dot" style="background:#ff5f57"></div>
+        <div class="log-dot" style="background:#febc2e"></div>
+        <div class="log-dot" style="background:#28c840"></div>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:8px;">live stream</span>
+      </div>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--muted);" id="streamStatus">&#9632; idle</span>
+    </div>
+    <div class="log-body" style="height:500px;" id="fullLog"></div>
+  </div>
+</section>
+
+<!-- REPORTS VIEW -->
+<section class="view" id="view-reports">
+  <div class="view-title">Report Previews</div>
+  <div class="view-sub">Click a thumbnail to preview. Reports open from the Output/ folder.</div>
+  <div class="reports-grid">
+    <div class="report-thumb" onclick="openPreview('CM_Individual_Report.html','CM Individual Report')">
+      <div class="thumb-img">&#128202;</div>
+      <div class="thumb-info"><div class="thumb-name">CM Individual Report</div><div class="thumb-meta">CM_Individual_Report.html</div></div>
+    </div>
+    <div class="report-thumb" onclick="openPreview('CM_Team_Summary.html','CM Team Summary')">
+      <div class="thumb-img">&#128202;</div>
+      <div class="thumb-info"><div class="thumb-name">CM Team Summary</div><div class="thumb-meta">CM_Team_Summary.html</div></div>
+    </div>
+    <div class="report-thumb" onclick="openPreview('CM_Separate_Teams.html','CM Separate Teams')">
+      <div class="thumb-img">&#128101;</div>
+      <div class="thumb-info"><div class="thumb-name">CM Separate Teams</div><div class="thumb-meta">CM_Separate_Teams.html</div></div>
+    </div>
+    <div class="report-thumb" onclick="openPreview('CM_Bottom20.html','CM Bottom 20')">
+      <div class="thumb-img">&#128201;</div>
+      <div class="thumb-info"><div class="thumb-name">CM Bottom 20</div><div class="thumb-meta">CM_Bottom20.html</div></div>
+    </div>
+    <div class="report-thumb" onclick="openPreview('EA_Individual_Report.html','EA Individual Report')">
+      <div class="thumb-img">&#128202;</div>
+      <div class="thumb-info"><div class="thumb-name">EA Individual Report</div><div class="thumb-meta">EA_Individual_Report.html</div></div>
+    </div>
+    <div class="report-thumb" onclick="openPreview('EA_Team_Summary.html','EA Team Summary')">
+      <div class="thumb-img">&#128202;</div>
+      <div class="thumb-info"><div class="thumb-name">EA Team Summary</div><div class="thumb-meta">EA_Team_Summary.html</div></div>
+    </div>
+    <div class="report-thumb" onclick="openPreview('EA_Separate_Teams.html','EA Separate Teams')">
+      <div class="thumb-img">&#128101;</div>
+      <div class="thumb-info"><div class="thumb-name">EA Separate Teams</div><div class="thumb-meta">EA_Separate_Teams.html</div></div>
+    </div>
+    <div class="report-thumb" onclick="openPreview('EA_Bottom20.html','EA Bottom 20')">
+      <div class="thumb-img">&#128201;</div>
+      <div class="thumb-info"><div class="thumb-name">EA Bottom 20</div><div class="thumb-meta">EA_Bottom20.html</div></div>
+    </div>
+  </div>
+</section>
+<!-- SCHEDULER VIEW -->
+<section class="view" id="view-scheduler">
+  <div class="view-title">Scheduler</div>
+  <div class="view-sub">Windows Task Scheduler status. Next scheduled runs computed locally.</div>
+  <div class="row sect-gap" style="gap:10px;">
+    <button class="btn btn-ghost" onclick="computeNextRuns()">&#8635; Refresh</button>
+    <button class="btn btn-ghost" onclick="runSchedulerSetup()">&#9881; setup_schedule.py</button>
+    <button class="btn btn-danger btn-sm" onclick="runSchedulerRemove()">&#10005; remove tasks</button>
+  </div>
+  <div class="card sect-gap">
+    <div class="card-title">Morning Schedule (Mon&#8211;Sat)</div>
+    <table class="sched-table">
+      <tr><th>Time</th><th>Task Name</th><th>Next Run</th><th>Status</th></tr>
+      <tr><td>13:00</td><td>scrap_bot_13</td><td id="next-1300">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
+      <tr><td>14:00</td><td>scrap_bot_14</td><td id="next-1400">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
+      <tr><td>15:00</td><td>scrap_bot_15</td><td id="next-1500">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title">Night Schedule (Daily)</div>
+    <table class="sched-table">
+      <tr><th>Time</th><th>Task Name</th><th>Next Run</th><th>Status</th></tr>
+      <tr><td>22:00</td><td>scrap_bot_22</td><td id="next-2200">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
+      <tr><td>23:00</td><td>scrap_bot_23</td><td id="next-2300">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
+      <tr><td>00:00</td><td>scrap_bot_00</td><td id="next-0000">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
+      <tr><td>01:00 Sun</td><td>scrap_bot_sat</td><td id="next-0100">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- HISTORY VIEW -->
+<section class="view" id="view-history">
+  <div class="view-title">Send History</div>
+  <div class="view-sub">Recent deliveries to Lark and DingTalk groups.</div>
+  <div class="row sect-gap">
+    <button class="btn btn-ghost btn-sm" onclick="loadHistory()">&#8635; Refresh</button>
+  </div>
+  <div id="historyList">
+    <div class="history-item">
+      <div style="font-size:20px;">&#128232;</div>
+      <div class="history-info">
+        <div class="history-title">CM Dashboard &#8212; Lark / Maze Runners</div>
+        <div class="history-meta">2026-03-29 15:02 &#183; 4 images &#183; message_id: om_xxxxxx</div>
+      </div>
+      <span class="history-status hs-ok">&#10003; sent</span>
+      <button class="btn btn-ghost btn-sm" onclick="retrySend()">&#8617; retry</button>
+    </div>
+    <div class="history-item">
+      <div style="font-size:20px;">&#128232;</div>
+      <div class="history-info">
+        <div class="history-title">CM Dashboard &#8212; DingTalk</div>
+        <div class="history-meta">2026-03-28 15:05 &#183; 4 images</div>
+      </div>
+      <span class="history-status hs-ok">&#10003; sent</span>
+      <button class="btn btn-ghost btn-sm" onclick="retrySend()">&#8617; retry</button>
+    </div>
+    <div class="history-item">
+      <div style="font-size:20px;">&#128232;</div>
+      <div class="history-info">
+        <div class="history-title">CM Dashboard &#8212; Lark / Maze Runners</div>
+        <div class="history-meta">2026-03-27 22:01 &#183; error: token expired</div>
+      </div>
+      <span class="history-status hs-fail">&#10007; failed</span>
+      <button class="btn btn-ghost btn-sm" onclick="retrySend()">&#8617; retry</button>
+    </div>
+  </div>
+</section>
+<!-- DATA VIEW -->
+<section class="view" id="view-data">
+  <div class="view-title">Data &amp; Teams</div>
+  <div class="view-sub">rawdata.xlsx health, cookie status, team structure editor.</div>
+  <div class="grid-2 sect-gap">
+    <div class="card">
+      <div class="card-title">rawdata.xlsx Health</div>
+      <div class="health-item"><div class="health-label">Sheet 1 (CRM)</div><div class="health-val health-ok" id="sheet1-status">loading&#8230;</div></div>
+      <div class="health-item"><div class="health-label">Sheet 2 (AMS)</div><div class="health-val health-ok" id="sheet2-status">loading&#8230;</div></div>
+      <div class="health-item"><div class="health-label">Last modified</div><div class="health-val" id="rawdata-mtime">&#8212;</div></div>
+      <div class="health-item"><div class="health-label">Team Structure.xlsx</div><div class="health-val health-ok" id="ts-status">&#8212;</div></div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:12px;" onclick="refreshHealth()">&#8635; Refresh</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Cookie Status</div>
+      <div class="cookie-row">
+        <div class="health-label">CRM (crm.51talk.com)</div>
+        <div class="cookie-status"><div class="conn-dot live"></div><span style="color:var(--green);font-family:var(--mono);font-size:12px;" id="crm-cookie">crm_cookies.json found</span></div>
+      </div>
+      <div class="cookie-row">
+        <div class="health-label">AMS (ams.51talkjr.com)</div>
+        <div class="cookie-status"><div class="conn-dot" style="background:var(--yellow)"></div><span style="color:var(--yellow);font-family:var(--mono);font-size:12px;">manual login required</span></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px;">
+        <button class="btn btn-ghost btn-sm" onclick="clearCookies()">&#10005; Clear CRM cookies</button>
+        <button class="btn btn-ghost btn-sm" onclick="refreshHealth()">&#8635; Refresh</button>
+      </div>
+    </div>
+  </div>
+  <div class="card sect-gap">
+    <div class="card-title">Upload Files</div>
+    <div class="grid-2">
+      <div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:6px;font-family:var(--mono);">Team Structure.xlsx</div>
+        <div class="upload-zone" onclick="document.getElementById('uploadTS').click()">
+          <div style="font-size:28px;margin-bottom:8px;">&#128194;</div>
+          <div style="font-size:12px;">Drop or click to upload</div>
+        </div>
+        <input type="file" id="uploadTS" accept=".xlsx" style="display:none;" onchange="handleUpload(this,'ts')">
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:6px;font-family:var(--mono);">EA_rawdata file</div>
+        <div class="upload-zone" onclick="document.getElementById('uploadEA').click()">
+          <div style="font-size:28px;margin-bottom:8px;">&#128194;</div>
+          <div style="font-size:12px;">Drop or click to upload</div>
+        </div>
+        <input type="file" id="uploadEA" accept=".xlsx" style="display:none;" onchange="handleUpload(this,'ea')">
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
+      <span>Team Structure Editor</span>
+      <div class="ch-toggle">
+        <button class="ch-btn active" id="te-cm" onclick="switchTeamEditor('cm')">CM</button>
+        <button class="ch-btn" id="te-ea" onclick="switchTeamEditor('ea')">EA</button>
+      </div>
+    </div>
+    <div id="teamEditorContainer"><div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:20px 0;">Connect backend to edit live team structure.</div></div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button class="btn btn-primary btn-sm" onclick="saveTeams()">&#128190; Save changes</button>
+      <button class="btn btn-ghost btn-sm" onclick="addTeamRow()">+ Add row</button>
+    </div>
+  </div>
+</section>
+</main>
+</div>
+<!-- Modal -->
+<div class="modal-overlay" id="previewModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="previewTitle">Report Preview</div>
+      <button class="modal-close" onclick="closePreview()">&#10005;</button>
+    </div>
+    <div class="modal-body"><iframe id="previewFrame" src="about:blank"></iframe></div>
+  </div>
+</div>
+<div class="notif" id="notif"></div>
+
+<script>
+const BACKEND='http://localhost:5000';
+let S={testMode:true,channel:'lark',group:'maze',running:false,
+  phases:{crm:'pending',ams:'pending',cm:'pending',ea:'pending',send:'pending'},
+  teamEditorMode:'cm',logCounts:{ok:0,warn:0,err:0}};
+let sseSource=null,simTimer=null;
+
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  const map={pipeline:'Pipeline',config:'Config',logs:'Live',reports:'Reports',
+             scheduler:'Sched',history:'Send',data:'Data'};
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    if(n.textContent.includes(map[name]||'~')) n.classList.add('active');
+  });
+  if(name==='scheduler') computeNextRuns();
+  if(name==='data') refreshHealth();
+}
+
+async function ping(){
+  try{const r=await fetch(BACKEND+'/api/ping',{signal:AbortSignal.timeout(2000)});
+    if(r.ok){setConn(true);return true;}}catch(e){}
+  setConn(false);return false;
+}
+function setConn(live){
+  document.getElementById('connDot').className='conn-dot'+(live?' live':'');
+  document.getElementById('connLabel').textContent=live?'connected':'demo mode';
+}
+setInterval(ping,8000);ping();
+
+function setPhase(ph,state){
+  S.phases[ph]=state;
+  document.getElementById('pc-'+ph).className='pc '+(state==='pending'?'':state);
+  const b=document.getElementById('badge-'+ph);b.className='pc-badge b-'+state;b.textContent=state;
+  const pg=document.getElementById('prog-'+ph);
+  pg.style.width=state==='done'||state==='failed'?'100%':state==='running'?'60%':'0%';
+  pg.style.background=state==='failed'?'var(--red)':state==='done'?'var(--green)':'var(--amber)';
+}
+function resetPhases(){
+  ['crm','ams','cm','ea','send'].forEach(p=>setPhase(p,'pending'));
+  document.getElementById('runStatus').textContent='idle';
+  if(simTimer){clearInterval(simTimer);simTimer=null;}
+  S.running=false;document.getElementById('runAllBtn').disabled=false;
+}
+
+function appendLog(logId,text,cls){
+  cls=cls||'log-info';
+  const el=document.getElementById(logId);
+  const div=document.createElement('div');div.className='log-line '+cls;
+  const now=new Date();
+  div.textContent='['+now.toTimeString().slice(0,8)+'] '+text;
+  el.appendChild(div);el.scrollTop=el.scrollHeight;
+  if(logId!=='fullLog'){const fl=document.getElementById('fullLog');const d2=div.cloneNode(true);fl.appendChild(d2);fl.scrollTop=fl.scrollHeight;}
+  if(cls==='log-ok'){S.logCounts.ok++;document.getElementById('logCountOk').textContent=S.logCounts.ok;}
+  else if(cls==='log-warn'){S.logCounts.warn++;document.getElementById('logCountWarn').textContent=S.logCounts.warn;}
+  else if(cls==='log-err'){S.logCounts.err++;document.getElementById('logCountErr').textContent=S.logCounts.err;}
+}
+function clearLog(id){document.getElementById(id).innerHTML='';}
+function lineClass(t){
+  const u=t.toUpperCase();
+  if(/^OK |DONE|SAVED/.test(u)) return 'log-ok';
+  if(/WARN/.test(u)) return 'log-warn';
+  if(/^ERROR|FAILED/.test(u)) return 'log-err';
+  if(/^====/.test(u)) return 'log-phase';
+  return 'log-info';
+}
+
+const LOG_SCRIPT=[
+  {ph:'crm',txt:'============================================================'},
+  {ph:'crm',txt:'PHASE 1: Scraping CRM (crm.51talk.com)'},
+  {ph:'crm',txt:'============================================================'},
+  {ph:'crm',txt:'Target date: 2026-03-29'},
+  {ph:'crm',txt:'Step 1: Trying requests with saved cookies...'},
+  {ph:'crm',txt:'  HTTP 200, parsing response...'},
+  {ph:'crm',txt:'  Shape: (645, 15)'},
+  {ph:'crm',txt:'  Saved 645 rows to sheet 1'},
+  {ph:'crm',txt:'OK CRM scraping done.'},
+  {ph:'ams',txt:'============================================================'},
+  {ph:'ams',txt:'PHASE 2: Scraping AMS (ams.51talkjr.com)'},
+  {ph:'ams',txt:'============================================================'},
+  {ph:'ams',txt:'Step 1: Logging in to AMS...'},
+  {ph:'ams',txt:'  Auto-login succeeded.'},
+  {ph:'ams',txt:'Step 2: Waiting for LP BI frame...'},
+  {ph:'ams',txt:'  BI frame found!'},
+  {ph:'ams',txt:'Step 5: Exporting report...'},
+  {ph:'ams',txt:'  Shape: 220 rows x 17 cols'},
+  {ph:'ams',txt:'OK AMS scraping done.'},
+  {ph:'cm', txt:'============================================================'},
+  {ph:'cm', txt:'PHASE 3: Generating CM Dashboard'},
+  {ph:'cm', txt:'============================================================'},
+  {ph:'cm', txt:'  CRM rows: 645  IUR rows: 220  Merged: 312 agents'},
+  {ph:'cm', txt:'HTML individual report saved.'},
+  {ph:'cm', txt:'HTML team summary saved.'},
+  {ph:'cm', txt:'Generating screenshots...'},
+  {ph:'cm', txt:'  CM_Individual_Report.png saved.'},
+  {ph:'cm', txt:'  CM_Team_Summary.png saved.'},
+  {ph:'cm', txt:'OK CM dashboard done.'},
+  {ph:'ea', txt:'============================================================'},
+  {ph:'ea', txt:'PHASE 4: Generating EA Dashboard'},
+  {ph:'ea', txt:'============================================================'},
+  {ph:'ea', txt:'  EA agents: 88  Teams: 12'},
+  {ph:'ea', txt:'OK EA dashboard done.'},
+  {ph:'send',txt:'============================================================'},
+  {ph:'send',txt:'PHASE 5: Sending cards to Lark group'},
+  {ph:'send',txt:'============================================================'},
+  {ph:'send',txt:'  Token obtained.'},
+  {ph:'send',txt:'  Uploading CM images...'},
+  {ph:'send',txt:'  CM card sent.'},
+  {ph:'send',txt:'OK Cards sent.'},
+];
+
+function simulatePipeline(phases){
+  const lines=LOG_SCRIPT.filter(l=>phases.includes(l.ph));
+  let i=0,activePh=null;
+  phases.forEach(p=>setPhase(p,'pending'));
+  function step(){
+    if(i>=lines.length){
+      S.running=false;document.getElementById('runAllBtn').disabled=false;
+      document.getElementById('runStatus').textContent='done';showNotif('Pipeline complete','ok');return;
+    }
+    const line=lines[i++];
+    if(line.ph!==activePh){
+      if(activePh) setPhase(activePh,'done');
+      activePh=line.ph;setPhase(activePh,'running');
+      document.getElementById('runStatus').textContent='running: '+activePh;
+    }
+    if(i===lines.length&&activePh) setTimeout(()=>setPhase(activePh,'done'),150);
+    appendLog('pipelineLog',line.txt,lineClass(line.txt));
+  }
+  simTimer=setInterval(step,110);
+}
+
+async function runAll(){
+  if(S.running)return;
+  const checked=[...document.querySelectorAll('#phaseChecklist input:checked')].map(c=>c.dataset.phase);
+  if(!checked.length){showNotif('No phases selected','err');return;}
+  S.running=true;document.getElementById('runAllBtn').disabled=true;
+  const live=await ping();
+  if(live)startSSE(checked);
+  else{appendLog('pipelineLog','[demo] Backend offline - running simulation','log-warn');simulatePipeline(checked);}
+}
+function runPhase(ph){
+  if(S.running){showNotif('Pipeline already running','err');return;}
+  S.running=true;document.getElementById('runAllBtn').disabled=true;
+  ping().then(live=>{if(live)startSSE([ph]);else{appendLog('pipelineLog','[demo] Simulating: '+ph,'log-warn');simulatePipeline([ph]);}});
+}
+function startSSE(phases){
+  if(sseSource)sseSource.close();
+  document.getElementById('streamStatus').textContent='[live]';
+  const url=BACKEND+'/api/run?phases='+phases.join(',')+'&test='+S.testMode+'&channel='+S.channel+'&group='+S.group;
+  sseSource=new EventSource(url);
+  sseSource.onmessage=e=>{
+    const d=JSON.parse(e.data);
+    if(d.type==='log')appendLog('pipelineLog',d.text,lineClass(d.text));
+    else if(d.type==='phase')setPhase(d.phase,d.state);
+    else if(d.type==='done'){S.running=false;document.getElementById('runAllBtn').disabled=false;document.getElementById('runStatus').textContent='done';document.getElementById('streamStatus').textContent='[idle]';sseSource.close();showNotif('Pipeline complete','ok');}
+  };
+  sseSource.onerror=()=>{document.getElementById('streamStatus').textContent='[disconnected]';S.running=false;document.getElementById('runAllBtn').disabled=false;sseSource.close();};
+}
+
+function updateConfig(){S.testMode=document.getElementById("testModeToggle").checked;}
+function clearDate(){document.getElementById("dateOverride").value="";}
+function setChannel(ch){
+  S.channel=ch;
+  document.getElementById("ch-lark").className="ch-btn"+(ch==="lark"?" active":"");
+  document.getElementById("ch-dingtalk").className="ch-btn"+(ch==="dingtalk"?" active":"");
+}
+function setGroup(btn,g){
+  S.group=g;
+  document.querySelectorAll(".grp-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+}
+document.querySelectorAll(".phase-check-item input").forEach(inp=>{
+  inp.addEventListener("change",function(){this.closest(".phase-check-item").classList.toggle("checked",this.checked);});
+});
+function openPreview(file,title){
+  document.getElementById("previewTitle").textContent=title;
+  document.getElementById("previewFrame").src="Output/"+file;
+  document.getElementById("previewModal").classList.add("open");
+}
+function closePreview(){
+  document.getElementById("previewModal").classList.remove("open");
+  document.getElementById("previewFrame").src="about:blank";
+}
+document.getElementById("previewModal").addEventListener("click",function(e){if(e.target===this)closePreview();});
+function computeNextRuns(){
+  const now=new Date();
+  [[1300,13,0],[1400,14,0],[1500,15,0],[2200,22,0],[2300,23,0],[0,0,0],[100,1,0]].forEach(function(slot){
+    const id=slot[0],h=slot[1],m=slot[2];
+    let t=new Date(now);t.setHours(h,m,0,0);
+    if(t<=now)t.setDate(t.getDate()+1);
+    const el=document.getElementById("next-"+String(id).padStart(4,"0"));
+    if(el)el.textContent=t.toLocaleString("en-GB",{weekday:"short",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
+  });
+}
+async function runSchedulerSetup(){showNotif("Calling setup_schedule.py...","ok");try{await fetch(BACKEND+"/api/scheduler/setup",{method:"POST"});}catch(e){}}
+async function runSchedulerRemove(){if(!confirm("Remove all scrap_bot scheduled tasks?"))return;try{await fetch(BACKEND+"/api/scheduler/remove",{method:"POST"});}catch(e){}showNotif("Tasks removed","ok");}
+function loadHistory(){showNotif("History refreshed","ok");}
+async function retrySend(){
+  showNotif("Retrying...","ok");
+  try{const r=await fetch(BACKEND+"/api/send/retry",{method:"POST"});if(r.ok)showNotif("Resent ok","ok");}
+  catch(e){showNotif("Backend offline","err");}
+}
+async function refreshHealth(){
+  try{const r=await fetch(BACKEND+"/api/health");
+    if(r.ok){const d=await r.json();
+      document.getElementById("sheet1-status").textContent=(d.sheet1_rows||"?")+" rows";
+      document.getElementById("sheet2-status").textContent=(d.sheet2_rows||"?")+" rows";
+      document.getElementById("rawdata-mtime").textContent=d.rawdata_mtime||"--";
+      document.getElementById("ts-status").textContent=d.ts_ok?"ok":"missing";
+      document.getElementById("crm-cookie").textContent=d.crm_cookie?"found":"not found";
+      return;}}catch(e){}
+  document.getElementById("sheet1-status").textContent="645 rows";
+  document.getElementById("sheet2-status").textContent="220 rows";
+  document.getElementById("rawdata-mtime").textContent="2026-03-29 15:00";
+  document.getElementById("ts-status").textContent="ok";
+}
+function clearCookies(){ping().then(live=>{
+  if(live)fetch(BACKEND+"/api/cookies/clear",{method:"DELETE"}).then(()=>showNotif("Cookies cleared","ok"));
+  else showNotif("Backend offline","err");
+});}
+function handleUpload(input,type){
+  if(!input.files.length)return;
+  const f=input.files[0],fd=new FormData();fd.append("file",f);fd.append("type",type);
+  fetch(BACKEND+"/api/upload",{method:"POST",body:fd})
+    .then(r=>r.ok?showNotif("Uploaded: "+f.name,"ok"):showNotif("Upload failed","err"))
+    .catch(()=>showNotif("Backend offline","err"));
+}
+let teamData={cm:[],ea:[]};
+function switchTeamEditor(mode){
+  S.teamEditorMode=mode;
+  document.getElementById("te-cm").className="ch-btn"+(mode==="cm"?" active":"");
+  document.getElementById("te-ea").className="ch-btn"+(mode==="ea"?" active":"");
+  renderTeamEditor();
+}
+async function loadTeams(){
+  try{const r=await fetch(BACKEND+"/api/teams");if(r.ok){teamData=await r.json();renderTeamEditor();return;}}catch(e){}
+  teamData={cm:[{team:"ME-GCC01",crm:"EGLP-OmarM"},{team:"ME-GCC01",crm:"51ahmed"}],ea:[{team:"EA-GCC01",crm:"EA-Hassan"}]};
+  renderTeamEditor();
+}
+function renderTeamEditor(){
+  const data=teamData[S.teamEditorMode];
+  const cont=document.getElementById("teamEditorContainer");
+  if(!data.length){cont.innerHTML="<div style="color:var(--muted)">No data</div>";return;}
+  const tbl=document.createElement("table");tbl.className="team-table";
+  tbl.innerHTML="<tr><th>Team</th><th>CRM Username</th><th></th></tr>";
+  data.forEach(function(row,i){
+    const tr=document.createElement("tr");
+    const td1=document.createElement("td");
+    const inp1=document.createElement("input");
+    inp1.value=row.team;inp1.dataset.i=i;inp1.dataset.col="team";
+    inp1.addEventListener("change",function(){teamData[S.teamEditorMode][+this.dataset.i].team=this.value;});
+    td1.appendChild(inp1);
+    const td2=document.createElement("td");
+    const inp2=document.createElement("input");
+    inp2.value=row.crm;inp2.dataset.i=i;inp2.dataset.col="crm";
+    inp2.addEventListener("change",function(){teamData[S.teamEditorMode][+this.dataset.i].crm=this.value;});
+    td2.appendChild(inp2);
+    const td3=document.createElement("td");
+    const btn=document.createElement("button");
+    btn.className="del-btn";btn.textContent="x";btn.dataset.i=i;
+    btn.addEventListener("click",function(){delTeamRow(+this.dataset.i);});
+    td3.appendChild(btn);
+    tr.appendChild(td1);tr.appendChild(td2);tr.appendChild(td3);
+    tbl.appendChild(tr);
+  });
+  cont.innerHTML="";cont.appendChild(tbl);
+}
+function addTeamRow(){teamData[S.teamEditorMode].push({team:"",crm:""});renderTeamEditor();}
+function delTeamRow(i){teamData[S.teamEditorMode].splice(i,1);renderTeamEditor();}
+async function saveTeams(){
+  try{const r=await fetch(BACKEND+"/api/teams",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(teamData)});if(r.ok){showNotif("Teams saved","ok");return;}}catch(e){}
+  showNotif("Backend offline","err");
+}
+loadTeams();
+let notifTimer=null;
+function showNotif(msg,type){
+  type=type||"ok";
+  const n=document.getElementById("notif");n.textContent=msg;n.className="notif show notif-"+(type==="ok"?"ok":"err");
+  if(notifTimer)clearTimeout(notifTimer);notifTimer=setTimeout(function(){n.className="notif";},2800);
+}
+function downloadLog(){
+  const lines=[...document.getElementById("fullLog").querySelectorAll(".log-line")].map(l=>l.textContent);
+  const blob=new Blob([lines.join("
+")],{type:"text/plain"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="scrapbot_log_"+new Date().toISOString().slice(0,16).replace("T","_")+".txt";a.click();
+}
+computeNextRuns();
+appendLog("pipelineLog","scrap_bot control panel ready.","log-dim");
+</script>
+</body>
+</html>

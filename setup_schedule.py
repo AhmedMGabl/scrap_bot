@@ -3,34 +3,29 @@
 setup_schedule.py
 Run ONCE as Administrator to register all scrap_bot Task Scheduler tasks.
 """
-import subprocess, os, sys
+import subprocess, os
 
 SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
-PYTHON_EXE  = sys.executable
-MAIN_SCRIPT = os.path.join(SCRIPT_DIR, "run_daily_report.py")
+BAT_SCRIPT  = os.path.join(SCRIPT_DIR, "run_daily_report.bat")
 FOLDER      = "scrap_bot"
+WEEKDAYS    = "SUN,MON,TUE,WED,THU"  # skip Friday and Saturday
 
 TASKS = [
-    ("scrap_bot_morning_1300", "13:00", "DAILY",  None),
-    ("scrap_bot_morning_1400", "14:00", "DAILY",  None),
-    ("scrap_bot_morning_1500", "15:00", "DAILY",  None),
-    ("scrap_bot_night_2200",   "22:00", "DAILY",  None),
-    ("scrap_bot_night_2300",   "23:00", "DAILY",  None),
-    ("scrap_bot_night_0000",   "00:00", "DAILY",  None),
-    ("scrap_bot_saturday_late","01:00", "WEEKLY", "SUN"),
+    ("scrap_bot_1500", "15:00"),
+    ("scrap_bot_1800", "18:00"),
+    ("scrap_bot_2100", "21:00"),
 ]
 
-def create_task(name, time_str, schedule, day):
-    # /TR must wrap both paths in escaped inner quotes to handle spaces
-    tr_inner = chr(92) + chr(34) + PYTHON_EXE + chr(92) + chr(34) + " " + chr(92) + chr(34) + MAIN_SCRIPT + chr(92) + chr(34)
-    tr = chr(34) + tr_inner + chr(34)
-    tn = chr(34) + FOLDER + chr(92) + name + chr(34)
-    parts = ["schtasks", "/Create", "/F", "/TN", tn, "/TR", tr, "/SC", schedule]
-    if day:
-        parts += ["/D", day]
-    parts += ["/ST", time_str]
-    cmd = " ".join(parts)
-    r = subprocess.run(cmd, capture_output=True, text=True, shell=True)
+def create_task(name, time_str):
+    args = [
+        "schtasks", "/Create", "/F",
+        "/TN", FOLDER + chr(92) + name,
+        "/TR", 'cmd.exe /c "' + BAT_SCRIPT + '"',
+        "/SC", "WEEKLY",
+        "/D", WEEKDAYS,
+        "/ST", time_str,
+    ]
+    r = subprocess.run(args, capture_output=True, text=True)
     status = "OK" if r.returncode == 0 else r.stderr.strip()
     print(f"  {name} @ {time_str}: {status}")
 
@@ -38,11 +33,11 @@ if __name__ == "__main__":
     print("=" * 50)
     print("scrap_bot Scheduler Setup")
     print("=" * 50)
-    print(f"Python:  {PYTHON_EXE}")
-    print(f"Script:  {MAIN_SCRIPT}")
+    print(f"Batch:   {BAT_SCRIPT}")
+    print(f"Days:    {WEEKDAYS}")
     print()
-    for args in TASKS:
-        create_task(*args)
+    for name, t in TASKS:
+        create_task(name, t)
     print()
     print("Done. Verify in Task Scheduler (taskschd.msc) under:", FOLDER)
     print("To remove all tasks: python remove_schedule.py")

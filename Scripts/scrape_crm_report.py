@@ -4,7 +4,7 @@ import openpyxl
 from playwright.sync_api import sync_playwright
 import requests
 import time, os, sys, json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 if sys.platform == 'win32':
     sys.stdout.reconfigure(encoding='utf-8')
@@ -27,7 +27,8 @@ JS_EXTRACT = """
     const cells = Array.from(row.querySelectorAll('td')).map(td => td.textContent.trim());
     if (cells.length < 10) continue;
     if (!cells[1] || cells[1] === '/') continue;
-    if (cells[0] === 'Total') continue;
+    // Skip group header rows and sub-total rows: agent rows always have a numeric serial
+    if (!/^\d+$/.test(cells[0])) continue;
     data.push(cells);
   }
   return JSON.stringify({headers, data});
@@ -75,7 +76,7 @@ def _try_requests(cookie_file, today_str, rawdata_file):
         rows = []
         for row in all_rows[1:]:
             cells = [td.get_text(strip=True) for td in row.find_all("td")]
-            if len(cells) < 10 or not cells[1] or cells[1] == "/" or cells[0] in ("Total", "In total"):
+            if len(cells) < 10 or not cells[1] or cells[1] == "/" or not cells[0].isdigit():
                 continue
             rows.append(cells)
         if not rows:
@@ -103,7 +104,13 @@ def scrape_crm_report():
     parent_dir   = os.path.dirname(script_dir)
     rawdata_file = os.path.join(parent_dir, "Input", "rawdata.xlsx")
     PROFILE_DIR  = os.path.join(script_dir, "chrome_profile")
-    today_str    = datetime.now().strftime("%Y-%m-%d")
+    now          = datetime.now()
+    # After midnight but before noon: report on yesterday's shift
+    if now.hour < 12:
+        target_date = now - timedelta(days=1)
+    else:
+        target_date = now
+    today_str    = target_date.strftime("%Y-%m-%d")
 
     print("=" * 60)
     print("CRM Call Report Scraper")
@@ -136,40 +143,52 @@ def scrape_crm_report():
                 page.locator("#user_name").fill(CRM_USERNAME)
                 page.locator("#pwd").fill(CRM_PASSWORD)
                 page.locator("#Submit").click()
-                page.wait_for_load_state("networkidle", timeout=15000)
+                try:
+                    page.wait_for_load_state("networkidle", timeout=15000)
+                except Exception:
+                    pass  # domcontentloaded fired; continue regardless
                 print(f"  After login: {page.url}")
             print("Step 2: Navigating to report page...")
             page.goto(CRM_URL, wait_until="domcontentloaded", timeout=60000)
             print(f"  Page: {page.url}")
 
-            # Step 2: Set date to today
-            print(f"Step 2: Setting date to {today_str}...")
+            # Step 2: Set start_date to today via JS, set end_date to tomorrow via UI picker
+            tomorrow      = target_date + timedelta(days=1)
+            tomorrow_str  = tomorrow.strftime("%Y-%m-%d")
+            tomorrow_day  = str(tomorrow.day)
+            print(f"Step 2: Setting date range {today_str} to {tomorrow_str}...")
             try:
-                page.evaluate(f"""
-                    () => {{
-                        document.getElementById('start_date').value = '{today_str}';
-                        document.querySelectorAll('input#start_date')[1].value = '{today_str}';
-                    }}
-                """)
-                time.sleep(0.5)
+                page.evaluate(f"document.getElementById('start_date').value = '{today_str}'")
+                time.sleep(0.3)
+                print("  Start date: ok")
             except Exception as e:
-                print(f"  WARNING: date set failed: {e}")
+                print(f"  WARNING: start_date set failed: {e}")
 
-            # Step 3: Uncheck "Display by group" to get individual agent rows
-            try:
-                cb = page.query_selector('input[name="is_show_group"]')
-                if cb and cb.is_checked():
-                    cb.uncheck()
-            except:
-                pass
+            # Click end_date input to open SelectDate() overlay picker, then select tomorrow
+            page.click('input[name="end_date"]')
+            page.wait_for_timeout(1200)
+            # Calendar day cells have style="cursor: pointer" — target exactly those
+            page.locator('td[style*="cursor"]').filter(has_text=tomorrow_day).first.click()
+            page.wait_for_timeout(300)
+            print(f"  End date picker: selected {tomorrow_str}")
 
-            # Step 4: Click submit
+            # Keep is_show_group checked (group view) to get ALL agents including zero-call agents
+            # Individual view misses agents who have no calls on the queried date
+
+            # Step 3: Click submit and wait for fresh results
             print("Step 3: Submitting query...")
+            page.wait_for_timeout(500)  # let picker close fully before submitting
             submit = page.query_selector('input[type="submit"][value="submit"], input[value="submit"]')
             if submit:
                 submit.click()
-                print("  Submitted. Waiting for data table...")
+                print("  Submitted. Waiting for results to reload...")
+                # Wait for the table to detach (page reloads) then reappear with fresh data
+                try:
+                    page.wait_for_selector("table:has-text('Total valid calls')", state="detached", timeout=10000)
+                except Exception:
+                    pass  # page may reload too fast to catch detach
                 page.wait_for_selector("table:has-text('Total valid calls')", timeout=30000)
+                page.wait_for_load_state("networkidle", timeout=30000)
                 print("  Data table loaded.")
             else:
                 print("  WARNING: submit button not found")
