@@ -185,11 +185,16 @@ def aggregate_monthly_data(monthly_files):
 def read_ea_structure(file_path):
     """Read EA structure from Team Structure.xlsx"""
     print("\nReading EA structure...")
-    df = pd.read_excel(file_path, sheet_name='EA')
-    
-    # The EA sheet has Chinese column names, rename them
+    import openpyxl
+    wb = openpyxl.load_workbook(file_path, read_only=True)
+    sheet_names = wb.sheetnames
+    wb.close()
+    # Try 'EA' first, fall back to first sheet
+    ea_sheet = 'EA' if 'EA' in sheet_names else sheet_names[0]
+    if ea_sheet != 'EA':
+        print(f"  Warning: 'EA' sheet not found, using '{ea_sheet}'")
+    df = pd.read_excel(file_path, sheet_name=ea_sheet)
     df.columns = ['Team', 'CRM']
-    
     print(f"EA Structure: {len(df)} members across {df['Team'].nunique()} teams")
     return df
 

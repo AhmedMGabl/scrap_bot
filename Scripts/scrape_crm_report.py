@@ -13,7 +13,8 @@ CRM_URL       = "https://crm.51talk.com/scReportForms/sc_call_info_new?userType=
 CRM_LOGIN_URL = "https://crm.51talk.com/admin/admin_login.php?login_employee_type=sideline&redirect_uri="
 CRM_USERNAME  = "51Hany"
 CRM_PASSWORD  = "b%7DWWtm"
-CHROME_PATH = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+# Use Playwright's bundled Chromium (works on Linux/Docker)
+CHROME_PATH = None
 
 JS_EXTRACT = """
 () => {
@@ -127,18 +128,23 @@ def scrape_crm_report():
         print("Step 1: No cookie file, using browser...")
 
     with sync_playwright() as p:
+        launch_args = ["--disable-blink-features=AutomationControlled",
+                       "--no-sandbox", "--disable-dev-shm-usage"]
         browser = p.chromium.launch(
-            executable_path=CHROME_PATH,
-            headless=False,
-            args=["--disable-blink-features=AutomationControlled"],
+            headless=True,
+            args=launch_args,
         )
-        context = browser.new_context(viewport={"width": 1400, "height": 900})
+        context = browser.new_context(
+            viewport={"width": 1400, "height": 900},
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        )
         page = context.new_page()
         page.set_default_timeout(60000)
 
         try:
             print("Step 1: Logging in to CRM...")
-            page.goto(CRM_LOGIN_URL, wait_until="domcontentloaded", timeout=30000)
+            page.goto(CRM_LOGIN_URL, wait_until="networkidle", timeout=30000)
+            page.wait_for_timeout(2000)
             if "admin_login" in page.url:
                 page.locator("#user_name").fill(CRM_USERNAME)
                 page.locator("#pwd").fill(CRM_PASSWORD)
@@ -149,7 +155,7 @@ def scrape_crm_report():
                     pass  # domcontentloaded fired; continue regardless
                 print(f"  After login: {page.url}")
             print("Step 2: Navigating to report page...")
-            page.goto(CRM_URL, wait_until="domcontentloaded", timeout=60000)
+            page.goto(CRM_URL, wait_until="networkidle", timeout=60000)
             print(f"  Page: {page.url}")
 
             # Step 2: Set start_date to today via JS, set end_date to tomorrow via UI picker

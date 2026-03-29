@@ -8,6 +8,7 @@ import sys
 import json
 import shutil
 import subprocess
+import time
 import requests
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
@@ -50,10 +51,9 @@ LARK_CHAT_ID      = LARK_CHAT_ID_TEST if TEST_MODE else LARK_CHAT_ID_PROD
 
 
 # -- DingTalk config --------------------------------------------------------
-DINGTALK_WEBHOOK_URL  = "https://oapi.dingtalk.com/robot/send?access_token=58026c5865fe584a277df17488ab96ff18025af75ba73bf8d55227966b66c102"
-GITHUB_IMAGE_REPO_URL = "https://github.com/Hanyy92/Test.git"
-GITHUB_RAW_BASE       = "https://raw.githubusercontent.com/Hanyy92/Test/main"
-GITHUB_IMAGE_REPO_DIR = os.path.join(SCRIPT_DIR, "image_host")
+DINGTALK_WEBHOOK_URL  = "https://oapi.dingtalk.com/robot/send?access_token=28bc378d0fc40e94d1ae14f3223373c8d6fe6654e6595dd4ff6a138ecc3de0a3"
+# Images served directly from local nginx — no GitHub needed
+LOCAL_IMAGE_BASE      = "https://ahmed-live-lab-u56467.vm.elestio.app:15011/Output"
 
 # -- Import local scripts ---------------------------------------------------
 sys.path.insert(0, os.path.join(SCRIPT_DIR, "Scripts"))
@@ -158,47 +158,15 @@ def run_ea_dashboard():
 
 
 # -- Phase 6: DingTalk webhook ----------------------------------------------
-def push_pngs_to_github(png_paths):
-    """Copy PNGs to local Test repo clone with timestamp names, delete old ones, commit and push."""
-    repo = GITHUB_IMAGE_REPO_DIR
-
-    # Clone once, pull on subsequent runs
-    if not os.path.exists(os.path.join(repo, ".git")):
-        print("  Cloning image host repo...")
-        subprocess.run(["git", "clone", GITHUB_IMAGE_REPO_URL, repo], check=True)
-    else:
-        subprocess.run(["git", "-C", repo, "pull", "--rebase"], check=True)
-
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-
-    # Delete old CM_*.png files from repo
-    old_pngs = [f for f in os.listdir(repo) if f.startswith("CM_") and f.endswith(".png")]
-    if old_pngs:
-        subprocess.run(["git", "-C", repo, "rm", "--ignore-unmatch"] + old_pngs, check=True)
-        print(f"  Removed {len(old_pngs)} old image(s).")
-
-    # Copy PNGs into repo with timestamped names
-    orig_to_new = {}
+def get_local_image_urls(png_paths):
+    """Return local nginx URLs for the given PNG paths (no GitHub needed)."""
+    url_map = {}
     for path in png_paths:
         if os.path.exists(path):
-            orig = os.path.basename(path)                          # CM_Team_Summary.png
-            base = os.path.splitext(orig)[0]                       # CM_Team_Summary
-            fname = f"{base}_{timestamp}.png"                      # CM_Team_Summary_20260324_1839.png
-            shutil.copy2(path, os.path.join(repo, fname))
-            orig_to_new[orig] = fname
-
-    # Commit and push
-    subprocess.run(["git", "-C", repo, "add"] + list(orig_to_new.values()), check=True)
-    status = subprocess.run(["git", "-C", repo, "diff", "--cached", "--quiet"], capture_output=True)
-    if status.returncode != 0:
-        today = datetime.now().strftime("%Y-%m-%d %H:%M")
-        subprocess.run(["git", "-C", repo, "commit", "-m", f"report {today}"], check=True)
-        subprocess.run(["git", "-C", repo, "push"], check=True)
-        print("  Images pushed to GitHub.")
-    else:
-        print("  Images unchanged, skipping push.")
-
-    return {orig: f"{GITHUB_RAW_BASE}/{new}" for orig, new in orig_to_new.items()}
+            fname = os.path.basename(path)
+            url_map[fname] = f"{LOCAL_IMAGE_BASE}/{fname}"
+            print(f"  Image URL: {url_map[fname]}")
+    return url_map
 
 
 def dingtalk_send_webhook(image_urls, labels):
@@ -231,8 +199,8 @@ def run_send_dingtalk(cm_pngs):
         valid_labels = [l for l, _ in valid_pairs]
         valid_paths  = [p for _, p in valid_pairs]
 
-        print("  Pushing images to GitHub...")
-        url_map = push_pngs_to_github(valid_paths)
+        print("  Building local image URLs...")
+        url_map = get_local_image_urls(valid_paths)
         image_urls = [url_map[os.path.basename(p)] for p in valid_paths]
 
         print("  Sending DingTalk webhook...")

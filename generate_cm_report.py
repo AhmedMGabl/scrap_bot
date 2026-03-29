@@ -201,13 +201,14 @@ def generate_screenshots(html_files, output_dir):
         'CM_Bottom20':          'bottom20Table',
     }
 
-    HTML2CANVAS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
+    # Use locally bundled html2canvas to avoid CDN dependency
+    HTML2CANVAS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Scripts', 'html2canvas.min.js')
 
     print("Generating screenshots...")
 
 
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = p.chromium.launch(args=["--no-sandbox", "--disable-dev-shm-usage"])
         context = browser.new_context(viewport={'width': 1400, 'height': 900})
         page = context.new_page()
 
@@ -221,7 +222,7 @@ def generate_screenshots(html_files, output_dir):
 
             if element_id:
                 try:
-                    page.add_script_tag(url=HTML2CANVAS_CDN)
+                    page.add_script_tag(path=HTML2CANVAS_PATH)
                     page.wait_for_function('typeof html2canvas === "function"', timeout=15000)
                     png_b64 = page.evaluate("""async (elementId) => {
                         const element = document.getElementById(elementId);

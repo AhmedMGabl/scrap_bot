@@ -1,0 +1,19 @@
+services:
+  scrap-dashboard:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "172.17.0.1:15013:80"
+    volumes:
+      - /opt/app/scrap_bot:/usr/share/nginx/html
+      - /opt/app/scrap_bot/nginx.conf:/etc/nginx/conf.d/default.conf
+
+  scrap-api:
+    image: python:3.11-slim
+    restart: always
+    ports:
+      - "172.17.0.1:15012:5000"
+    volumes:
+      - /opt/app/scrap_bot:/app
+    working_dir: /app
+    command: sh -c "pip install flask apscheduler openpyxl pandas requests beautifulsoup4 playwright psutil -q --no-cache-dir && playwright install chromium --with-deps && python server.py"

@@ -18,7 +18,7 @@ def scrape_iur_new_report():
     script_dir   = os.path.dirname(os.path.abspath(__file__))
     parent_dir   = os.path.dirname(script_dir)
     rawdata_file = os.path.join(parent_dir, "Input", "rawdata.xlsx")
-    CHROME_PATH  = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+    # Use Playwright's bundled Chromium (works on Linux/Docker)
     PROFILE_DIR  = os.path.join(script_dir, "chrome_profile")
     DOWNLOAD_DIR = os.path.join(script_dir, "downloads")
     os.makedirs(DOWNLOAD_DIR, exist_ok=True)
@@ -30,10 +30,11 @@ def scrape_iur_new_report():
     with sync_playwright() as p:
         context = p.chromium.launch_persistent_context(
             user_data_dir=PROFILE_DIR,
-            executable_path=CHROME_PATH,
-            headless=False,
+            headless=True,
             viewport={"width": 1400, "height": 900},
-            args=["--disable-blink-features=AutomationControlled"],
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            args=["--disable-blink-features=AutomationControlled",
+                  "--no-sandbox", "--disable-dev-shm-usage"],
             accept_downloads=True,
             downloads_path=DOWNLOAD_DIR,
         )
@@ -46,18 +47,16 @@ def scrape_iur_new_report():
             # Step 1: Login
             print("Step 1: Logging in to AMS...")
             lp_page = context.pages[0] if context.pages else context.new_page()
-            lp_page.goto(AMS_LOGIN_URL)
-            try:
-                lp_page.wait_for_load_state("networkidle", timeout=10000)
-            except Exception:
-                lp_page.wait_for_timeout(2000)
+            lp_page.goto(AMS_LOGIN_URL, wait_until="networkidle", timeout=30000)
+            lp_page.wait_for_timeout(2000)
             if "login" in lp_page.url and "login-turn" not in lp_page.url:
                 try:
-                    lp_page.wait_for_selector('input[placeholder*="手机号"]', timeout=8000)
+                    lp_page.wait_for_selector('input[placeholder*="手机号"]', timeout=10000)
                     lp_page.fill('input[placeholder*="手机号"]', AMS_USERNAME)
                     lp_page.fill('input[placeholder*="密码"]', AMS_PASSWORD)
                     lp_page.click('button:has-text("登录")')
-                    lp_page.wait_for_url("**/login-turn**", timeout=15000)
+                    lp_page.wait_for_url("**/login-turn**", timeout=20000)
+                    lp_page.wait_for_timeout(3000)
                     print("  Login OK")
                 except Exception as e:
                     print(f"  Auto-login failed ({e}), log in manually")
