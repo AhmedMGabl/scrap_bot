@@ -722,7 +722,7 @@ async function loadTeams(){
 function renderTeamEditor(){
   const data=teamData[S.teamEditorMode];
   const cont=document.getElementById("teamEditorContainer");
-  if(!data.length){cont.innerHTML="<div style="color:var(--muted)">No data</div>";return;}
+  if(!data.length){cont.innerHTML='<div style="color:var(--muted)">No data</div>';return;}
   const tbl=document.createElement("table");tbl.className="team-table";
   tbl.innerHTML="<tr><th>Team</th><th>CRM Username</th><th></th></tr>";
   data.forEach(function(row,i){
@@ -762,8 +762,7 @@ function showNotif(msg,type){
 }
 function downloadLog(){
   const lines=[...document.getElementById("fullLog").querySelectorAll(".log-line")].map(l=>l.textContent);
-  const blob=new Blob([lines.join("
-")],{type:"text/plain"});
+  const blob=new Blob([lines.join("\n")],{type:"text/plain"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);
   a.download="scrapbot_log_"+new Date().toISOString().slice(0,16).replace("T","_")+".txt";a.click();
 }
