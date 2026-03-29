@@ -36,7 +36,7 @@ def _save_config(data):
 
 # ── scheduler ─────────────────────────────────────────────────────────────────
 
-scheduler = BackgroundScheduler(timezone="Asia/Shanghai")
+scheduler = BackgroundScheduler(timezone="Africa/Cairo")
 _schedule_lock = threading.Lock()
 
 
@@ -96,7 +96,7 @@ def _register_jobs():
             scheduler.add_job(
                 _run_pipeline_job,
                 CronTrigger(hour=hour, minute=minute, day_of_week=days,
-                            timezone="Asia/Shanghai"),
+                            timezone="Africa/Cairo"),
                 id=job["id"],
                 args=[job["id"], job.get("phases", ["crm","ams","cm","ea","send"]),
                       job.get("test", True), job.get("channel", "dingtalk")],
