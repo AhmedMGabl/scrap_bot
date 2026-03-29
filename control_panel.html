@@ -233,17 +233,36 @@ input[type=date].inp{color-scheme:dark;}
       <div style="margin-bottom:16px;">
         <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-family:var(--mono);">CHANNEL</div>
         <div class="ch-toggle">
-          <button class="ch-btn active" id="ch-lark" onclick="setChannel('lark')">Lark</button>
+          <button class="ch-btn" id="ch-lark" onclick="setChannel('lark')">Lark</button>
           <button class="ch-btn" id="ch-dingtalk" onclick="setChannel('dingtalk')">DingTalk</button>
         </div>
       </div>
-      <div>
+      <!-- Lark groups — shown when channel=lark -->
+      <div id="lark-groups" style="display:none;">
         <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-family:var(--mono);">LARK GROUP</div>
         <div class="grp-btns">
           <button class="grp-btn active" onclick="setGroup(this,'maze')">Maze Runners</button>
           <button class="grp-btn" onclick="setGroup(this,'test')">Hany TEST</button>
           <button class="grp-btn" onclick="setGroup(this,'egea')">EGEA Miracle</button>
         </div>
+      </div>
+      <!-- DingTalk groups — shown when channel=dingtalk -->
+      <div id="dingtalk-groups" style="display:none;">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-family:var(--mono);">DINGTALK GROUP</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:14px;">The selected group receives the report on each pipeline send.</div>
+        <div id="dtGroupList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;"></div>
+        <div style="display:flex;gap:8px;align-items:flex-end;">
+          <div style="flex:0 0 160px;">
+            <label class="inp-label">Group Name</label>
+            <input class="inp" id="dtNewName" placeholder="e.g. Maze Runners" style="margin-top:4px;">
+          </div>
+          <div style="flex:1;">
+            <label class="inp-label">Webhook URL</label>
+            <input class="inp" id="dtNewUrl" placeholder="https://oapi.dingtalk.com/robot/send?access_token=..." style="margin-top:4px;">
+          </div>
+          <button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="addDingTalkGroup()">+ Add Group</button>
+        </div>
+        <div id="dtAddErr" style="font-size:12px;color:#f87171;margin-top:6px;display:none;"></div>
       </div>
     </div>
   </div>
@@ -256,23 +275,6 @@ input[type=date].inp{color-scheme:dark;}
       <label class="phase-check-item checked"><input type="checkbox" checked data-phase="ea">  <span style="font-family:var(--mono);font-size:13px;">Phase 4 &#8212; EA Dashboard</span></label>
       <label class="phase-check-item checked"><input type="checkbox" checked data-phase="send"><span style="font-family:var(--mono);font-size:13px;">Phase 5 &#8212; Send Cards</span></label>
     </div>
-  </div>
-  <div class="card sect-gap" id="dtWebhooksCard">
-    <div class="card-title">DingTalk Webhooks</div>
-    <div style="font-size:12px;color:var(--text3);margin-bottom:14px;">Groups connected to the bot. The selected group receives the report on each pipeline send.</div>
-    <div id="dtGroupList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;"></div>
-    <div style="display:flex;gap:8px;align-items:flex-end;">
-      <div style="flex:0 0 160px;">
-        <label class="inp-label">Group Name</label>
-        <input class="inp" id="dtNewName" placeholder="e.g. Maze Runners" style="margin-top:4px;">
-      </div>
-      <div style="flex:1;">
-        <label class="inp-label">Webhook URL</label>
-        <input class="inp" id="dtNewUrl" placeholder="https://oapi.dingtalk.com/robot/send?access_token=..." style="margin-top:4px;">
-      </div>
-      <button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="addDingTalkGroup()">+ Add Group</button>
-    </div>
-    <div id="dtAddErr" style="font-size:12px;color:#f87171;margin-top:6px;display:none;"></div>
   </div>
   <div class="card sect-gap">
     <div class="card-title">Credentials</div>
@@ -696,10 +698,17 @@ function startSSE(phases){
 }
 
 function clearDate(){document.getElementById("dateOverride").value="";}
-function setChannel(ch){
+function _applyChannel(ch){
   S.channel=ch;
   document.getElementById("ch-lark").className="ch-btn"+(ch==="lark"?" active":"");
   document.getElementById("ch-dingtalk").className="ch-btn"+(ch==="dingtalk"?" active":"");
+  const lg=document.getElementById("lark-groups");
+  const dg=document.getElementById("dingtalk-groups");
+  if(lg) lg.style.display=ch==="lark"?"block":"none";
+  if(dg) dg.style.display=ch==="dingtalk"?"block":"none";
+}
+function setChannel(ch){
+  _applyChannel(ch);
   saveConfig();
 }
 function setGroup(btn,g){
@@ -727,6 +736,8 @@ async function loadConfig(){
     // DingTalk groups
     if(Array.isArray(cfg.dingtalk_groups)) S.dtGroups=cfg.dingtalk_groups;
     if(cfg.active_webhook_url) S.activeWebhook=cfg.active_webhook_url;
+    // channel — restore and update UI (no save during load)
+    _applyChannel(cfg.channel || S.channel || 'dingtalk');
     renderDingTalkGroups();
   }catch(e){}
 }
@@ -734,6 +745,7 @@ async function loadConfig(){
 async function saveConfig(){
   const body={
     test_mode:document.getElementById("testModeToggle").checked,
+    channel:S.channel,
     crm_username:document.getElementById("crmUser").value,
     crm_password:document.getElementById("crmPass").value,
     ams_username:document.getElementById("amsUser").value,
