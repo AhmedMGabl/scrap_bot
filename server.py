@@ -1,4 +1,4 @@
-import json, os, subprocess, sys, threading, time
+import json, os, re, subprocess, sys, threading, time
 from datetime import datetime
 from pathlib import Path
 from flask import Flask, Response, jsonify, request, stream_with_context
@@ -9,7 +9,30 @@ app = Flask(__name__)
 BASE_DIR = Path(__file__).parent
 DATA_FILE = BASE_DIR / "data" / "teams.json"
 SCHEDULE_FILE = BASE_DIR / "data" / "schedule.json"
+CONFIG_FILE = BASE_DIR / "data" / "config.json"
 DATA_FILE.parent.mkdir(exist_ok=True)
+
+DEFAULT_CONFIG = {
+    "active_webhook_url": "https://oapi.dingtalk.com/robot/send?access_token=28bc378d0fc40e94d1ae14f3223373c8d6fe6654e6595dd4ff6a138ecc3de0a3",
+    "dingtalk_groups": [
+        {"name": "Hany TEST", "url": "https://oapi.dingtalk.com/robot/send?access_token=28bc378d0fc40e94d1ae14f3223373c8d6fe6654e6595dd4ff6a138ecc3de0a3"}
+    ],
+    "crm_username": "51Hany",
+    "crm_password": "b%7DWWtm",
+    "ams_username": "51hany",
+    "ams_password": "Hyoussef@51",
+}
+
+def _load_config():
+    if CONFIG_FILE.exists():
+        try:
+            return json.loads(CONFIG_FILE.read_text())
+        except Exception:
+            pass
+    return dict(DEFAULT_CONFIG)
+
+def _save_config(data):
+    CONFIG_FILE.write_text(json.dumps(data, indent=2))
 
 # ── scheduler ─────────────────────────────────────────────────────────────────
 
@@ -30,19 +53,33 @@ def _save_schedule(data):
     SCHEDULE_FILE.write_text(json.dumps(data, indent=2))
 
 
+_PHASE_SCRIPTS = {
+    "crm":  "Scripts/scrape_crm_report.py",
+    "ams":  "Scripts/scrape_iur_report.py",
+    "cm":   "generate_cm_report.py",
+    "ea":   "generate_ea_report.py",
+    "send": "run_daily_report.py",
+}
+
 def _run_pipeline_job(job_id, phases, test_mode, channel):
-    """Called by APScheduler — runs the pipeline synchronously in background."""
+    """Called by APScheduler — runs each phase script directly."""
     print(f"[scheduler] Job {job_id} triggered at {datetime.now().isoformat()}")
-    script = str(BASE_DIR / "run_daily_report.py")
     extra = ["--test"] if test_mode else []
-    cmd = [sys.executable, script] + extra
-    try:
-        result = subprocess.run(cmd, cwd=str(BASE_DIR), timeout=3600)
-        print(f"[scheduler] Job {job_id} finished: exit {result.returncode}")
-    except subprocess.TimeoutExpired:
-        print(f"[scheduler] Job {job_id} timed out after 1h")
-    except Exception as e:
-        print(f"[scheduler] Job {job_id} error: {e}")
+    for phase in (phases or list(_PHASE_SCRIPTS.keys())):
+        script = _PHASE_SCRIPTS.get(phase)
+        if not script:
+            continue
+        args = extra.copy()
+        if phase == "send":
+            args.append("--send-only")
+        cmd = [sys.executable, str(BASE_DIR / script)] + args
+        try:
+            result = subprocess.run(cmd, cwd=str(BASE_DIR), timeout=3600)
+            print(f"[scheduler] Phase {phase}: exit {result.returncode}")
+        except subprocess.TimeoutExpired:
+            print(f"[scheduler] Phase {phase} timed out")
+        except Exception as e:
+            print(f"[scheduler] Phase {phase} error: {e}")
 
 
 def _register_jobs():
@@ -168,7 +205,7 @@ def run_pipeline():
                 elif phase == "ea":
                     yield from _run_script("generate_ea_report.py", extra)
                 elif phase == "send":
-                    yield from _run_script("run_daily_report.py", extra)
+                    yield from _run_script("run_daily_report.py", extra + ["--send-only"])
                 yield f"data: {json.dumps({'type': 'phase', 'phase': phase, 'state': 'done'})}\n\n"
             except Exception as e:
                 yield f"data: {json.dumps({'type': 'log', 'text': f'[error] {phase}: {e}'})}\n\n"
@@ -326,6 +363,47 @@ def save_teams():
     if request.method == "OPTIONS": return "", 204
     DATA_FILE.write_text(json.dumps(request.get_json(force=True), indent=2))
     return jsonify({"ok": True})
+
+
+@app.route("/api/config", methods=["GET"])
+def get_config():
+    return jsonify(_load_config())
+
+
+@app.route("/api/config", methods=["POST", "OPTIONS"])
+def save_config_route():
+    if request.method == "OPTIONS": return "", 204
+    _save_config(request.get_json(force=True))
+    return jsonify({"ok": True})
+
+
+@app.route("/api/logs", methods=["GET"])
+def list_logs():
+    log_dir = BASE_DIR / "Output" / "logs"
+    if not log_dir.exists():
+        return jsonify([])
+    logs = []
+    for f in sorted(log_dir.glob("*.log"), reverse=True)[:50]:
+        try:
+            stat = f.stat()
+            logs.append({
+                "name": f.name,
+                "size": stat.st_size,
+                "mtime": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M"),
+            })
+        except Exception:
+            pass
+    return jsonify(logs)
+
+
+@app.route("/api/logs/<filename>", methods=["GET"])
+def get_log_file(filename):
+    if not re.match(r'^[\w\-\.]+\.log$', filename):
+        return jsonify({"error": "invalid filename"}), 400
+    log_file = BASE_DIR / "Output" / "logs" / filename
+    if not log_file.exists():
+        return jsonify({"error": "not found"}), 404
+    return log_file.read_text(errors="replace"), 200, {"Content-Type": "text/plain; charset=utf-8"}
 
 
 if __name__ == "__main__":

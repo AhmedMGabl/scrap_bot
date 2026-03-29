@@ -11,9 +11,17 @@ if sys.platform == 'win32':
 
 CRM_URL       = "https://crm.51talk.com/scReportForms/sc_call_info_new?userType=sc_group"
 CRM_LOGIN_URL = "https://crm.51talk.com/admin/admin_login.php?login_employee_type=sideline&redirect_uri="
-CRM_USERNAME  = "51Hany"
-CRM_PASSWORD  = "b%7DWWtm"
-# Use Playwright's bundled Chromium (works on Linux/Docker)
+
+def _load_crm_creds():
+    cfg = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "config.json")
+    try:
+        with open(cfg) as f:
+            d = json.load(f)
+            return d.get("crm_username", "51Hany"), d.get("crm_password", "b%7DWWtm")
+    except Exception:
+        return "51Hany", "b%7DWWtm"
+
+CRM_USERNAME, CRM_PASSWORD = _load_crm_creds()
 CHROME_PATH = None
 
 JS_EXTRACT = """

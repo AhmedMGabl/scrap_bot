@@ -212,7 +212,7 @@ input[type=date].inp{color-scheme:dark;}
       <div class="inp-group" style="margin-bottom:18px;">
         <div class="toggle-wrap">
           <label class="toggle">
-            <input type="checkbox" id="testModeToggle" checked onchange="updateConfig()">
+            <input type="checkbox" id="testModeToggle" checked onchange="S.testMode=this.checked;saveConfig()">
             <div class="toggle-track"></div>
             <div class="toggle-thumb"></div>
           </label>
@@ -274,14 +274,27 @@ input[type=date].inp{color-scheme:dark;}
     </div>
     <div id="dtAddErr" style="font-size:12px;color:#f87171;margin-top:6px;display:none;"></div>
   </div>
-  <div class="card">
-    <div class="card-title">Select Images to Send</div>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <label class="phase-check-item checked"><input type="checkbox" checked> <span style="font-family:var(--mono);font-size:13px;">CM_Individual_Report.png</span></label>
-      <label class="phase-check-item checked"><input type="checkbox" checked> <span style="font-family:var(--mono);font-size:13px;">CM_Team_Summary.png</span></label>
-      <label class="phase-check-item checked"><input type="checkbox" checked> <span style="font-family:var(--mono);font-size:13px;">CM_Separate_Teams.png</span></label>
-      <label class="phase-check-item checked"><input type="checkbox" checked> <span style="font-family:var(--mono);font-size:13px;">CM_Bottom20.png</span></label>
+  <div class="card sect-gap">
+    <div class="card-title">Credentials</div>
+    <div class="grid-2" style="gap:14px;">
+      <div>
+        <label class="inp-label">CRM Username</label>
+        <input class="inp" id="crmUser" style="margin-top:4px;" placeholder="51Hany">
+      </div>
+      <div>
+        <label class="inp-label">CRM Password</label>
+        <input class="inp" id="crmPass" type="password" style="margin-top:4px;" placeholder="••••••••">
+      </div>
+      <div>
+        <label class="inp-label">AMS Username</label>
+        <input class="inp" id="amsUser" style="margin-top:4px;" placeholder="51hany">
+      </div>
+      <div>
+        <label class="inp-label">AMS Password</label>
+        <input class="inp" id="amsPass" type="password" style="margin-top:4px;" placeholder="••••••••">
+      </div>
     </div>
+    <button class="btn btn-primary btn-sm" style="margin-top:14px;" onclick="saveConfig()">&#128190; Save Credentials</button>
   </div>
 </section>
 <!-- LOGS VIEW -->
@@ -352,58 +365,91 @@ input[type=date].inp{color-scheme:dark;}
 <!-- SCHEDULER VIEW -->
 <section class="view" id="view-scheduler">
   <div class="view-title">Scheduler</div>
-  <div class="view-sub">Windows Task Scheduler status. Next scheduled runs computed locally.</div>
+  <div class="view-sub">Automated pipeline runs. Times are in Asia/Shanghai (China Standard Time).</div>
   <div class="row sect-gap" style="gap:10px;">
-    <button class="btn btn-ghost" onclick="computeNextRuns()">&#8635; Refresh</button>
-    <button class="btn btn-ghost" onclick="runSchedulerSetup()">&#9881; setup_schedule.py</button>
-    <button class="btn btn-danger btn-sm" onclick="runSchedulerRemove()">&#10005; remove tasks</button>
+    <button class="btn btn-ghost" onclick="loadSchedule()">&#8635; Refresh</button>
   </div>
+
+  <!-- Add new job -->
   <div class="card sect-gap">
-    <div class="card-title">Daily Schedule (Sun&#8211;Thu)</div>
-    <table class="sched-table">
-      <tr><th>Time</th><th>Task Name</th><th>Next Run</th><th>Status</th></tr>
-      <tr><td>15:00</td><td>scrap_bot_15</td><td id="next-1500">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
-      <tr><td>18:00</td><td>scrap_bot_18</td><td id="next-1800">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
-      <tr><td>21:00</td><td>scrap_bot_21</td><td id="next-2100">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
-    </table>
+    <div class="card-title">Add Scheduled Run</div>
+    <div class="grid-2" style="gap:14px;margin-bottom:14px;">
+      <div>
+        <label class="inp-label">Label (optional)</label>
+        <input class="inp" id="sched-label" placeholder="e.g. Afternoon Run" style="margin-top:4px;">
+      </div>
+      <div style="display:flex;gap:10px;">
+        <div style="flex:1;">
+          <label class="inp-label">Hour (CST, 0-23)</label>
+          <input class="inp" id="sched-hour" type="number" min="0" max="23" value="15" style="margin-top:4px;">
+        </div>
+        <div style="flex:1;">
+          <label class="inp-label">Minute</label>
+          <input class="inp" id="sched-minute" type="number" min="0" max="59" value="0" style="margin-top:4px;">
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label class="inp-label">Days</label>
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;" id="sched-days-btns">
+        <button class="grp-btn active" data-day="mon-fri" onclick="selectSchedDays(this)">Mon–Fri</button>
+        <button class="grp-btn" data-day="mon-thu" onclick="selectSchedDays(this)">Mon–Thu</button>
+        <button class="grp-btn" data-day="mon-sat" onclick="selectSchedDays(this)">Mon–Sat</button>
+        <button class="grp-btn" data-day="mon,tue,wed,thu,fri,sat,sun" onclick="selectSchedDays(this)">Every day</button>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label class="inp-label">Phases</label>
+      <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;" id="sched-phase-btns">
+        <button class="grp-btn active" data-phases="crm,ams,cm,ea,send" onclick="selectSchedPhases(this)">All phases</button>
+        <button class="grp-btn" data-phases="crm,ams,cm,ea" onclick="selectSchedPhases(this)">Scrape + Generate</button>
+        <button class="grp-btn" data-phases="send" onclick="selectSchedPhases(this)">Send only</button>
+        <button class="grp-btn" data-phases="cm,ea,send" onclick="selectSchedPhases(this)">Generate + Send</button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:24px;margin-bottom:14px;">
+      <div class="toggle-wrap">
+        <label class="toggle">
+          <input type="checkbox" id="sched-test" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+        <div>
+          <div style="font-size:13px;color:var(--text);">Test mode</div>
+          <div style="font-size:11px;color:var(--text3);">Send to Hany test group</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary" onclick="addScheduleJob()">+ Add Schedule</button>
+      <div id="sched-add-err" style="font-size:12px;color:#f87171;align-self:center;display:none;"></div>
+    </div>
+  </div>
+
+  <!-- Existing jobs -->
+  <div class="card">
+    <div class="card-title">Active Schedules</div>
+    <div id="schedJobList">
+      <div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:16px 0;">Loading&#8230;</div>
+    </div>
   </div>
 </section>
 
 <!-- HISTORY VIEW -->
 <section class="view" id="view-history">
-  <div class="view-title">Send History</div>
-  <div class="view-sub">Recent deliveries to Lark and DingTalk groups.</div>
-  <div class="row sect-gap">
+  <div class="view-title">Run History</div>
+  <div class="view-sub">Pipeline logs from Output/logs/. Click a log to view its content.</div>
+  <div class="row sect-gap" style="gap:10px;margin-bottom:16px;">
     <button class="btn btn-ghost btn-sm" onclick="loadHistory()">&#8635; Refresh</button>
+    <button class="btn btn-ghost btn-sm" onclick="retrySend()">&#8617; Re-send last report</button>
   </div>
-  <div id="historyList">
-    <div class="history-item">
-      <div style="font-size:20px;">&#128232;</div>
-      <div class="history-info">
-        <div class="history-title">CM Dashboard &#8212; Lark / Maze Runners</div>
-        <div class="history-meta">2026-03-29 15:02 &#183; 4 images &#183; message_id: om_xxxxxx</div>
-      </div>
-      <span class="history-status hs-ok">&#10003; sent</span>
-      <button class="btn btn-ghost btn-sm" onclick="retrySend()">&#8617; retry</button>
+  <div id="historyList"><div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:16px 0;">Loading&#8230;</div></div>
+  <div id="logViewer" style="display:none;margin-top:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+      <div style="font-size:13px;font-weight:600;color:var(--text);" id="logViewerTitle"></div>
+      <button class="btn btn-ghost btn-sm" onclick="closeLogViewer()">&#10005; Close</button>
     </div>
-    <div class="history-item">
-      <div style="font-size:20px;">&#128232;</div>
-      <div class="history-info">
-        <div class="history-title">CM Dashboard &#8212; DingTalk</div>
-        <div class="history-meta">2026-03-28 15:05 &#183; 4 images</div>
-      </div>
-      <span class="history-status hs-ok">&#10003; sent</span>
-      <button class="btn btn-ghost btn-sm" onclick="retrySend()">&#8617; retry</button>
-    </div>
-    <div class="history-item">
-      <div style="font-size:20px;">&#128232;</div>
-      <div class="history-info">
-        <div class="history-title">CM Dashboard &#8212; Lark / Maze Runners</div>
-        <div class="history-meta">2026-03-27 22:01 &#183; error: token expired</div>
-      </div>
-      <span class="history-status hs-fail">&#10007; failed</span>
-      <button class="btn btn-ghost btn-sm" onclick="retrySend()">&#8617; retry</button>
-    </div>
+    <div class="log-wrap"><div class="log-body" style="height:400px;white-space:pre;font-size:11px;" id="logViewerBody"></div></div>
   </div>
 </section>
 <!-- DATA VIEW -->
@@ -486,10 +532,11 @@ input[type=date].inp{color-scheme:dark;}
 <div class="notif" id="notif"></div>
 
 <script>
-const BACKEND='http://localhost:5000';
-let S={testMode:true,channel:'lark',group:'maze',running:false,
+const BACKEND='';
+let S={testMode:true,channel:'dingtalk',group:'test',running:false,
   phases:{crm:'pending',ams:'pending',cm:'pending',ea:'pending',send:'pending'},
-  teamEditorMode:'cm',logCounts:{ok:0,warn:0,err:0}};
+  teamEditorMode:'cm',logCounts:{ok:0,warn:0,err:0},
+  dtGroups:[],activeWebhook:''};
 let sseSource=null,simTimer=null;
 
 function showView(name){
@@ -501,9 +548,10 @@ function showView(name){
   document.querySelectorAll('.nav-item').forEach(n=>{
     if(n.textContent.includes(map[name]||'~')) n.classList.add('active');
   });
-  if(name==='scheduler') computeNextRuns();
+  if(name==='scheduler') loadSchedule();
   if(name==='data') refreshHealth();
-  if(name==='config') renderDingTalkGroups();
+  if(name==='config'){loadConfig();}
+  if(name==='history') loadHistory();
 }
 
 async function ping(){
@@ -647,17 +695,57 @@ function startSSE(phases){
   sseSource.onerror=()=>{document.getElementById('streamStatus').textContent='[disconnected]';S.running=false;document.getElementById('runAllBtn').disabled=false;sseSource.close();};
 }
 
-function updateConfig(){S.testMode=document.getElementById("testModeToggle").checked;}
 function clearDate(){document.getElementById("dateOverride").value="";}
 function setChannel(ch){
   S.channel=ch;
   document.getElementById("ch-lark").className="ch-btn"+(ch==="lark"?" active":"");
   document.getElementById("ch-dingtalk").className="ch-btn"+(ch==="dingtalk"?" active":"");
+  saveConfig();
 }
 function setGroup(btn,g){
   S.group=g;
   document.querySelectorAll(".grp-btn").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
+}
+
+// ── Server-side config ────────────────────────────────────────────────────
+async function loadConfig(){
+  try{
+    const r=await fetch(BACKEND+"/api/config");
+    if(!r.ok) return;
+    const cfg=await r.json();
+    // test mode
+    if(cfg.test_mode!==undefined){
+      S.testMode=cfg.test_mode;
+      document.getElementById("testModeToggle").checked=cfg.test_mode;
+    }
+    // credentials
+    if(cfg.crm_username) document.getElementById("crmUser").value=cfg.crm_username;
+    if(cfg.crm_password) document.getElementById("crmPass").value=cfg.crm_password;
+    if(cfg.ams_username) document.getElementById("amsUser").value=cfg.ams_username;
+    if(cfg.ams_password) document.getElementById("amsPass").value=cfg.ams_password;
+    // DingTalk groups
+    if(Array.isArray(cfg.dingtalk_groups)) S.dtGroups=cfg.dingtalk_groups;
+    if(cfg.active_webhook_url) S.activeWebhook=cfg.active_webhook_url;
+    renderDingTalkGroups();
+  }catch(e){}
+}
+
+async function saveConfig(){
+  const body={
+    test_mode:document.getElementById("testModeToggle").checked,
+    crm_username:document.getElementById("crmUser").value,
+    crm_password:document.getElementById("crmPass").value,
+    ams_username:document.getElementById("amsUser").value,
+    ams_password:document.getElementById("amsPass").value,
+    dingtalk_groups:S.dtGroups||[],
+    active_webhook_url:S.activeWebhook||"",
+  };
+  try{
+    const r=await fetch(BACKEND+"/api/config",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    if(r.ok) showNotif("Config saved","ok");
+    else showNotif("Save failed","err");
+  }catch(e){showNotif("Backend offline","err");}
 }
 document.querySelectorAll(".phase-check-item input").forEach(inp=>{
   inp.addEventListener("change",function(){this.closest(".phase-check-item").classList.toggle("checked",this.checked);});
@@ -672,25 +760,170 @@ function closePreview(){
   document.getElementById("previewFrame").src="about:blank";
 }
 document.getElementById("previewModal").addEventListener("click",function(e){if(e.target===this)closePreview();});
-function computeNextRuns(){
-  const now=new Date();
-  [[1500,15,0],[1800,18,0],[2100,21,0]].forEach(function(slot){
-    const id=slot[0],h=slot[1],m=slot[2];
-    let t=new Date(now);t.setHours(h,m,0,0);
-    if(t<=now)t.setDate(t.getDate()+1);
-    // Skip weekend (5=Fri, 6=Sat)
-    while(t.getDay()===5||t.getDay()===6)t.setDate(t.getDate()+1);
-    const el=document.getElementById("next-"+String(id).padStart(4,"0"));
-    if(el)el.textContent=t.toLocaleString("en-GB",{weekday:"short",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
-  });
+function computeNextRuns(){}  // legacy stub
+
+// ── Scheduler ─────────────────────────────────────────────────────────────
+let _schedDays="mon-fri",_schedPhases="crm,ams,cm,ea,send";
+function selectSchedDays(btn){document.querySelectorAll("#sched-days-btns .grp-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");_schedDays=btn.dataset.day;}
+function selectSchedPhases(btn){document.querySelectorAll("#sched-phase-btns .grp-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");_schedPhases=btn.dataset.phases;}
+
+function _makeSchedRow(j){
+  const enabled=j.enabled!==false;
+  const wrap=document.createElement("div");
+  wrap.style.cssText="display:flex;align-items:center;gap:14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px;";
+
+  const info=document.createElement("div");info.style.flex="1";
+
+  const nameEl=document.createElement("div");
+  nameEl.style.cssText="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;";
+  nameEl.textContent=j.label||j.id;
+
+  const metaEl=document.createElement("div");
+  metaEl.style.cssText="font-size:11px;color:var(--text3);font-family:var(--mono);";
+  const h=String(j.hour).padStart(2,"0"),m=String(j.minute||0).padStart(2,"0");
+  metaEl.textContent=h+":"+m+" CST  |  "+(j.days||"mon-fri")+"  |  "+(j.phases||[]).join(", ")+(j.test?"  |  test mode":"");
+
+  const nextEl=document.createElement("div");
+  nextEl.style.cssText="font-size:11px;color:var(--cyan);font-family:var(--mono);margin-top:4px;";
+  nextEl.textContent="Next: "+(j.next_run||"—");
+
+  info.append(nameEl,metaEl,nextEl);
+
+  const badge=document.createElement("span");
+  badge.className="pc-badge "+(enabled?"b-done":"b-pending");
+  badge.textContent=enabled?"enabled":"paused";
+
+  const toggleBtn=document.createElement("button");
+  toggleBtn.className="btn btn-ghost btn-sm";
+  toggleBtn.textContent=enabled?"⏸ Pause":"▶ Enable";
+  toggleBtn.addEventListener("click",()=>toggleSchedJob(j.id));
+
+  const delBtn=document.createElement("button");
+  delBtn.className="btn btn-danger btn-sm";
+  delBtn.textContent="✕";
+  delBtn.addEventListener("click",()=>deleteSchedJob(j.id));
+
+  wrap.append(info,badge,toggleBtn,delBtn);
+  return wrap;
 }
+
+async function loadSchedule(){
+  if(document.getElementById("view-scheduler").style.display==="none") return;
+  const list=document.getElementById("schedJobList");
+  if(!list) return;
+  try{
+    const r=await fetch(BACKEND+"/api/schedule");
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const data=await r.json();
+    const jobs=data.jobs||[];
+    while(list.firstChild) list.removeChild(list.firstChild);
+    if(!jobs.length){
+      const msg=document.createElement("div");
+      msg.style.cssText="color:var(--muted);font-family:var(--mono);font-size:12px;padding:16px 0;";
+      msg.textContent="No scheduled jobs yet. Add one above.";
+      list.appendChild(msg);return;
+    }
+    jobs.forEach(j=>list.appendChild(_makeSchedRow(j)));
+  }catch(e){
+    while(list.firstChild) list.removeChild(list.firstChild);
+    const msg=document.createElement("div");
+    msg.style.cssText="color:var(--red);font-size:12px;padding:16px 0;";
+    msg.textContent="Backend offline — cannot load schedules.";
+    list.appendChild(msg);
+  }
+}
+
+async function addScheduleJob(){
+  const hour=parseInt(document.getElementById("sched-hour").value)||0;
+  const minute=parseInt(document.getElementById("sched-minute").value)||0;
+  const labelInp=document.getElementById("sched-label").value.trim();
+  const label=labelInp||String(hour).padStart(2,"0")+":"+String(minute).padStart(2,"0")+" CST";
+  const test=document.getElementById("sched-test").checked;
+  const err=document.getElementById("sched-add-err");
+  err.style.display="none";
+  if(hour<0||hour>23||minute<0||minute>59){err.textContent="Invalid time.";err.style.display="block";return;}
+  try{
+    const r=await fetch(BACKEND+"/api/schedule",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({hour,minute,days:_schedDays,phases:_schedPhases.split(","),test,channel:S.channel,label})
+    });
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    showNotif("Schedule added","ok");
+    document.getElementById("sched-label").value="";
+    loadSchedule();
+  }catch(e){err.textContent="Backend offline.";err.style.display="block";}
+}
+
+async function deleteSchedJob(id){
+  if(!confirm("Remove this scheduled job?")) return;
+  try{await fetch(BACKEND+"/api/schedule/"+id,{method:"DELETE"});showNotif("Schedule removed","ok");loadSchedule();}
+  catch(e){showNotif("Backend offline","err");}
+}
+
+async function toggleSchedJob(id){
+  try{await fetch(BACKEND+"/api/schedule/"+id+"/toggle",{method:"POST"});loadSchedule();}
+  catch(e){showNotif("Backend offline","err");}
+}
+
 async function runSchedulerSetup(){showNotif("Calling setup_schedule.py...","ok");try{await fetch(BACKEND+"/api/scheduler/setup",{method:"POST"});}catch(e){}}
 async function runSchedulerRemove(){if(!confirm("Remove all scrap_bot scheduled tasks?"))return;try{await fetch(BACKEND+"/api/scheduler/remove",{method:"POST"});}catch(e){}showNotif("Tasks removed","ok");}
-function loadHistory(){showNotif("History refreshed","ok");}
+
+async function loadHistory(){
+  const list=document.getElementById("historyList");
+  try{
+    const r=await fetch(BACKEND+"/api/logs");
+    if(!r.ok) throw new Error();
+    const logs=await r.json();
+    while(list.firstChild) list.removeChild(list.firstChild);
+    if(!logs.length){
+      const m=document.createElement("div");
+      m.style.cssText="color:var(--muted);font-family:var(--mono);font-size:12px;padding:16px 0;";
+      m.textContent="No log files found yet.";
+      list.appendChild(m);return;
+    }
+    logs.forEach(function(log){
+      const item=document.createElement("div");
+      item.className="history-item";item.style.cursor="pointer";
+      item.addEventListener("click",function(){openLogViewer(log.name);});
+
+      const icon=document.createElement("div");icon.style.fontSize="18px";icon.textContent="📄";
+
+      const info=document.createElement("div");info.className="history-info";
+      const title=document.createElement("div");title.className="history-title";title.textContent=log.name;
+      const meta=document.createElement("div");meta.className="history-meta";
+      meta.textContent=log.mtime+" · "+(log.size>1024?(log.size/1024).toFixed(1)+"KB":log.size+"B");
+      info.appendChild(title);info.appendChild(meta);
+
+      item.appendChild(icon);item.appendChild(info);
+      list.appendChild(item);
+    });
+  }catch(e){
+    list.innerHTML="";
+    const m=document.createElement("div");
+    m.style.cssText="color:var(--red);font-size:12px;padding:16px 0;";
+    m.textContent="Backend offline — cannot load logs.";
+    list.appendChild(m);
+  }
+}
+
+async function openLogViewer(name){
+  try{
+    const r=await fetch(BACKEND+"/api/logs/"+encodeURIComponent(name));
+    const text=await r.text();
+    document.getElementById("logViewerTitle").textContent=name;
+    document.getElementById("logViewerBody").textContent=text;
+    document.getElementById("logViewer").style.display="block";
+    document.getElementById("logViewerBody").scrollTop=0;
+  }catch(e){showNotif("Failed to load log","err");}
+}
+function closeLogViewer(){document.getElementById("logViewer").style.display="none";}
+
 async function retrySend(){
-  showNotif("Retrying...","ok");
-  try{const r=await fetch(BACKEND+"/api/send/retry",{method:"POST"});if(r.ok)showNotif("Resent ok","ok");}
-  catch(e){showNotif("Backend offline","err");}
+  showNotif("Re-sending...","ok");
+  try{
+    const r=await fetch(BACKEND+"/api/run?phases=send&test="+S.testMode+"&channel="+S.channel);
+    if(r.ok) showNotif("Resent ok","ok");
+  }catch(e){showNotif("Backend offline","err");}
 }
 async function refreshHealth(){
   try{const r=await fetch(BACKEND+"/api/health");
@@ -763,7 +996,6 @@ async function saveTeams(){
   try{const r=await fetch(BACKEND+"/api/teams",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(teamData)});if(r.ok){showNotif("Teams saved","ok");return;}}catch(e){}
   showNotif("Backend offline","err");
 }
-loadTeams();
 let notifTimer=null;
 function showNotif(msg,type){
   type=type||"ok";
@@ -778,67 +1010,81 @@ function downloadLog(){
 }
 computeNextRuns();
 appendLog("pipelineLog","scrap_bot control panel ready.","log-dim");
-// ── DingTalk Webhook Management ──────────────────────────
-function getDtGroups(){
-  try{ return JSON.parse(localStorage.getItem('dtGroups')||'[]'); }
-  catch(e){ return []; }
-}
-function saveDtGroups(groups){ localStorage.setItem('dtGroups', JSON.stringify(groups)); }
-
+// ── DingTalk Webhook Management (server-side) ─────────────────────────────
 function renderDingTalkGroups(){
-  const groups = getDtGroups();
+  const groups = S.dtGroups||[];
   const list = document.getElementById('dtGroupList');
   if(!list) return;
+  while(list.firstChild) list.removeChild(list.firstChild);
   if(!groups.length){
-    list.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:10px 0;">No groups added yet.</div>';
-    return;
+    const msg=document.createElement("div");
+    msg.style.cssText="color:var(--text3);font-size:13px;padding:10px 0;";
+    msg.textContent="No groups added yet.";
+    list.appendChild(msg);return;
   }
-  list.innerHTML = groups.map((g,i) => {
-    const masked = g.url.length > 60 ? g.url.slice(0,40)+'...'+g.url.slice(-12) : g.url;
-    const isActive = (S.dtGroup === i);
-    return '<div style="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid '+(isActive?'var(--amber)':'var(--border)')+';border-radius:8px;padding:10px 14px;">'
-      +'<div style="width:8px;height:8px;border-radius:50%;background:'+(isActive?'var(--amber)':'var(--text3)')+';flex-shrink:0;"></div>'
-      +'<div style="flex:1;min-width:0;">'
-        +'<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;">'+escHtml(g.name)+'</div>'
-        +'<div style="font-size:11px;color:var(--text3);font-family:var(--mono);word-break:break-all;">'+escHtml(masked)+'</div>'
-      +'</div>'
-      +'<button class="btn btn-ghost btn-sm" style="padding:4px 10px;font-size:11px;" onclick="selectDtGroup('+i+')">'+( isActive ? '&#10003; Selected' : 'Select')+'</button>'
-      +'<button class="btn btn-ghost btn-sm" style="padding:4px 10px;font-size:11px;color:#f87171;" onclick="removeDingTalkGroup('+i+')">Remove</button>'
-    +'</div>';
-  }).join('');
+  groups.forEach(function(g,i){
+    const isActive=(S.activeWebhook===g.url);
+    const wrap=document.createElement("div");
+    wrap.style.cssText="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid "+(isActive?"var(--amber)":"var(--border)")+";border-radius:8px;padding:10px 14px;";
+
+    const dot=document.createElement("div");
+    dot.style.cssText="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:"+(isActive?"var(--amber)":"var(--text3)");
+
+    const info=document.createElement("div");info.style.cssText="flex:1;min-width:0;";
+    const nm=document.createElement("div");nm.style.cssText="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;";nm.textContent=g.name;
+    const masked=g.url.length>60?g.url.slice(0,40)+"..."+g.url.slice(-12):g.url;
+    const ur=document.createElement("div");ur.style.cssText="font-size:11px;color:var(--text3);font-family:var(--mono);word-break:break-all;";ur.textContent=masked;
+    info.appendChild(nm);info.appendChild(ur);
+
+    const selBtn=document.createElement("button");selBtn.className="btn btn-ghost btn-sm";selBtn.style.cssText="padding:4px 10px;font-size:11px;";
+    selBtn.textContent=isActive?"✓ Active":"Select";
+    selBtn.addEventListener("click",function(){selectDtGroup(i);});
+
+    const delBtn=document.createElement("button");delBtn.className="btn btn-ghost btn-sm";delBtn.style.cssText="padding:4px 10px;font-size:11px;color:#f87171;";
+    delBtn.textContent="Remove";
+    delBtn.addEventListener("click",function(){removeDingTalkGroup(i);});
+
+    wrap.appendChild(dot);wrap.appendChild(info);wrap.appendChild(selBtn);wrap.appendChild(delBtn);
+    list.appendChild(wrap);
+  });
 }
 
 function selectDtGroup(i){
-  S.dtGroup = i;
+  S.activeWebhook=(S.dtGroups||[])[i]?.url||"";
   renderDingTalkGroups();
+  saveConfig();
 }
 
 function addDingTalkGroup(){
-  const name = document.getElementById('dtNewName').value.trim();
-  const url  = document.getElementById('dtNewUrl').value.trim();
-  const err  = document.getElementById('dtAddErr');
+  const name=document.getElementById('dtNewName').value.trim();
+  const url=document.getElementById('dtNewUrl').value.trim();
+  const err=document.getElementById('dtAddErr');
   err.style.display='none';
-  if(!name){ err.textContent='Group name is required.'; err.style.display='block'; return; }
-  if(!url.startsWith('https://oapi.dingtalk.com')){ err.textContent='URL must start with https://oapi.dingtalk.com'; err.style.display='block'; return; }
-  const groups = getDtGroups();
-  groups.push({name, url});
-  saveDtGroups(groups);
+  if(!name){err.textContent='Group name is required.';err.style.display='block';return;}
+  if(!url.startsWith('https://oapi.dingtalk.com')){err.textContent='URL must start with https://oapi.dingtalk.com';err.style.display='block';return;}
+  if(!S.dtGroups) S.dtGroups=[];
+  S.dtGroups.push({name,url});
   document.getElementById('dtNewName').value='';
   document.getElementById('dtNewUrl').value='';
-  if(S.dtGroup === undefined) S.dtGroup = groups.length - 1;
+  if(!S.activeWebhook) S.activeWebhook=url;
   renderDingTalkGroups();
+  saveConfig();
 }
 
 function removeDingTalkGroup(i){
-  const groups = getDtGroups();
-  groups.splice(i, 1);
-  saveDtGroups(groups);
-  if(S.dtGroup >= groups.length) S.dtGroup = groups.length - 1;
+  if(!S.dtGroups) return;
+  const removed=S.dtGroups[i];
+  S.dtGroups.splice(i,1);
+  if(S.activeWebhook===removed?.url) S.activeWebhook=S.dtGroups[0]?.url||"";
   renderDingTalkGroups();
+  saveConfig();
 }
 
-function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-renderDingTalkGroups();
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+loadConfig();
+loadTeams();
 
 
 </script>

@@ -8,8 +8,18 @@ from datetime import datetime
 if sys.platform == 'win32':
     sys.stdout.reconfigure(encoding='utf-8')
 
-AMS_USERNAME  = "51hany"
-AMS_PASSWORD  = "Hyoussef@51"
+import json as _json
+
+def _load_ams_creds():
+    cfg = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "config.json")
+    try:
+        with open(cfg) as f:
+            d = _json.load(f)
+            return d.get("ams_username", "51hany"), d.get("ams_password", "Hyoussef@51")
+    except Exception:
+        return "51hany", "Hyoussef@51"
+
+AMS_USERNAME, AMS_PASSWORD = _load_ams_creds()
 AMS_LOGIN_URL = "https://ams.51talkjr.com/#/login"
 LP_IUR_URL    = "https://lp.51talkjr.com/#/data-center/business/iur_new"
 

@@ -20,38 +20,36 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-TEST_MODE = True  # hardcoded: send to Hany testing group (was: "--test" in sys.argv)
-
 # -- Paths ------------------------------------------------------------------
 SCRIPT_DIR   = os.path.dirname(os.path.abspath(__file__))
 INPUT_DIR    = os.path.join(SCRIPT_DIR, "Input")
 OUTPUT_DIR   = os.path.join(SCRIPT_DIR, "Output")
 RAWDATA_FILE = os.path.join(INPUT_DIR, "rawdata.xlsx")
 
-# -- AMS credentials --------------------------------------------------------
-AMS_USERNAME  = "51hany"
-AMS_PASSWORD  = "Hyoussef@51"
-AMS_LOGIN_URL = "https://ams.51talkjr.com/#/login"
+# -- Read server config (credentials + active webhook) ----------------------
+def _read_cfg():
+    try:
+        with open(os.path.join(SCRIPT_DIR, "data", "config.json")) as f:
+            return json.load(f)
+    except Exception:
+        return {}
 
-# -- CRM credentials --------------------------------------------------------
-CRM_CONFIG = {
-    "crm_username": "51Hany",
-    "crm_password": "b%7DWWtm",
-    "crm_url": "https://crm.51talk.com/scReportForms/sc_call_info_new?userType=sc_group",
-    "headless": False,
-    "timeout": 60,
-}
+_cfg = _read_cfg()
+
+TEST_MODE = "--test" in sys.argv
 
 # -- Lark credentials -------------------------------------------------------
-LARK_APP_ID      = "cli_a9bf7d0d8438dbdc"
-LARK_APP_SECRET  = "fLNIH2ElbH9mChpijh4tbeKd36dJHKtq"
-LARK_CHAT_ID_PROD = "oc_cc12fe7005d8a9fa8b8eb51e9193eeec"  # Maze Runners (CM group)
-LARK_CHAT_ID_TEST = "oc_1ab849cf11a8505ae909eff1928cd052"  # Hany (testing)
+LARK_APP_ID       = "cli_a9bf7d0d8438dbdc"
+LARK_APP_SECRET   = "fLNIH2ElbH9mChpijh4tbeKd36dJHKtq"
+LARK_CHAT_ID_PROD = "oc_cc12fe7005d8a9fa8b8eb51e9193eeec"
+LARK_CHAT_ID_TEST = "oc_1ab849cf11a8505ae909eff1928cd052"
 LARK_CHAT_ID      = LARK_CHAT_ID_TEST if TEST_MODE else LARK_CHAT_ID_PROD
 
-
 # -- DingTalk config --------------------------------------------------------
-DINGTALK_WEBHOOK_URL  = "https://oapi.dingtalk.com/robot/send?access_token=28bc378d0fc40e94d1ae14f3223373c8d6fe6654e6595dd4ff6a138ecc3de0a3"
+DINGTALK_WEBHOOK_URL = (
+    _cfg.get("active_webhook_url") or
+    "https://oapi.dingtalk.com/robot/send?access_token=28bc378d0fc40e94d1ae14f3223373c8d6fe6654e6595dd4ff6a138ecc3de0a3"
+)
 # Images served directly from local nginx — no GitHub needed
 LOCAL_IMAGE_BASE      = "https://ahmed-live-lab-u56467.vm.elestio.app:15011/Output"
 
@@ -322,6 +320,15 @@ def run_send_cards(cm_pngs, ea_pngs):
     print("ERROR: All 3 send attempts failed.")
 
 if __name__ == "__main__":
+    # --send-only: skip scraping/generation, just send existing PNGs
+    if "--send-only" in sys.argv:
+        cm_pngs = [
+            os.path.join(OUTPUT_DIR, "CM_Team_Summary.png"),
+            os.path.join(OUTPUT_DIR, "CM_Separate_Teams.png"),
+        ]
+        run_send_dingtalk(cm_pngs)
+        sys.exit(0)
+
     if datetime.now().weekday() == 4:  # 4 = Friday
         print("Friday - no report today.")
         sys.exit(0)
