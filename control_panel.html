@@ -257,6 +257,23 @@ input[type=date].inp{color-scheme:dark;}
       <label class="phase-check-item checked"><input type="checkbox" checked data-phase="send"><span style="font-family:var(--mono);font-size:13px;">Phase 5 &#8212; Send Cards</span></label>
     </div>
   </div>
+  <div class="card sect-gap" id="dtWebhooksCard">
+    <div class="card-title">DingTalk Webhooks</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:14px;">Groups connected to the bot. The selected group receives the report on each pipeline send.</div>
+    <div id="dtGroupList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;"></div>
+    <div style="display:flex;gap:8px;align-items:flex-end;">
+      <div style="flex:0 0 160px;">
+        <label class="inp-label">Group Name</label>
+        <input class="inp" id="dtNewName" placeholder="e.g. Maze Runners" style="margin-top:4px;">
+      </div>
+      <div style="flex:1;">
+        <label class="inp-label">Webhook URL</label>
+        <input class="inp" id="dtNewUrl" placeholder="https://oapi.dingtalk.com/robot/send?access_token=..." style="margin-top:4px;">
+      </div>
+      <button class="btn btn-primary btn-sm" style="flex-shrink:0;" onclick="addDingTalkGroup()">+ Add Group</button>
+    </div>
+    <div id="dtAddErr" style="font-size:12px;color:#f87171;margin-top:6px;display:none;"></div>
+  </div>
   <div class="card">
     <div class="card-title">Select Images to Send</div>
     <div style="display:flex;flex-direction:column;gap:8px;">
@@ -342,22 +359,12 @@ input[type=date].inp{color-scheme:dark;}
     <button class="btn btn-danger btn-sm" onclick="runSchedulerRemove()">&#10005; remove tasks</button>
   </div>
   <div class="card sect-gap">
-    <div class="card-title">Morning Schedule (Mon&#8211;Sat)</div>
+    <div class="card-title">Daily Schedule (Sun&#8211;Thu)</div>
     <table class="sched-table">
       <tr><th>Time</th><th>Task Name</th><th>Next Run</th><th>Status</th></tr>
-      <tr><td>13:00</td><td>scrap_bot_13</td><td id="next-1300">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
-      <tr><td>14:00</td><td>scrap_bot_14</td><td id="next-1400">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
       <tr><td>15:00</td><td>scrap_bot_15</td><td id="next-1500">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
-    </table>
-  </div>
-  <div class="card">
-    <div class="card-title">Night Schedule (Daily)</div>
-    <table class="sched-table">
-      <tr><th>Time</th><th>Task Name</th><th>Next Run</th><th>Status</th></tr>
-      <tr><td>22:00</td><td>scrap_bot_22</td><td id="next-2200">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
-      <tr><td>23:00</td><td>scrap_bot_23</td><td id="next-2300">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
-      <tr><td>00:00</td><td>scrap_bot_00</td><td id="next-0000">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
-      <tr><td>01:00 Sun</td><td>scrap_bot_sat</td><td id="next-0100">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
+      <tr><td>18:00</td><td>scrap_bot_18</td><td id="next-1800">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
+      <tr><td>21:00</td><td>scrap_bot_21</td><td id="next-2100">&#8212;</td><td><span class="pc-badge b-done">enabled</span></td></tr>
     </table>
   </div>
 </section>
@@ -496,6 +503,7 @@ function showView(name){
   });
   if(name==='scheduler') computeNextRuns();
   if(name==='data') refreshHealth();
+  if(name==='config') renderDingTalkGroups();
 }
 
 async function ping(){
@@ -666,10 +674,12 @@ function closePreview(){
 document.getElementById("previewModal").addEventListener("click",function(e){if(e.target===this)closePreview();});
 function computeNextRuns(){
   const now=new Date();
-  [[1300,13,0],[1400,14,0],[1500,15,0],[2200,22,0],[2300,23,0],[0,0,0],[100,1,0]].forEach(function(slot){
+  [[1500,15,0],[1800,18,0],[2100,21,0]].forEach(function(slot){
     const id=slot[0],h=slot[1],m=slot[2];
     let t=new Date(now);t.setHours(h,m,0,0);
     if(t<=now)t.setDate(t.getDate()+1);
+    // Skip weekend (5=Fri, 6=Sat)
+    while(t.getDay()===5||t.getDay()===6)t.setDate(t.getDate()+1);
     const el=document.getElementById("next-"+String(id).padStart(4,"0"));
     if(el)el.textContent=t.toLocaleString("en-GB",{weekday:"short",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
   });
@@ -768,6 +778,69 @@ function downloadLog(){
 }
 computeNextRuns();
 appendLog("pipelineLog","scrap_bot control panel ready.","log-dim");
+// ── DingTalk Webhook Management ──────────────────────────
+function getDtGroups(){
+  try{ return JSON.parse(localStorage.getItem('dtGroups')||'[]'); }
+  catch(e){ return []; }
+}
+function saveDtGroups(groups){ localStorage.setItem('dtGroups', JSON.stringify(groups)); }
+
+function renderDingTalkGroups(){
+  const groups = getDtGroups();
+  const list = document.getElementById('dtGroupList');
+  if(!list) return;
+  if(!groups.length){
+    list.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:10px 0;">No groups added yet.</div>';
+    return;
+  }
+  list.innerHTML = groups.map((g,i) => {
+    const masked = g.url.length > 60 ? g.url.slice(0,40)+'...'+g.url.slice(-12) : g.url;
+    const isActive = (S.dtGroup === i);
+    return '<div style="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid '+(isActive?'var(--amber)':'var(--border)')+';border-radius:8px;padding:10px 14px;">'
+      +'<div style="width:8px;height:8px;border-radius:50%;background:'+(isActive?'var(--amber)':'var(--text3)')+';flex-shrink:0;"></div>'
+      +'<div style="flex:1;min-width:0;">'
+        +'<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;">'+escHtml(g.name)+'</div>'
+        +'<div style="font-size:11px;color:var(--text3);font-family:var(--mono);word-break:break-all;">'+escHtml(masked)+'</div>'
+      +'</div>'
+      +'<button class="btn btn-ghost btn-sm" style="padding:4px 10px;font-size:11px;" onclick="selectDtGroup('+i+')">'+( isActive ? '&#10003; Selected' : 'Select')+'</button>'
+      +'<button class="btn btn-ghost btn-sm" style="padding:4px 10px;font-size:11px;color:#f87171;" onclick="removeDingTalkGroup('+i+')">Remove</button>'
+    +'</div>';
+  }).join('');
+}
+
+function selectDtGroup(i){
+  S.dtGroup = i;
+  renderDingTalkGroups();
+}
+
+function addDingTalkGroup(){
+  const name = document.getElementById('dtNewName').value.trim();
+  const url  = document.getElementById('dtNewUrl').value.trim();
+  const err  = document.getElementById('dtAddErr');
+  err.style.display='none';
+  if(!name){ err.textContent='Group name is required.'; err.style.display='block'; return; }
+  if(!url.startsWith('https://oapi.dingtalk.com')){ err.textContent='URL must start with https://oapi.dingtalk.com'; err.style.display='block'; return; }
+  const groups = getDtGroups();
+  groups.push({name, url});
+  saveDtGroups(groups);
+  document.getElementById('dtNewName').value='';
+  document.getElementById('dtNewUrl').value='';
+  if(S.dtGroup === undefined) S.dtGroup = groups.length - 1;
+  renderDingTalkGroups();
+}
+
+function removeDingTalkGroup(i){
+  const groups = getDtGroups();
+  groups.splice(i, 1);
+  saveDtGroups(groups);
+  if(S.dtGroup >= groups.length) S.dtGroup = groups.length - 1;
+  renderDingTalkGroups();
+}
+
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+renderDingTalkGroups();
+
+
 </script>
 </body>
 </html>
