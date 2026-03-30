@@ -269,13 +269,14 @@ def main():
     separate_teams_file = os.path.join(output_dir, 'EA_Separate_Teams.html')
     bottom20_file = os.path.join(output_dir, 'EA_Bottom20.html')
     
-    # Generate all HTML reports
-    generate_html_individual_report(merged_df, individual_report_file)
-    generate_html_team_report(merged_df, team_summary_file)
-    generate_html_separate_teams_report(merged_df, separate_teams_file)
-    generate_html_bottom20_report(merged_df, bottom20_file)
-    
-    # Generate all Excel reports
+    # HTML functions (imported from generate_cm_report) expect 'Name' column
+    html_df = merged_df.rename(columns={'CRM': 'Name'})
+    generate_html_individual_report(html_df, individual_report_file)
+    generate_html_team_report(html_df, team_summary_file)
+    generate_html_separate_teams_report(html_df, separate_teams_file)
+    generate_html_bottom20_report(html_df, bottom20_file)
+
+    # Excel report uses 'CRM' column directly
     generate_excel_reports(merged_df, output_dir)
     
     print("\n" + "="*70)
