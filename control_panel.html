@@ -521,6 +521,20 @@ input[type=date].inp{color-scheme:dark;}
 </section>
 </main>
 </div>
+<!-- Error popup -->
+<div class="modal-overlay" id="errorModal" onclick="if(event.target===this)closeErrorModal()">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-header" style="border-color:rgba(248,113,113,.3);">
+      <div class="modal-title" style="color:var(--red);">&#9888; Phase Failed</div>
+      <button class="modal-close" onclick="closeErrorModal()">&#10005;</button>
+    </div>
+    <div style="padding:20px 24px;">
+      <div id="errorModalPhase" style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:10px;text-transform:uppercase;letter-spacing:.8px;"></div>
+      <div id="errorModalMsg" style="font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;font-family:var(--mono);background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:12px 14px;max-height:220px;overflow-y:auto;"></div>
+      <button class="btn btn-ghost" style="margin-top:16px;width:100%;justify-content:center;" onclick="closeErrorModal()">Dismiss</button>
+    </div>
+  </div>
+</div>
 <!-- Modal -->
 <div class="modal-overlay" id="previewModal">
   <div class="modal">
@@ -567,14 +581,23 @@ function setConn(live){
 }
 setInterval(ping,8000);ping();
 
+let _lastLogLines=[];
 function setPhase(ph,state){
   S.phases[ph]=state;
-  document.getElementById('pc-'+ph).className='pc '+(state==='pending'?'':state);
-  const b=document.getElementById('badge-'+ph);b.className='pc-badge b-'+state;b.textContent=state;
+  const cssState=state==='error'?'failed':state;
+  document.getElementById('pc-'+ph).className='pc '+(cssState==='pending'?'':cssState);
+  const b=document.getElementById('badge-'+ph);b.className='pc-badge b-'+cssState;b.textContent=state;
   const pg=document.getElementById('prog-'+ph);
-  pg.style.width=state==='done'||state==='failed'?'100%':state==='running'?'60%':'0%';
-  pg.style.background=state==='failed'?'var(--red)':state==='done'?'var(--green)':'var(--amber)';
+  pg.style.width=state==='done'||state==='error'?'100%':state==='running'?'60%':'0%';
+  pg.style.background=state==='error'?'var(--red)':state==='done'?'var(--green)':'var(--amber)';
+  if(state==='error'){
+    const phaseNames={crm:'CRM Scrape',ams:'AMS Scrape',cm:'CM Dashboard',ea:'EA Dashboard',send:'Send Cards'};
+    document.getElementById('errorModalPhase').textContent=phaseNames[ph]||ph;
+    document.getElementById('errorModalMsg').textContent=_lastLogLines.slice(-12).join('\n')||'Phase exited with an error.';
+    document.getElementById('errorModal').classList.add('open');
+  }
 }
+function closeErrorModal(){document.getElementById('errorModal').classList.remove('open');}
 function resetPhases(){
   ['crm','ams','cm','ea','send'].forEach(p=>setPhase(p,'pending'));
   document.getElementById('runStatus').textContent='idle';
@@ -688,9 +711,10 @@ function startSSE(phases){
   document.getElementById('streamStatus').textContent='[live]';
   const url=BACKEND+'/api/run?phases='+phases.join(',')+'&test='+S.testMode+'&channel='+S.channel+'&group='+S.group;
   sseSource=new EventSource(url);
+  _lastLogLines=[];
   sseSource.onmessage=e=>{
     const d=JSON.parse(e.data);
-    if(d.type==='log')appendLog('pipelineLog',d.text,lineClass(d.text));
+    if(d.type==='log'){appendLog('pipelineLog',d.text,lineClass(d.text));_lastLogLines.push(d.text);if(_lastLogLines.length>30)_lastLogLines.shift();}
     else if(d.type==='phase')setPhase(d.phase,d.state);
     else if(d.type==='done'){S.running=false;document.getElementById('runAllBtn').disabled=false;document.getElementById('runStatus').textContent='done';document.getElementById('streamStatus').textContent='[idle]';sseSource.close();showNotif('Pipeline complete','ok');}
   };

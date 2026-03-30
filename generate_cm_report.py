@@ -1029,8 +1029,9 @@ def main():
     try:
         scrape_and_update_rawdata()
     except Exception as e:
-        print(f"CRM scraping failed: {e}")
-        print("Continuing with existing data...")
+        print(f"ERROR: CRM scraping failed — {e}")
+        print("ERROR: Cannot generate report without fresh data.")
+        sys.exit(1)
     
     print("\n" + "="*60)
 
