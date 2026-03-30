@@ -113,8 +113,9 @@ def scrape_crm_report():
     parent_dir   = os.path.dirname(script_dir)
     rawdata_file = os.path.join(parent_dir, "Input", "rawdata.xlsx")
     PROFILE_DIR  = os.path.join(script_dir, "chrome_profile")
-    now          = datetime.now()
-    # After midnight but before noon: report on yesterday's shift
+    from datetime import timezone
+    now          = datetime.now(timezone(timedelta(hours=2)))  # Egypt time (UTC+2)
+    # After midnight but before noon Egypt time: report on yesterday's shift
     if now.hour < 12:
         target_date = now - timedelta(days=1)
     else:

@@ -157,12 +157,13 @@ def run_ea_dashboard():
 
 # -- Phase 6: DingTalk webhook ----------------------------------------------
 def get_local_image_urls(png_paths):
-    """Return local nginx URLs for the given PNG paths (no GitHub needed)."""
+    """Return local nginx URLs with a cache-busting timestamp so DingTalk fetches fresh images."""
     url_map = {}
+    t = int(time.time())
     for path in png_paths:
         if os.path.exists(path):
             fname = os.path.basename(path)
-            url_map[fname] = f"{LOCAL_IMAGE_BASE}/{fname}"
+            url_map[fname] = f"{LOCAL_IMAGE_BASE}/{fname}?t={t}"
             print(f"  Image URL: {url_map[fname]}")
     return url_map
 
