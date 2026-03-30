@@ -1023,18 +1023,8 @@ def main():
     # Create output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
 
-    # PHASE 1: CRM Scraping (NEW)
-    print("\n" + "="*60)
-
-    try:
-        scrape_and_update_rawdata()
-    except Exception as e:
-        print(f"ERROR: CRM scraping failed — {e}")
-        print("ERROR: Cannot generate report without fresh data.")
-        sys.exit(1)
-    
-    print("\n" + "="*60)
-
+    # CRM data is already scraped by Scripts/scrape_crm_report.py (phase crm)
+    # Just generate reports from rawdata.xlsx
     print("PHASE 2: Generating Reports")
     print("="*60)
 

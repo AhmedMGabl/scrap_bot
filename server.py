@@ -113,7 +113,7 @@ scheduler.start()
 # ── helpers ──────────────────────────────────────────────────────────────────
 
 def _run_script(script_name, extra_args=None):
-    """Run a project script and yield SSE log lines."""
+    """Run a project script and yield SSE log lines. Raises on non-zero exit."""
     script = str(BASE_DIR / script_name)
     cmd = [sys.executable, script] + (extra_args or [])
     proc = subprocess.Popen(
@@ -129,6 +129,8 @@ def _run_script(script_name, extra_args=None):
     rc = proc.returncode
     status = "ok" if rc == 0 else f"error (exit {rc})"
     yield f"data: {json.dumps({'type': 'log', 'text': f'[{script_name}] finished: {status}'})}\n\n"
+    if rc != 0:
+        raise RuntimeError(f"{script_name} exited with code {rc}")
 
 # ── API routes ────────────────────────────────────────────────────────────────
 
@@ -210,6 +212,7 @@ def run_pipeline():
             except Exception as e:
                 yield f"data: {json.dumps({'type': 'log', 'text': f'[error] {phase}: {e}'})}\n\n"
                 yield f"data: {json.dumps({'type': 'phase', 'phase': phase, 'state': 'error'})}\n\n"
+                break  # stop remaining phases
         yield f"data: {json.dumps({'type': 'done'})}\n\n"
 
     return Response(
