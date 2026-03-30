@@ -169,8 +169,10 @@ def get_local_image_urls(png_paths):
 
 def dingtalk_send_webhook(image_urls, labels):
     """Send markdown card with images to DingTalk via webhook."""
-    today = datetime.now().strftime("%Y-%m-%d")
-    title = "CM Duration Report - {} {} [operation]".format(today, datetime.now().strftime("%H:%M"))
+    from datetime import timezone, timedelta
+    now_cairo = datetime.now(timezone(timedelta(hours=2)))
+    today = now_cairo.strftime("%Y-%m-%d")
+    title = "CM Duration Report - {} {}".format(today, now_cairo.strftime("%H:%M"))
 
     lines = ["## " + title, ""]
     for label, url in zip(labels, image_urls):
